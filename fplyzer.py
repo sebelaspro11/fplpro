@@ -19,7 +19,7 @@ st.title(f"Fantasy Football 2022/2023 Analysis")
 
 if selected == "Analysis":
     
-    df_player = pd.read_csv('D:/streamlit/fpl_data-update-1.csv')
+    df_player = pd.read_csv('fpl_data-update-1.csv')
     df_player.drop(['Unnamed: 0'], axis=1, inplace=True)
 
 
@@ -80,9 +80,9 @@ if selected == "Analysis":
      })
 
 else:
-    df_history_2023 = pd.read_csv('D:/streamlit/all_history_2023_df-merge-20230505.csv', usecols=lambda column: column != 'Unnamed: 0.1')
+    df_history_2023 = pd.read_csv('all_history_2023_df-merge-20230505.csv', usecols=lambda column: column != 'Unnamed: 0.1')
     df_history_2023.drop(['Unnamed: 0'], axis=1, inplace=True)
-    df_fixtures_2023 = pd.read_csv('D:/streamlit/all_fixtures_2023_merge_df.csv')
+    df_fixtures_2023 = pd.read_csv('all_fixtures_2023_merge_df.csv')
     df_fixtures_2023.drop(['Unnamed: 0.1'], axis=1, inplace=True)
     df_fixtures_2023 = df_fixtures_2023.sort_values(by='gameweek')
     
