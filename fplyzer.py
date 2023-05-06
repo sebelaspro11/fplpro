@@ -4,13 +4,7 @@ import streamlit as st
 import altair as alt
 from streamlit_option_menu import option_menu
 
-# --- NAVIGATION MENU ---
-selected = option_menu(
-    menu_title=None,
-    options=["Analysis", "Player Data"],
-    icons=["pencil-fill", "bar-chart-fill"],  # https://icons.getbootstrap.com/
-    orientation="horizontal",
-)
+
 
 hide_st_style = """
             <style>
