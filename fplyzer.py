@@ -13,13 +13,7 @@ selected = option_menu(
     orientation="horizontal",
 )
 
-hide_st_style = """
-            <style>
-            footer {visibility: hidden;}
-            header {visibility: hidden;}
-            </style>
-            """
-st.markdown(hide_st_style, unsafe_allow_html=True)
+
 
 st.title(f"Fantasy Football 2022/2023 Analysis")
 
