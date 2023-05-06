@@ -4,14 +4,14 @@ import streamlit as st
 import altair as alt
 from streamlit_option_menu import option_menu
 
-hide_st_style = """
-            <style>
-            #MainMenu {visibility: hidden;}
-            footer {visibility: hidden;}
-            header {visibility: hidden;}
-            </style>
-            """
-st.markdown(hide_st_style, unsafe_allow_html=True)
+
+# --- NAVIGATION MENU ---
+selected = option_menu(
+    menu_title=None,
+    options=["Analysis", "Player Data"],
+    icons=["pencil-fill", "bar-chart-fill"],  # https://icons.getbootstrap.com/
+    orientation="horizontal",
+)
 
 
 st.title(f"Fantasy Football 2022/2023 Analysis")
