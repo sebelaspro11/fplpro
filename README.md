@@ -1,2 +1,2 @@
 # fplyzer
-Fantasy Premier League Anlayzer: [https//fplyzer.streamlit.app](url)
+Fantasy Premier League Anlayzer: https://fplyzer.streamlit.app/
