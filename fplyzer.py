@@ -33,7 +33,7 @@ st.title(f"Fantasy Football 2022/2023 Analysis")
 
 if selected == "Analysis":
     
-    df_player = pd.read_csv('data/fpl_data_update-20230518.csv')
+    df_player = pd.read_csv('fpl_data_update-20230518.csv')
     df_player.drop(['Unnamed: 0'], axis=1, inplace=True)
 
 
@@ -96,8 +96,8 @@ if selected == "Analysis":
 if selected == "Player Data":
     
 
-    df_history_2023 = pd.read_csv('data/all_history_2023_merge_df-20230518.csv')
-    df_fixtures_2023 = pd.read_csv('data/streamlit/fpl/all_fixtures_2023_merge_df-20230518.csv')
+    df_history_2023 = pd.read_csv('all_history_2023_merge_df-20230518.csv')
+    df_fixtures_2023 = pd.read_csv('streamlit/fpl/all_fixtures_2023_merge_df-20230518.csv')
     df_fixtures_2023 = df_fixtures_2023.sort_values(by='Gameweek')
 
     players_fixtures = list(df_fixtures_2023['Player Name'].drop_duplicates())
@@ -153,7 +153,7 @@ if selected == "Player Data":
     
 if selected == "Top Performer":
     
-    df_history_2023 = pd.read_csv('data/all_history_2023_merge_df-20230518.csv')
+    df_history_2023 = pd.read_csv('all_history_2023_merge_df-20230518.csv')
 
 
     df_history_2023['Last 3 Gameweek Goals'] = df_history_2023.groupby('Player Name')['Goals Scored'].rolling(window=3, min_periods=1).sum().reset_index(0, drop=True)
