@@ -192,7 +192,7 @@ if selected == "Top Performer":
     # Concatenate selected players into a final DataFrame
     selected_players = pd.concat([goalkeeper, defenders, midfielders, forwards])
     
-    st.markdown(f'## Last 3 Gameweeks Performance')
+    st.markdown(f'## Last 3 Gameweek Top Performer')
     #color_scale = alt.Scale(domain=[5, 4, 3, 2], range=['red', 'blue', 'yellow', 'green'])
     d = alt.Chart(selected_players).mark_bar().encode(
         x=alt.X('Player Name', sort=alt.EncodingSortField('Gameweek')),
