@@ -97,7 +97,7 @@ if selected == "Player Data":
     
 
     df_history_2023 = pd.read_csv('all_history_2023_merge_df-20230518.csv')
-    df_fixtures_2023 = pd.read_csv('streamlit/fpl/all_fixtures_2023_merge_df-20230518.csv')
+    df_fixtures_2023 = pd.read_csv('all_fixtures_2023_merge_df-20230518.csv')
     df_fixtures_2023 = df_fixtures_2023.sort_values(by='Gameweek')
 
     players_fixtures = list(df_fixtures_2023['Player Name'].drop_duplicates())
