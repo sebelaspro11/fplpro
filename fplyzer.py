@@ -3,6 +3,12 @@ import numpy as np
 import streamlit as st
 import altair as alt
 from streamlit_option_menu import option_menu
+import streamlit.components.v1 as components
+
+
+
+
+
 
 page_title = "Fantasy Football Analyzer"
 page_icon = ":bar_chart:"  # emojis: https://www.webfx.com/tools/emoji-cheat-sheet/
@@ -15,25 +21,14 @@ st.title(page_title + " " + page_icon)
 # --- NAVIGATION MENU ---
 selected = option_menu(
     menu_title=None,
-    options=["Analysis", "Player Data", "Top Performer"],
-    icons=["pencil-fill", "bar-chart-fill", "bar-chart-fill"],  # https://icons.getbootstrap.com/
+    options=["Analysis", "Points & Fixture", "In-Form & Differential Player", "Match Prediction"],
+    icons=["bi-magic", "bi-file-earmark-bar-graph-fill", "bi-capslock", "bi-bullseye"],  # https://icons.getbootstrap.com/
     orientation="horizontal",
 )
 
-hide_st_style = """
-            <style>
-            #MainMenu {visibility: hidden;}
-            footer {visibility: hidden;}
-            header {visibility: hidden;}
-            </style>
-            """
-st.markdown(hide_st_style, unsafe_allow_html=True)
-
-st.title(f"Fantasy Football 2022/2023 Analysis")
-
 if selected == "Analysis":
     
-    df_player = pd.read_csv('fpl_data_update-20230518.csv')
+    df_player = pd.read_csv('data/player_update-20230523.csv')
     df_player.drop(['Unnamed: 0'], axis=1, inplace=True)
 
 
@@ -66,7 +61,8 @@ if selected == "Analysis":
     st.dataframe(df_player.sort_values('Total Points',
                  ascending=False).reset_index(drop=True))
 
-    st.markdown('### Cost vs 22/23 Points')
+    st.markdown('### Cost vs 22/23 Season Points')
+    st.markdown('##### ***Identify Low Price Player With High Points Return***')
     st.vega_lite_chart(df_player, {
          'mark': {'type': 'circle', 'tooltip': True},
          'encoding': {
@@ -75,29 +71,33 @@ if selected == "Analysis":
              'color': {'field': 'Position', 'type': 'nominal'},
              'tooltip': [{"field": 'Player Name', 'type': 'nominal'}, {'field': 'Price', 'type': 'quantitative'}, {'field': 'Total Points', 'type': 'quantitative'}],
          },
-         'width': 700,
+         'width': 1000,
          'height': 400,
      })
 
     #This is our header
-    st.markdown('### Goals and Assists per 90')
+    st.markdown('### Goals per 90')
+    st.markdown('##### ***Player Total Goals, Assists and Points per 90 Minutes***')
     st.vega_lite_chart(df_player, {
      'mark': {'type': 'circle', 'tooltip': True},
      'encoding': {
          'x': {'field': 'Total Goals P90', 'type': 'quantitative'},
          'y': {'field': 'Total Assists P90', 'type': 'quantitative'},
          'color': {'field': 'Position', 'type': 'nominal'},
-         'tooltip': [{"field": 'Player Name', 'type': 'nominal'}, {'field': 'Price', 'type': 'quantitative'}, {'field': 'Total Points', 'type': 'quantitative'}],
+         'tooltip': [{"field": 'Player Name', 'type': 'nominal'}, {'field': 'Price', 'type': 'quantitative'}, {'field': 'Total Goals P90', 'type': 'quantitative'}, {'field': 'Total Assists P90', 'type': 'quantitative'}, {'field': 'Total Points P90', 'type': 'quantitative'}],
      },
-     'width': 700,
+     'width': 1000,
      'height': 400,
      })
 
-if selected == "Player Data":
+if selected == "Points & Fixture":
+    st.markdown('### Player Points Across 2022/2023 Season & Next Fixture Difficulty')
+    st.markdown('##### ***Select Multiple Players For Comparison***')
     
+    st.markdown('##### ***:arrow_backward: :arrow_backward: :arrow_backward: Select Player***')
 
-    df_history_2023 = pd.read_csv('all_history_2023_merge_df-20230518.csv')
-    df_fixtures_2023 = pd.read_csv('all_fixtures_2023_merge_df-20230518.csv')
+    df_history_2023 = pd.read_csv('data/history_update-20230523.csv')
+    df_fixtures_2023 = pd.read_csv('data/fixtures_update-20230523.csv')
     df_fixtures_2023 = df_fixtures_2023.sort_values(by='Gameweek')
 
     players_fixtures = list(df_fixtures_2023['Player Name'].drop_duplicates())
@@ -105,55 +105,62 @@ if selected == "Player Data":
 
     players = list(df_history_2023['Player Name'].drop_duplicates())
     players.sort()
-
+    
     # Add filter column 'Position'
     positions = list(df_history_2023['Position'].drop_duplicates())
     positions.sort()
     position_choice = st.sidebar.selectbox('Choose position:', positions)
-
-    # Filter players based on selected position
-    # Define the desired order of positions
-    position_order = ["Goalkeeper", "Defender", "Midfielder", "Forward"]
-
-    # Filter the position column based on the desired order
     position_filter = df_history_2023[df_history_2023['Position'] == position_choice]
-    position_filter = position_filter.loc[position_filter['Position'].isin(position_order), 'Player Name'].unique()
     position_filter = df_history_2023[df_history_2023['Position'] == position_choice]['Player Name'].unique()
 
-    # Select player from filtered players
-    player_choice = st.sidebar.multiselect('Choose player:', position_filter)
+    # Create a new DataFrame called teams_filter that contains the teams in the df_history_2023 DataFrame.
+    teams_filter = list(df_history_2023['Team'].drop_duplicates())
 
-    for i, player in enumerate(player_choice):
-        df_history_2023_player = df_history_2023[(df_history_2023['Player Name'] == player) & (df_history_2023['Position'] == position_choice)]
-            
+    # Use the st.sidebar.multiselect() function to create a multiselect box for teams_choice.
+    teams_choice = st.sidebar.multiselect('Choose team:', teams_filter)
+
+    # Create a new DataFrame called players_filter that contains the players who are on the selected teams and play the selected position.
+    players_filter = df_history_2023[(df_history_2023['Team'].isin(teams_choice)) & (df_history_2023['Position'] == position_choice)]
+
+    # Use the st.sidebar.multiselect() function to create a multiselect box for players_choice.
+    players_choice = st.sidebar.multiselect('Choose player:', players_filter['Player Name'].unique())
+
+    for i, player in enumerate(players_choice):
+        df_history_2023_player = df_history_2023[(df_history_2023['Player Name'] == player) & (df_history_2023['Position'] == position_choice) & (df_history_2023['Team'].isin(teams_choice))]
+
         col1, col2 = st.columns(2)
         with col1:
-            st.markdown(f'## {player} Season Performance')
+            st.markdown(f'### {player} Match Points')
             c = alt.Chart(df_history_2023_player).mark_bar().encode(
                 x='Opponent',
-                y=alt.Y('Gameweek Points'),  
+                y=alt.Y('Gameweek Points'),
                 color=alt.Color('Venue', scale=alt.Scale(domain=['Home', 'Away'], range=['red', 'blue'])),
                 tooltip=['Gameweek','Gameweek Points','Goals Scored', 'Assists', 'Bonus']
             )
             st.altair_chart(c, use_container_width=True, theme="streamlit")
 
-        df_fixtures_2023_player = df_fixtures_2023[df_fixtures_2023['Player Name'] == player]
+        df_fixtures_2023_player = df_fixtures_2023[(df_fixtures_2023['Player Name'] == player) &  (df_fixtures_2023['Team'].isin(teams_choice))]
+
         with col2:
-            st.markdown(f'## {player} Season Fixtures')
+            st.markdown(f'### {player} Next Fixtures')
             color_scale = alt.Scale(domain=[5, 4, 3, 2], range=['red', 'blue', 'yellow', 'green'])
+            y_limit = [0, 5]
             d = alt.Chart(df_fixtures_2023_player).mark_bar().encode(
                 x=alt.X('Opponent', sort=alt.EncodingSortField('Gameweek')),
-                y=alt.Y('Difficulty'),
+                y=alt.Y('Difficulty', axis=alt.Axis(format='d'), scale=alt.Scale(domain=y_limit)),
                 color=alt.Color('Difficulty', scale=color_scale),
                 tooltip=['Gameweek','Player Name', 'Opponent', 'Difficulty']
             ).interactive()
 
             st.altair_chart(d, use_container_width=True, theme="streamlit")
 
+        
+        
+if selected == "In-Form & Differential Player":
     
-if selected == "Top Performer":
+    st.markdown(f'### Top Performer Player Based On Last 3 Gameweeks')
     
-    df_history_2023 = pd.read_csv('all_history_2023_merge_df-20230518.csv')
+    df_history_2023 = pd.read_csv('data/history_update-20230523.csv')
 
 
     df_history_2023['Last 3 Gameweek Goals'] = df_history_2023.groupby('Player Name')['Goals Scored'].rolling(window=3, min_periods=1).sum().reset_index(0, drop=True)
@@ -176,29 +183,130 @@ if selected == "Top Performer":
     defenders = df1[df1['Position'] == 'Defender']
     midfielders = df1[df1['Position'] == 'Midfielder']
     forwards = df1[df1['Position'] == 'Forward']
-
+    
+    # Convert 'Selected By(%)' column to numeric data type
+    goalkeepers['Selected By(%)'] = pd.to_numeric(goalkeepers['Selected By(%)'], errors='coerce')
+    defenders['Selected By(%)'] = pd.to_numeric(defenders['Selected By(%)'], errors='coerce')
+    midfielders['Selected By(%)'] = pd.to_numeric(midfielders['Selected By(%)'], errors='coerce')
+    forwards['Selected By(%)'] = pd.to_numeric(forwards['Selected By(%)'], errors='coerce')
+    
+    
     # Sort players based on desired criteria
-    goalkeepers = goalkeepers.sort_values(['Last 3 Gameweek Points', 'Last 3 Gameweek Bonus Points', 'Last 3 Gameweek Saves', 'Last 3 Gameweek Clean Sheets', 'Last 3 Gameweek Conceded', 'Last 3 Gameweek xG Conceded' ], ascending=False)
-    defenders = defenders.sort_values(['Last 3 Gameweek Points', 'Last 3 Gameweek Bonus Points', 'Last 3 Gameweek Goals', 'Last 3 Gameweek Assists', 'Last 3 Gameweek xG', 'Last 3 Gameweek xA','Last 3 Gameweek Clean Sheets', 'Last 3 Gameweek xG Conceded'], ascending=False)
-    midfielders = midfielders.sort_values(['Last 3 Gameweek Points', 'Last 3 Gameweek Bonus Points', 'Last 3 Gameweek Goals', 'Last 3 Gameweek Assists', 'Last 3 Gameweek xG', 'Last 3 Gameweek xA'], ascending=False)
-    forwards = forwards.sort_values(['Last 3 Gameweek Points', 'Last 3 Gameweek Bonus Points', 'Last 3 Gameweek Goals', 'Last 3 Gameweek Assists', 'Last 3 Gameweek xG', 'Last 3 Gameweek xA'], ascending=False)
+    gk_top = goalkeepers[goalkeepers['Availability'] == 'a'].sort_values(['Last 3 Gameweek Points', 'Last 3 Gameweek Bonus Points', 'Last 3 Gameweek Clean Sheets', 'Last 3 Gameweek Saves', 'Last 3 Gameweek Conceded', 'Last 3 Gameweek xG Conceded'], ascending=[False, False, False, False, True, True])
+    def_top = defenders[defenders['Availability'] == 'a'].sort_values(['Last 3 Gameweek Points', 'Last 3 Gameweek Bonus Points', 'Last 3 Gameweek Goals', 'Last 3 Gameweek Assists', 'Last 3 Gameweek xG', 'Last 3 Gameweek xA','Last 3 Gameweek Clean Sheets', 'Last 3 Gameweek Conceded','Last 3 Gameweek xG Conceded'], ascending=[False, False, False, False, False, False, False, True, True])
+    mid_top = midfielders[midfielders['Availability'] == 'a'].sort_values(['Last 3 Gameweek Points', 'Last 3 Gameweek Bonus Points', 'Last 3 Gameweek Goals', 'Last 3 Gameweek Assists', 'Last 3 Gameweek xG', 'Last 3 Gameweek xA'], ascending=False)
+    fwd_top = forwards[forwards['Availability'] == 'a'].sort_values(['Last 3 Gameweek Points', 'Last 3 Gameweek Bonus Points', 'Last 3 Gameweek Goals', 'Last 3 Gameweek Assists', 'Last 3 Gameweek xG', 'Last 3 Gameweek xA'], ascending=False)
+    gk_diff = goalkeepers[(goalkeepers['Availability'] == 'a') & (goalkeepers['Selected By(%)'] < 10)].sort_values(['Last 3 Gameweek Points', 'Last 3 Gameweek Bonus Points', 'Last 3 Gameweek Clean Sheets', 'Last 3 Gameweek Saves', 'Last 3 Gameweek Conceded', 'Last 3 Gameweek xG Conceded'], ascending=[False, False, False, False, True, True])
+    def_diff = defenders[(defenders['Availability'] == 'a') & (defenders['Selected By(%)'] < 10)].sort_values(['Last 3 Gameweek Points', 'Last 3 Gameweek Bonus Points', 'Last 3 Gameweek Clean Sheets', 'Last 3 Gameweek Saves', 'Last 3 Gameweek Conceded', 'Last 3 Gameweek xG Conceded'], ascending=[False, False, False, False, True, True])
+    mid_diff = midfielders[(midfielders['Availability'] == 'a') & (midfielders['Selected By(%)'] < 10)].sort_values(['Last 3 Gameweek Points', 'Last 3 Gameweek Bonus Points', 'Last 3 Gameweek Clean Sheets', 'Last 3 Gameweek Saves', 'Last 3 Gameweek Conceded', 'Last 3 Gameweek xG Conceded'], ascending=[False, False, False, False, True, True])
+    fwd_diff = forwards[(forwards['Availability'] == 'a') & (forwards['Selected By(%)'] < 10)].sort_values(['Last 3 Gameweek Points', 'Last 3 Gameweek Bonus Points', 'Last 3 Gameweek Clean Sheets', 'Last 3 Gameweek Saves', 'Last 3 Gameweek Conceded', 'Last 3 Gameweek xG Conceded'], ascending=[False, False, False, False, True, True])
 
+    
+    max_goalkeeper_price = 5.0
+    max_defender_price = 5.0
+    max_midfielder_price = 6.0
+    max_forward_price = 6.5
+    
+    gk_price = goalkeepers[(goalkeepers['Availability'] == 'a') & (goalkeepers['Price'] < max_goalkeeper_price)].sort_values(['Last 3 Gameweek Points', 'Last 3 Gameweek Bonus Points', 'Last 3 Gameweek Clean Sheets', 'Last 3 Gameweek Saves', 'Last 3 Gameweek Conceded', 'Last 3 Gameweek xG Conceded'], ascending=[False, False, False, False, True, True])
+    def_price = defenders[(defenders['Availability'] == 'a') & (defenders['Price'] < max_defender_price)].sort_values(['Last 3 Gameweek Points', 'Last 3 Gameweek Bonus Points', 'Last 3 Gameweek Clean Sheets', 'Last 3 Gameweek Saves', 'Last 3 Gameweek Conceded', 'Last 3 Gameweek xG Conceded'], ascending=[False, False, False, False, True, True])
+    mid_price = midfielders[(midfielders['Availability'] == 'a') & (midfielders['Price'] < max_midfielder_price)].sort_values(['Last 3 Gameweek Points', 'Last 3 Gameweek Bonus Points', 'Last 3 Gameweek Clean Sheets', 'Last 3 Gameweek Saves', 'Last 3 Gameweek Conceded', 'Last 3 Gameweek xG Conceded'], ascending=[False, False, False, False, True, True])
+    fwd_price = forwards[(forwards['Availability'] == 'a') & (forwards['Price'] < max_forward_price)].sort_values(['Last 3 Gameweek Points', 'Last 3 Gameweek Bonus Points', 'Last 3 Gameweek Clean Sheets', 'Last 3 Gameweek Saves', 'Last 3 Gameweek Conceded', 'Last 3 Gameweek xG Conceded'], ascending=[False, False, False, False, True, True])
+    
     # Select top players for each position
-    goalkeeper = goalkeepers.head(2).drop_duplicates(subset=['Player Name'])
-    defenders = defenders.head(5).drop_duplicates(subset=['Player Name'])
-    midfielders = midfielders.head(5).drop_duplicates(subset=['Player Name'])
-    forwards = forwards.head(3).drop_duplicates(subset=['Player Name'])
+    gk_top = gk_top.head(5).drop_duplicates(subset=['Player Name'])
+    def_top = def_top.head(5).drop_duplicates(subset=['Player Name'])
+    mid_top = mid_top.head(5).drop_duplicates(subset=['Player Name'])
+    fwd_top = fwd_top.head(5).drop_duplicates(subset=['Player Name'])
+    gk_diff = gk_diff.head(2).drop_duplicates(subset=['Player Name'])
+    def_diff = def_diff.head(5).drop_duplicates(subset=['Player Name'])
+    mid_diff = mid_diff.head(5).drop_duplicates(subset=['Player Name'])
+    fwd_diff = fwd_diff.head(3).drop_duplicates(subset=['Player Name'])
+    gk_price = gk_price.head(2).drop_duplicates(subset=['Player Name'])
+    def_price = def_price.head(5).drop_duplicates(subset=['Player Name'])
+    mid_price = mid_price.head(5).drop_duplicates(subset=['Player Name'])
+    fwd_price = fwd_price.head(3).drop_duplicates(subset=['Player Name'])
 
     # Concatenate selected players into a final DataFrame
-    selected_players = pd.concat([goalkeeper, defenders, midfielders, forwards])
+    selected_players = pd.concat([gk_top, def_top, mid_top, fwd_top])
+    diff_players = pd.concat([gk_diff, def_diff, mid_diff, fwd_diff])
+    price_players = pd.concat([gk_price, def_price, mid_price, fwd_price])
+
     
-    st.markdown(f'## Last 3 Gameweek Top Performer')
-    #color_scale = alt.Scale(domain=[5, 4, 3, 2], range=['red', 'blue', 'yellow', 'green'])
-    d = alt.Chart(selected_players).mark_bar().encode(
+    st.markdown(f'##### ***Top 5 Player For Every Position***')
+    
+    # Create separate bar chart figures for each position
+    goalkeeper_chart = alt.Chart(gk_top).mark_bar().encode(
+        x=alt.X('Player Name', sort=alt.EncodingSortField('Gameweek')),
+        y=alt.Y('Last 3 Gameweek Points'),
+        color=alt.Color('Team'),
+        tooltip=['Last 3 Gameweek Points', 'Last 3 Gameweek Clean Sheets', 'Last 3 Gameweek Bonus Points', 'Last 3 Gameweek Saves', 'Last 3 Gameweek Conceded', 'Last 3 Gameweek xG Conceded']
+    ).interactive()
+
+    defender_chart = alt.Chart(def_top).mark_bar().encode(
+        x=alt.X('Player Name', sort=alt.EncodingSortField('Gameweek')),
+        y=alt.Y('Last 3 Gameweek Points'),
+        color=alt.Color('Team'),
+        tooltip=['Last 3 Gameweek Points', 'Last 3 Gameweek Goals', 'Last 3 Gameweek Bonus Points', 'Last 3 Gameweek Clean Sheets', 'Last 3 Gameweek xG', 'Last 3 Gameweek xA', 'Last 3 Gameweek Conceded', 'Last 3 Gameweek xG Conceded']
+    ).interactive()
+
+    midfielder_chart = alt.Chart(mid_top).mark_bar().encode(
+        x=alt.X('Player Name', sort=alt.EncodingSortField('Gameweek')),
+        y=alt.Y('Last 3 Gameweek Points'),
+        color=alt.Color('Team'),
+        tooltip=['Last 3 Gameweek Points', 'Last 3 Gameweek Goals', 'Last 3 Gameweek Bonus Points', 'Last 3 Gameweek xG', 'Last 3 Gameweek xA']
+    ).interactive()
+
+    forward_chart = alt.Chart(fwd_top).mark_bar().encode(
+        x=alt.X('Player Name', sort=alt.EncodingSortField('Gameweek')),
+        y=alt.Y('Last 3 Gameweek Points'),
+        color=alt.Color('Team'),
+        tooltip=['Last 3 Gameweek Points', 'Last 3 Gameweek Goals', 'Last 3 Gameweek Bonus Points', 'Last 3 Gameweek xG', 'Last 3 Gameweek xA']
+    ).interactive()
+    
+    diff_chart = alt.Chart(diff_players).mark_bar().encode(
         x=alt.X('Player Name', sort=alt.EncodingSortField('Gameweek')),
         y=alt.Y('Last 3 Gameweek Points'),
         color=alt.Color('Position'),
-        tooltip=['Last 3 Gameweek Goals', 'Last 3 Gameweek Bonus Points', 'Last 3 Gameweek Clean Sheets', 'Last 3 Gameweek xG', 'Last 3 Gameweek xA']
+        tooltip=['Selected By(%)','Last 3 Gameweek Points', 'Last 3 Gameweek Goals', 'Last 3 Gameweek Bonus Points', 'Last 3 Gameweek xG', 'Last 3 Gameweek xA']
+    ).interactive()
+    
+    price_chart = alt.Chart(price_players).mark_bar().encode(
+        x=alt.X('Player Name', sort=alt.EncodingSortField('Gameweek')),
+        y=alt.Y('Last 3 Gameweek Points'),
+        color=alt.Color('Position'),
+        tooltip=['Price','Last 3 Gameweek Points', 'Last 3 Gameweek Goals', 'Last 3 Gameweek Bonus Points', 'Last 3 Gameweek xG', 'Last 3 Gameweek xA']
     ).interactive()
 
-    st.altair_chart(d, use_container_width=True, theme="streamlit")
+    # Display the bar chart figures
+    st.markdown(f'##### ***Goalkeeper***')
+    st.altair_chart(goalkeeper_chart, use_container_width=True, theme="streamlit")
+    st.markdown(f'##### ***Defender***')
+    st.altair_chart(defender_chart, use_container_width=True, theme="streamlit")
+    st.markdown(f'##### ***Midfielder***')
+    st.altair_chart(midfielder_chart, use_container_width=True, theme="streamlit")
+    st.markdown(f'##### ***Forwards***')
+    st.altair_chart(forward_chart, use_container_width=True, theme="streamlit")
+    st.markdown(f'### Top Eleven In-Form Differential Players')
+    st.markdown(f'##### ***Top Performer Player For Last 3 Gameweeks With Selected By Lower Than 10%***')
+    st.markdown(f'##### ***Value of Selected By Subject To Change***')
+    
+    
+    st.altair_chart(diff_chart, use_container_width=True, theme="streamlit")
+    
+    st.markdown(f'### Top Eleven In-Form Budget Players')
+    st.markdown(f'##### ***Top Performer Player For Last 3 Gameweeks With Budget Price***')
+    st.markdown(f'##### ***:green[Goalkeeper < $5.0]***')
+    st.markdown(f'##### ***:green[Defender < $5.0]***')
+    st.markdown(f'##### ***:green[Midfielder < $6.0]***')
+    st.markdown(f'##### ***:green[Forward < $6.5]***')
+    st.altair_chart(price_chart, use_container_width=True, theme="streamlit")
+
+
+    
+if selected == "Match Prediction":
+    st.markdown(f'### Match Prediction from FiveThirtyEight.com')
+    st.markdown(f'##### ***Prediction For League Standings & Upcoming Matches***')
+    
+
+    # embed streamlit docs in a streamlit app
+    components.iframe("https://projects.fivethirtyeight.com/soccer-predictions/premier-league/", width=1500, height=2000, scrolling=True)
