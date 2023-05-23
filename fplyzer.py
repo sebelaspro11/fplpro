@@ -293,14 +293,14 @@ if selected == "In-Form & Differential Player":
     st.altair_chart(midfielder_chart, use_container_width=True, theme="streamlit")
     st.markdown(f'##### ***Forwards***')
     st.altair_chart(forward_chart, use_container_width=True, theme="streamlit")
-    st.markdown(f'### Top Eleven In-Form Differential Players')
+    st.markdown(f'### Top 15 In-Form Differential Players Based On Position')
     st.markdown(f'##### ***Top Performer Player For Last 3 Gameweeks With Selected By Lower Than 10%***')
     st.markdown(f'##### ***Value of Selected By Subject To Change***')
     
     
     st.altair_chart(diff_chart, use_container_width=True, theme="streamlit")
     
-    st.markdown(f'### Top Eleven In-Form Budget Players')
+    st.markdown(f'### Top 15 In-Form Budget Players Based On Position')
     st.markdown(f'##### ***Top Performer Player For Last 3 Gameweeks With Budget Price***')
     st.markdown(f'##### ***:green[Goalkeeper < $5.0]***')
     st.markdown(f'##### ***:green[Defender < $5.0]***')
