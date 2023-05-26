@@ -35,7 +35,7 @@ selected = option_menu(
 
 if selected == "Analysis":
     
-    df_player = pd.read_csv('data/player_update-20230523.csv')
+    df_player = pd.read_csv('data/player_update-20230526.csv')
     df_player.drop(['Unnamed: 0'], axis=1, inplace=True)
 
 
@@ -103,8 +103,8 @@ if selected == "Points & Fixture":
     
     st.markdown('##### ***:arrow_backward: :arrow_backward: :arrow_backward: Select Player***')
 
-    df_history_2023 = pd.read_csv('data/history_update-20230523.csv')
-    df_fixtures_2023 = pd.read_csv('data/fixtures_update-20230523.csv')
+    df_history_2023 = pd.read_csv('data/history_update-20230526.csv')
+    df_fixtures_2023 = pd.read_csv('data/fixtures_update-20230526.csv')
     df_fixtures_2023 = df_fixtures_2023.sort_values(by='Gameweek')
 
     players_fixtures = list(df_fixtures_2023['Player Name'].drop_duplicates())
@@ -167,7 +167,7 @@ if selected == "In-Form & Differential Player":
     
     st.markdown(f'### Top Performer Player Based On Last 3 Gameweeks')
     
-    df_history_2023 = pd.read_csv('data/history_update-20230523.csv')
+    df_history_2023 = pd.read_csv('data/history_update-20230526.csv')
 
 
     df_history_2023['Last 3 Gameweek Goals'] = df_history_2023.groupby('Player Name')['Goals Scored'].rolling(window=3, min_periods=1).sum().reset_index(0, drop=True)
@@ -274,14 +274,14 @@ if selected == "In-Form & Differential Player":
         x=alt.X('Player Name', sort=alt.EncodingSortField('Gameweek')),
         y=alt.Y('Last 3 Gameweek Points'),
         color=alt.Color('Position'),
-        tooltip=['Selected By(%)','Last 3 Gameweek Points', 'Last 3 Gameweek Goals', 'Last 3 Gameweek Bonus Points', 'Last 3 Gameweek xG', 'Last 3 Gameweek xA']
+        tooltip=['Team','Selected By(%)','Last 3 Gameweek Points', 'Last 3 Gameweek Goals', 'Last 3 Gameweek Bonus Points', 'Last 3 Gameweek xG', 'Last 3 Gameweek xA']
     ).interactive()
     
     price_chart = alt.Chart(price_players).mark_bar().encode(
         x=alt.X('Player Name', sort=alt.EncodingSortField('Gameweek')),
         y=alt.Y('Last 3 Gameweek Points'),
         color=alt.Color('Position'),
-        tooltip=['Price','Last 3 Gameweek Points', 'Last 3 Gameweek Goals', 'Last 3 Gameweek Bonus Points', 'Last 3 Gameweek xG', 'Last 3 Gameweek xA']
+        tooltip=['Team','Price','Last 3 Gameweek Points', 'Last 3 Gameweek Goals', 'Last 3 Gameweek Bonus Points', 'Last 3 Gameweek xG', 'Last 3 Gameweek xA']
     ).interactive()
 
     # Display the bar chart figures
@@ -293,14 +293,14 @@ if selected == "In-Form & Differential Player":
     st.altair_chart(midfielder_chart, use_container_width=True, theme="streamlit")
     st.markdown(f'##### ***Forwards***')
     st.altair_chart(forward_chart, use_container_width=True, theme="streamlit")
-    st.markdown(f'### Top 15 In-Form Differential Players Based On Position')
+    st.markdown(f'### In-Form Differential Players Based On Position')
     st.markdown(f'##### ***Top Performer Player For Last 3 Gameweeks With Selected By Lower Than 10%***')
     st.markdown(f'##### ***Value of Selected By Subject To Change***')
     
     
     st.altair_chart(diff_chart, use_container_width=True, theme="streamlit")
     
-    st.markdown(f'### Top 15 In-Form Budget Players Based On Position')
+    st.markdown(f'### In-Form Budget Players Based On Position')
     st.markdown(f'##### ***Top Performer Player For Last 3 Gameweeks With Budget Price***')
     st.markdown(f'##### ***:green[Goalkeeper < $5.0]***')
     st.markdown(f'##### ***:green[Defender < $5.0]***')
