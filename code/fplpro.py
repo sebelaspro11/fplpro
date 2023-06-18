@@ -4,7 +4,7 @@ import streamlit as st
 import altair as alt
 from streamlit_option_menu import option_menu
 import streamlit.components.v1 as components
-from pymongo.mongo_client import MongoClient
+#from pymongo.mongo_client import MongoClient
 import pymongo
 import configparser
 from pymongo import MongoClient
