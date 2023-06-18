@@ -28,7 +28,7 @@ st.markdown(hide_st_style, unsafe_allow_html=True)
 # --- NAVIGATION MENU ---
 selected = option_menu(
     menu_title=None,
-    options=["Analysis", "Points & Fixture", "In-Form & Differential Player", "Match Prediction"],
+    options=["Analysis", "Points &&&", "In-Form & Differential Player", "Match Prediction"],
     icons=["bi-magic", "bi-file-earmark-bar-graph-fill", "bi-capslock", "bi-bullseye"],  # https://icons.getbootstrap.com/
     orientation="horizontal",
 )
