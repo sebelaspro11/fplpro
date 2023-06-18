@@ -169,7 +169,7 @@ if selected == "Points & Fixture":
 
     # Fetch history and fixtures data
     df_history_2023 = fetch_data_history(collection_details)
-    df_fixtures_2023 = pd.read_csv('../data/fixtures_update-20230526.csv')
+    df_fixtures_2023 = pd.read_csv('/data/fixtures_update-20230526.csv')
     df_fixtures_2023 = df_fixtures_2023.sort_values(by='Gameweek')
 
     # Sidebar filters
