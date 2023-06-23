@@ -21,14 +21,14 @@ st.set_page_config(page_title=page_title, page_icon=page_icon, layout=layout)
 st.title(page_title + " " + page_icon)
 
 
-# hide_st_style = """
-#             <style>
-#             #MainMenu {visibility: hidden;}
-#             footer {visibility: hidden;}
-#             header {visibility: hidden;}
-#             </style>
-#             """
-# st.markdown(hide_st_style, unsafe_allow_html=True)
+hide_st_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            header {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_st_style, unsafe_allow_html=True)
 # --- NAVIGATION MENU ---
 selected = option_menu(
     menu_title=None,
@@ -678,7 +678,7 @@ if selected == "Manager Details":
         st.write("Last Name:", manager_df['Last Name'].values[0])
         st.write("Registered Time:", manager_df['Registered Time'].values[0])
         st.write("League Entered:", manager_df['League Entered'].values[0])
-        st.write("Current Points:", manager_df['Current Points'].values[0])
+        st.write("Current Points:", manager_df['Gameweek Points'].values[0])
         st.write("Total Points:", manager_df['Total Points'].values[0])
         st.write("Current Rank:", manager_df['Gameweek Rank'].values[0])
         st.write("Last Rank:", manager_df['Last Rank'].values[0])
