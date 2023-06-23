@@ -8,6 +8,7 @@ from pymongo.mongo_client import MongoClient
 import pymongo
 import configparser
 from pymongo import MongoClient
+import requests
 
 
 
@@ -20,19 +21,19 @@ st.set_page_config(page_title=page_title, page_icon=page_icon, layout=layout)
 st.title(page_title + " " + page_icon)
 
 
-hide_st_style = """
-            <style>
-            #MainMenu {visibility: hidden;}
-            footer {visibility: hidden;}
-            header {visibility: hidden;}
-            </style>
-            """
-st.markdown(hide_st_style, unsafe_allow_html=True)
+# hide_st_style = """
+#             <style>
+#             #MainMenu {visibility: hidden;}
+#             footer {visibility: hidden;}
+#             header {visibility: hidden;}
+#             </style>
+#             """
+# st.markdown(hide_st_style, unsafe_allow_html=True)
 # --- NAVIGATION MENU ---
 selected = option_menu(
     menu_title=None,
-    options=["Analysis", "Points & Fixture", "In-Form & Differential Player", "Match Prediction"],
-    icons=["bi-magic", "bi-file-earmark-bar-graph-fill", "bi-capslock", "bi-bullseye"],  # https://icons.getbootstrap.com/
+    options=["Analysis", "Points & Fixture", "In-Form & Differential Player", "History", "Manager Details", "Match Prediction"],
+    icons=["bi-magic", "bi-file-earmark-bar-graph-fill", "bi-capslock", "bi-bullseye", "bi-bullseye", "bi-bullseye"], # https://icons.getbootstrap.com/
     orientation="horizontal",
 )
 
@@ -82,6 +83,7 @@ if selected == "Analysis":
     # Access the collections
     collection_player = db["player"]
 
+
     @st.cache_resource
     def fetch_data_player(_collect):
         # Fetch the data from the collection
@@ -89,6 +91,13 @@ if selected == "Analysis":
 
     # Fetch the player data
     df_player = fetch_data_player(collection_player)
+    
+  
+
+
+    st.markdown('### Player Points Across 2022/2023 Season & Next Fixture Difficulty')
+    st.markdown('##### ***Select Multiple Players For Comparison***')
+
 
     # Calculate additional columns
     df_player['90s'] = df_player['Minutes Played'] / 90
@@ -109,6 +118,84 @@ if selected == "Analysis":
     st.markdown('### Player Overall Data', unsafe_allow_html=True)
     st.dataframe(df_filtered_player.sort_values('Total Points', ascending=False).reset_index(drop=True))
 
+    st.markdown('### Points')
+    st.vega_lite_chart(df_filtered_player.sort_values('Total Points', ascending=False).reset_index(drop=True).head(5), {
+         'mark': {'type': 'bar', 'tooltip': True},
+         'encoding': {
+             'x': {'field': 'Total Points', 'type': 'quantitative'},
+             'y': {'field': 'Player Name', 'type': 'nominal', 'sort': '-y'},
+             'color': {'field': 'Position', 'type': 'nominal'},
+             'tooltip': [{"field": 'Player Name', 'type': 'nominal'}, {'field': 'Price', 'type': 'quantitative'}, {'field': 'Total Points', 'type': 'quantitative'}],
+         },
+         'width': 800,
+         'height': 400,
+     })
+    
+    
+    #     # Filtered dataframe for Goals
+    # df_goals = df_filtered_player.sort_values('Total Goals', ascending=False).reset_index(drop=True)
+    # top_players_goals = df_goals.head(5)
+
+    # # Check if there are fewer than 5 players with goals
+    # num_players_goals = len(df_goals)
+    # if num_players_goals < 5:
+    #     top_players_goals = df_goals
+
+    # # Goals chart
+    # st.markdown('### Goals')
+    # st.vega_lite_chart(top_players_goals, {
+    #     'mark': {'type': 'bar', 'tooltip': True},
+    #     'encoding': {
+    #         'x': {'field': 'Total Goals', 'type': 'quantitative'},
+    #         'y': {'field': 'Player Name', 'type': 'nominal', 'sort': '-y'},
+    #         'color': {'field': 'Position', 'type': 'nominal'},
+    #         'tooltip': [{"field": 'Player Name', 'type': 'nominal'}, {'field': 'Price', 'type': 'quantitative'}, {'field': 'Total Points', 'type': 'quantitative'}],
+    #     },
+    #     'width': 800,
+    #     'height': 400,
+    # })    
+    #Cost vs 22/23 Season Points chart
+    st.markdown('### Goals')
+    st.vega_lite_chart(df_filtered_player.sort_values('Total Goals', ascending=False).reset_index(drop=True).head(5), {
+         'mark': {'type': 'bar', 'tooltip': True},
+         'encoding': {
+             'x': {'field': 'Total Goals', 'type': 'quantitative'},
+             'y': {'field': 'Player Name', 'type': 'nominal', 'sort': '-y'},
+             'color': {'field': 'Position', 'type': 'nominal'},
+             'tooltip': [{"field": 'Player Name', 'type': 'nominal'}, {'field': 'Price', 'type': 'quantitative'}, {'field': 'Total Points', 'type': 'quantitative'}],
+         },
+         'width': 800,
+         'height': 400,
+     })
+    
+    st.markdown('### Assists')
+    st.vega_lite_chart(df_filtered_player.sort_values('Total Assists', ascending=False).reset_index(drop=True).head(5), {
+         'mark': {'type': 'bar', 'tooltip': True},
+         'encoding': {
+             'x': {'field': 'Total Assists', 'type': 'quantitative'},
+             'y': {'field': 'Player Name', 'type': 'nominal', 'sort': '-y'},
+             'color': {'field': 'Position', 'type': 'nominal'},
+             'tooltip': [{"field": 'Player Name', 'type': 'nominal'}, {'field': 'Price', 'type': 'quantitative'}, {'field': 'Total Points', 'type': 'quantitative'}],
+         },
+         'width': 800,
+         'height': 400,
+     })
+    
+    st.markdown('### Bonus')
+    st.vega_lite_chart(df_filtered_player.sort_values('Total Bonus', ascending=False).reset_index(drop=True).head(5), {
+         'mark': {'type': 'bar', 'tooltip': True},
+         'encoding': {
+             'x': {'field': 'Total Bonus', 'type': 'quantitative'},
+             'y': {'field': 'Player Name', 'type': 'nominal', 'sort': '-y'},
+             'color': {'field': 'Position', 'type': 'nominal'},
+             'tooltip': [{"field": 'Player Name', 'type': 'nominal'}, {'field': 'Price', 'type': 'quantitative'}, {'field': 'Total Points', 'type': 'quantitative'}],
+         },
+         'width': 800,
+         'height': 400,
+     })
+    
+
+    
     # Cost vs 22/23 Season Points chart
     st.markdown('### Cost vs 22/23 Season Points')
     st.markdown('##### ***Identify Low Price Player With High Points Return***')
@@ -139,10 +226,10 @@ if selected == "Analysis":
      'height': 400,
     })
   
+    
 
 if selected == "Points & Fixture":
-    st.markdown('### Player Points Across 2022/2023 Season & Next Fixture Difficulty')
-    st.markdown('##### ***Select Multiple Players For Comparison***')
+    
 
     # Fetch data using cache
     @st.cache_resource
@@ -167,9 +254,12 @@ if selected == "Points & Fixture":
         # Fetch the data from the collection
         return pd.DataFrame(list(_collect.find({}, {"_id": 0})))
 
+
+    st.markdown('### Player Points Across 2022/2023 Season & Next Fixture Difficulty')
+    st.markdown('##### ***Select Multiple Players For Comparison***')
     # Fetch history and fixtures data
     df_history_2023 = fetch_data_history(collection_details)
-    df_fixtures_2023 = pd.read_csv('../data/fixtures_update-20230526.csv')
+    df_fixtures_2023 = pd.read_csv('C:/Users/Acer/OneDrive/Documents/GitHub/FPLApp/fplyzer/data/fixtures_update-20230526.csv')
     df_fixtures_2023 = df_fixtures_2023.sort_values(by='Gameweek')
 
     # Sidebar filters
@@ -204,7 +294,7 @@ if selected == "Points & Fixture":
             color_scale = alt.Scale(domain=[2, 3, 4, 5], range=['green', 'blue', 'yellow', 'red'])
             y_limit = [0, 5]
             d = alt.Chart(df_fixtures_2023_player).mark_square(stroke=None, size=200).encode(
-                x=alt.X('Opponent:N', sort=alt.EncodingSortField('Gameweek')),
+                x=alt.X('Opponent:N', sort=alt.EncodingSortField('Gameweek'), axis=alt.Axis(labelAngle=0)),
                 y=alt.Y('Difficulty:Q', axis=alt.Axis(format='d'), scale=alt.Scale(domain=y_limit)),
                 color=alt.Color('Difficulty:Q', scale=color_scale),
                 tooltip=['Venue:N','Gameweek:N', 'Player Name:N', 'Opponent:N', 'Difficulty:Q']
@@ -358,7 +448,7 @@ if selected == "In-Form & Differential Player":
 
     # Create the bar chart
     goalkeeper_chart = alt.Chart(gk_top).mark_bar().encode(
-        x=alt.X('Player Name', sort=alt.EncodingSortField('Gameweek')),
+        x=alt.X('Player Name', sort=alt.EncodingSortField('Gameweek'), axis=alt.Axis(labelAngle=0)),
         y=alt.Y('Last 3 GW Points'),
         fill=alt.Fill('Team:N', scale=alt.Scale(domain=list(team_colors_gk_top.keys()), range=list(team_colors_gk_top.values()))),
         tooltip=[
@@ -370,7 +460,7 @@ if selected == "In-Form & Differential Player":
             'Last 3 GW xG Conceded',
             'Total Yellow Cards'
         ]
-    ).interactive()
+    ).configure_axis(grid=False)
 
 
 
@@ -378,96 +468,99 @@ if selected == "In-Form & Differential Player":
 
 
     defender_chart = alt.Chart(def_top).mark_bar().encode(
-        x=alt.X('Player Name', sort=alt.EncodingSortField('Gameweek')),
+        x=alt.X('Player Name', sort=alt.EncodingSortField('Gameweek'), axis=alt.Axis(labelAngle=0)),
         y=alt.Y('Last 3 GW Points'),
         #color=alt.Color('Team'),
         #color=alt.Color('Team:N', scale=color_scale, condition=alt.condition('datum.Total Yellow Cards == 4', alt.value('red'))),
         color=alt.Color('Team:N', scale=alt.Scale(domain=list(team_colors_def_top.keys()), range=list(team_colors_def_top.values()))),
         tooltip=['Last 3 GW Points', 'Last 3 GW Goals', 'Last 3 GW Bonus Points', 'Last 3 GW Clean Sheets', 'Last 3 GW xG', 'Last 3 GW xA', 'Last 3 GW Conceded', 'Last 3 GW xG Conceded', 'Total Yellow Cards']
-    ).interactive()
+    ).configure_axis(grid=False)
 
     color_scale = alt.Scale(domain=[4], range=['red'])
 
     midfielder_chart = alt.Chart(mid_top).mark_bar().encode(
-        x=alt.X('Player Name', sort=alt.EncodingSortField('Gameweek')),
+        x=alt.X('Player Name', sort=alt.EncodingSortField('Gameweek'), axis=alt.Axis(labelAngle=0)),
         y=alt.Y('Last 3 GW Points'),
         fill=alt.Fill('Team:N', scale=alt.Scale(domain=list(team_colors_mid_top.keys()), range=list(team_colors_mid_top.values()))),
         tooltip=['Last 3 GW Points', 'Last 3 GW Goals', 'Last 3 GW Bonus Points', 'Last 3 GW xG', 'Last 3 GW xA', 'Total Yellow Cards']
-    ).interactive()
+    ).configure_axis(grid=False)
 
 
     forward_chart = alt.Chart(fwd_top).mark_bar().encode(
-        x=alt.X('Player Name', sort=alt.EncodingSortField('Gameweek')),
+        x=alt.X('Player Name', sort=alt.EncodingSortField('Gameweek'), axis=alt.Axis(labelAngle=0)),
         y=alt.Y('Last 3 GW Points'),
         #color=alt.Color('Team'),
         fill=alt.Fill('Team:N', scale=alt.Scale(domain=list(team_colors_fwd_top.keys()), range=list(team_colors_fwd_top.values()))),
         tooltip=['Last 3 GW Points', 'Last 3 GW Goals', 'Last 3 GW Bonus Points', 'Last 3 GW xG', 'Last 3 GW xA', 'Total Yellow Cards']
-    ).interactive()
+    ).configure_axis(grid=False)
     
     diff_chart = alt.Chart(diff_players).mark_bar().encode(
-        x=alt.X('Player Name', sort=alt.EncodingSortField('Gameweek')),
+        x=alt.X('Player Name', sort=alt.EncodingSortField('Gameweek'), axis=alt.Axis(labelAngle=0)),
         y=alt.Y('Last 3 GW Points'),
         color=alt.Color('Position'),
         tooltip=['Selected By(%)','Last 3 GW Points', 'Last 3 GW Goals', 'Last 3 GW Bonus Points', 'Last 3 GW xG', 'Last 3 GW xA', 'Total Yellow Cards']
-    ).interactive()
+    ).configure_axis(grid=False).configure_axis(grid=False)
     
     price_chart = alt.Chart(price_players).mark_bar().encode(
-        x=alt.X('Player Name', sort=alt.EncodingSortField('Gameweek')),
+        x=alt.X('Player Name', sort=alt.EncodingSortField('Gameweek'), axis=alt.Axis(labelAngle=0)),
         y=alt.Y('Last 3 GW Points'),
         color=alt.Color('Position'),
         tooltip=['Price','Last 3 GW Points', 'Last 3 GW Goals', 'Last 3 GW Bonus Points', 'Last 3 GW xG', 'Last 3 GW xA', 'Total Yellow Cards']
-    ).interactive()
-    
-   # Filter the DataFrame to select the top 10 players with the most yellow cards
-   
-    # Filter the DataFrame to select the top 10 players with the most yellow cards
+    ).configure_axis(grid=False)
+       
+       
+        # Filter the DataFrame to select the top 10 players with the most yellow cards
     top_10_yellow_cards = df_history_2023.sort_values('Total Yellow Cards', ascending=False)
     top_10_yellow_cards = top_10_yellow_cards.drop_duplicates(subset=['Player Name']).head(10)
 
     # Create the altair chart
     yc_chart = alt.Chart(top_10_yellow_cards).mark_bar().encode(
-        x=alt.X('Player Name', sort=alt.EncodingSortField('Total Yellow Cards:Q')),
-        y=alt.Y('Total Yellow Cards'),
+        y=alt.Y('Player Name', sort=alt.EncodingSortField('Total Yellow Cards:Q'), axis=alt.Axis(labelAngle=0)),
+        x=alt.X('Total Yellow Cards'),
         color=alt.Color('Position'),
         tooltip=['Player Name', 'Total Yellow Cards']
     ).properties(
         width=500,
-        height=300)
+        height=300).configure_axis(grid=False)
     
     
     # Define the specific total yellow card values
-    target_yellow_cards = [4, 9, 14, 19]
+    total_yellow_cards = [4, 9, 14, 19]
 
     # Filter the DataFrame to select players with the desired total yellow card values
-    filtered_yellow_cards = df_history_2023[df_history_2023['Total Yellow Cards'].isin(target_yellow_cards)]
+    warn_yellow_cards = df_history_2023[df_history_2023['Total Yellow Cards'].isin(total_yellow_cards)]
 
-    filtered_yellow_cards = filtered_yellow_cards.sort_values('Total Yellow Cards', ascending=False)
-    filtered_yellow_cards = filtered_yellow_cards.drop_duplicates(subset=['Player Name']).head(10)
+    warn_yellow_cards = warn_yellow_cards.sort_values('Total Yellow Cards', ascending=False)
+    warn_yellow_cards = warn_yellow_cards.drop_duplicates(subset=['Player Name']).head(10)
     
     
-    yc_warn_chart = alt.Chart(filtered_yellow_cards).mark_bar().encode(
-        x=alt.X('Player Name', sort=alt.EncodingSortField('Total Yellow Cards:Q')),
-        y=alt.Y('Total Yellow Cards'),
+    yc_warn_chart = alt.Chart(warn_yellow_cards).mark_bar().encode(
+        x=alt.X('Total Yellow Cards'),
+        y=alt.Y('Player Name', sort=alt.EncodingSortField('Total Yellow Cards:Q'), axis=alt.Axis(labelAngle=0)),
         color=alt.Color('Position'),
         tooltip=['Player Name', 'Total Yellow Cards']
     ).properties(
         width=500,
-        height=300)
+        height=300).configure_axis(grid=False)
 
     
     top_10_red_cards = df_history_2023.sort_values('Total Red Cards', ascending=False)
     top_10_red_cards = top_10_red_cards.drop_duplicates(subset=['Player Name']).head(10)
-    
+    top_10_red_cards['Total Red Cards'] = pd.to_numeric(top_10_red_cards['Total Red Cards'])
+
     # Create the altair chart
     rc_chart = alt.Chart(top_10_red_cards).mark_bar().encode(
-        x=alt.X('Player Name', sort=alt.EncodingSortField('Total Red Cards:Q')),
-        y=alt.Y('Total Red Cards'),
+        x=alt.X('Total Red Cards:Q'),
+        y=alt.Y('Player Name', sort=alt.EncodingSortField('Total Red Cards:Q'), axis=alt.Axis(labelAngle=0)),
         color=alt.Color('Position'),
-        tooltip=['Player Name', 'Total Red Cards']
+        tooltip=['Player Name', 'Total Red Cards'],
+        #order=alt.Order("Total Red Cards", sort="ascending"),
     ).properties(
         width=500,
-        height=300)
+    ).configure_axis(grid=False)
+
     
+
     
     # Display the bar chart figures
     st.markdown(f'##### ***Goalkeeper***')
@@ -493,19 +586,111 @@ if selected == "In-Form & Differential Player":
     st.markdown(f'##### ***:green[Forward < $6.5]***')
     st.altair_chart(price_chart, use_container_width=True, theme="streamlit")
     
+    st.markdown(f'### Yellow Cards Record')
     st.altair_chart(yc_chart, use_container_width=True, theme="streamlit")
+    st.markdown(f'### Suspension Warning')
     st.altair_chart(yc_warn_chart, use_container_width=True, theme="streamlit")
-
+    st.markdown(f'### Red Cards Record')
     st.altair_chart(rc_chart, use_container_width=True, theme="streamlit")
 
 
-
     
+if selected == "History":
+    @st.cache_resource
+    def init_connection():
+        # Read the secrets file
+        secrets = st.secrets["mongo"]
 
+    # Create the MongoDB client
+        client = MongoClient(secrets["host"], username=secrets["username"], password=secrets["password"])
+        return client
+
+    # Initialize the connection
+    client = init_connection()
+
+    # Access the 'Fplapp' database
+    db = client["Fplapp"]
+
+    # Access the collections
+    collection_history = db["history"]
+    
+    
+    
+    @st.cache_resource
+    def fetch_data_past_history(_collect):
+    # Fetch the data from the collection
+        return pd.DataFrame(list(_collect.find({}, {"_id": 0})))
+
+    df_past_history_2023 = fetch_data_past_history(collection_history)
+    
+    
+    
+    # Sidebar filters
+    season_hist = st.sidebar.multiselect("Seasons:", list(df_past_history_2023['Seasons'].drop_duplicates()), default=list(df_past_history_2023['Seasons'].drop_duplicates()))
+    player_hist = st.sidebar.multiselect("Player Name:", df_past_history_2023[df_past_history_2023['Seasons'].isin(season_hist)]['Player Name'].drop_duplicates().tolist())
+    # Apply filters to the player data
+    df_hist_player_filter = df_past_history_2023[df_past_history_2023['Seasons'].isin(season_hist) & df_past_history_2023['Player Name'].isin(player_hist)]
+    
+    st.dataframe(df_hist_player_filter.sort_values('Seasons', ascending=False).reset_index(drop=True))
+    st.data_editor(
+    df_hist_player_filter,
+    column_config={
+        "Seasons": st.column_config.TextColumn(
+            "Seasons",
+            help="Seasons Played",
+            default="st.",
+            max_chars=50,
+            validate="^st\.[a-z_]+$",
+        )
+    },
+    hide_index=True,
+)
+
+if selected == "Manager Details":
+
+    manager_id = st.text_input("Enter manager ID:")
+    if manager_id:
+        url = 'https://fantasy.premierleague.com/api/entry//' + manager_id
+        r = requests.get(url)
+        json = r.json()
+        manager_df = pd.DataFrame(json)
+        manager_df = manager_df.iloc[[0, 3], :]
+        manager_df['All Leagues'] = manager_df['leagues'].apply(lambda x: ', '.join([item['name'] for item in x]))
+        manager_df = manager_df[['joined_time', 'player_first_name', 'player_last_name', 'player_region_iso_code_short', 'summary_overall_points', 'summary_overall_rank', 'summary_event_rank','summary_event_points', 'All Leagues', 'current_event' ]]
+
+        # Rename the columns using the rename() method
+        new_names = {
+            "player_first_name" : "First Name",
+            "player_last_name" : "Last Name",
+            "player_region_iso_code_short" : "Country Code",
+            "joined_time" : "Registered Time",
+            "summary_event_points" : "Current Points",
+            "summary_overall_points" : "Total Points",
+            "summary_event_rank" : "Gameweek Rank",
+            "summary_overall_rank" : "Last Rank",
+            "All Leagues" : "League Entered",
+            "current_event" : "Gameweek"
+        }
+        manager_df = manager_df.rename(columns=new_names)
+
+        # Display First Name and Last Name
+        st.write("First Name:", manager_df['First Name'].values[0])
+        st.write("Last Name:", manager_df['Last Name'].values[0])
+        st.write("Registered Time:", manager_df['Registered Time'].values[0])
+        st.write("League Entered:", manager_df['League Entered'].values[0])
+        st.write("Current Points:", manager_df['Current Points'].values[0])
+        st.write("Total Points:", manager_df['Total Points'].values[0])
+        st.write("Current Rank:", manager_df['Gameweek Rank'].values[0])
+        st.write("Last Rank:", manager_df['Last Rank'].values[0])
+        st.write("Gameweek:", manager_df['Gameweek'].values[0])
+    
+    
+    
 if selected == "Match Prediction":
     st.markdown(f'### Match Prediction from FiveThirtyEight.com')
     st.markdown(f'##### ***Prediction For League Standings & Upcoming Matches***')
-    
+    with st.echo():
+        st.write(f"streamlit version: {st.__version__}")
 
     # embed streamlit docs in a streamlit app
     components.iframe("https://projects.fivethirtyeight.com/soccer-predictions/premier-league/", width=1500, height=2000, scrolling=True)
