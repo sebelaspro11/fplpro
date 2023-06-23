@@ -259,7 +259,7 @@ if selected == "Points & Fixture":
     st.markdown('##### ***Select Multiple Players For Comparison***')
     # Fetch history and fixtures data
     df_history_2023 = fetch_data_history(collection_details)
-    df_fixtures_2023 = pd.read_csv('C:/Users/Acer/OneDrive/Documents/GitHub/FPLApp/fplyzer/data/fixtures_update-20230526.csv')
+    df_fixtures_2023 = pd.read_csv('./data/fixtures_update-20230526.csv')
     df_fixtures_2023 = df_fixtures_2023.sort_values(by='Gameweek')
 
     # Sidebar filters
