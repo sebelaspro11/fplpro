@@ -678,9 +678,9 @@ if selected == "Manager Details":
         st.write("Last Name:", manager_df['Last Name'].values[0])
         st.write("Registered Time:", manager_df['Registered Time'].values[0])
         st.write("League Entered:", manager_df['League Entered'].values[0])
-        st.write("Current Points:", manager_df['Gameweek Points'].values[0])
+        st.write("Gameweek Points:", manager_df['Gameweek Points'].values[0])
         st.write("Total Points:", manager_df['Total Points'].values[0])
-        st.write("Current Rank:", manager_df['Gameweek Rank'].values[0])
+        st.write("Gameweek Rank:", manager_df['Gameweek Rank'].values[0])
         st.write("Last Rank:", manager_df['Last Rank'].values[0])
         st.write("Gameweek:", manager_df['Gameweek'].values[0])
     
