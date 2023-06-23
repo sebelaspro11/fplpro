@@ -664,7 +664,7 @@ if selected == "Manager Details":
             "player_last_name" : "Last Name",
             "player_region_iso_code_short" : "Country Code",
             "joined_time" : "Registered Time",
-            "summary_event_points" : "Current Points",
+            "summary_event_points" : "Gameweek Points",
             "summary_overall_points" : "Total Points",
             "summary_event_rank" : "Gameweek Rank",
             "summary_overall_rank" : "Last Rank",
