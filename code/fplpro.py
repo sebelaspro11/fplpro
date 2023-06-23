@@ -559,39 +559,89 @@ if selected == "In-Form & Differential Player":
         width=500,
     ).configure_axis(grid=False)
 
-    
+    # Create a multi-select widget to select the charts
+    selected_charts = st.multiselect("Select Charts", ["Goalkeeper Chart", "Defender Chart", "Midfielder Chart", "Forward Chart", "Budget Player Chart", "Differential Player Chart",  "Yellow Cards Chart", "Suspension Warning Chart", "Red Cards Chart"])
 
+    # Check if the Goalkeeper Chart is selected
+    if "Goalkeeper Chart" in selected_charts:
+        st.markdown(f'##### ***Goalkeeper***')
+        st.altair_chart(goalkeeper_chart, use_container_width=True, theme="streamlit")
+
+    # Check if the Defender Chart is selected
+    if "Defender Chart" in selected_charts:
+        st.markdown(f'##### ***Defender***')
+        st.altair_chart(defender_chart, use_container_width=True, theme="streamlit")
+
+    # Check if the Midfielder Chart is selected
+    if "Midfielder Chart" in selected_charts:
+        st.markdown(f'##### ***Midfielder***')
+        st.altair_chart(midfielder_chart, use_container_width=True, theme="streamlit")
+
+    # Check if the Forward Chart is selected
+    if "Forward Chart" in selected_charts:
+        st.markdown(f'##### ***Forwards***')
+        st.altair_chart(forward_chart, use_container_width=True, theme="streamlit")
     
-    # Display the bar chart figures
-    st.markdown(f'##### ***Goalkeeper***')
-    st.altair_chart(goalkeeper_chart, use_container_width=True, theme="streamlit")
-    st.markdown(f'##### ***Defender***')
-    st.altair_chart(defender_chart, use_container_width=True, theme="streamlit")
-    st.markdown(f'##### ***Midfielder***')
-    st.altair_chart(midfielder_chart, use_container_width=True, theme="streamlit")
-    st.markdown(f'##### ***Forwards***')
-    st.altair_chart(forward_chart, use_container_width=True, theme="streamlit")
-    st.markdown(f'### Top Eleven In-Form Differential Players')
-    st.markdown(f'##### ***Top Performer Player For Last 3 Gameweeks With Selected By Lower Than 10%***')
-    st.markdown(f'##### ***Value of Selected By Subject To Change***')
+    if "Budget Player Chart" in selected_charts:    
+        st.markdown(f'### Top Eleven In-Form Budget Players')
+        st.markdown(f'##### ***Top Performer Player For Last 3 Gameweeks With Budget Price***')
+        st.markdown(f'##### ***:green[Goalkeeper < $5.0]***')
+        st.markdown(f'##### ***:green[Defender < $5.0]***')
+        st.markdown(f'##### ***:green[Midfielder < $6.0]***')
+        st.markdown(f'##### ***:green[Forward < $6.5]***')
+        st.altair_chart(price_chart, use_container_width=True, theme="streamlit")
+        
+    if "Differential Player Chart" in selected_charts:    
+        st.markdown(f'### Top Eleven In-Form Differential Players')
+        st.markdown(f'##### ***Top Performer Player For Last 3 Gameweeks With Selected By Lower Than 10%***')
+        st.markdown(f'##### ***Value of Selected By Subject To Change***')
+        st.altair_chart(diff_chart, use_container_width=True, theme="streamlit")
+
+    # Check if the Yellow Cards Chart is selected
+    if "Yellow Cards Chart" in selected_charts:
+        st.markdown(f'### Yellow Cards Record')
+        st.altair_chart(yc_chart, use_container_width=True, theme="streamlit")
+
+    # Check if the Red Cards Chart is selected
+    if "Suspension Warning Chart" in selected_charts:
+        st.markdown(f'### Suspension Warning')
+        st.altair_chart(yc_warn_chart, use_container_width=True, theme="streamlit")
+        
+    # Check if the Red Cards Chart is selected
+    if "Red Cards Chart" in selected_charts:
+        st.markdown(f'### Red Cards Record')
+        st.altair_chart(rc_chart, use_container_width=True, theme="streamlit")
+    
+    # # Display the bar chart figures
+    # st.markdown(f'##### ***Goalkeeper***')
+    # st.altair_chart(goalkeeper_chart, use_container_width=True, theme="streamlit")
+    # st.markdown(f'##### ***Defender***')
+    # st.altair_chart(defender_chart, use_container_width=True, theme="streamlit")
+    # st.markdown(f'##### ***Midfielder***')
+    # st.altair_chart(midfielder_chart, use_container_width=True, theme="streamlit")
+    # st.markdown(f'##### ***Forwards***')
+    # st.altair_chart(forward_chart, use_container_width=True, theme="streamlit")
+    # st.markdown(f'### Top Eleven In-Form Differential Players')
+    # st.markdown(f'##### ***Top Performer Player For Last 3 Gameweeks With Selected By Lower Than 10%***')
+    # st.markdown(f'##### ***Value of Selected By Subject To Change***')
     
     
-    st.altair_chart(diff_chart, use_container_width=True, theme="streamlit")
+    # st.altair_chart(diff_chart, use_container_width=True, theme="streamlit")
     
-    st.markdown(f'### Top Eleven In-Form Budget Players')
-    st.markdown(f'##### ***Top Performer Player For Last 3 Gameweeks With Budget Price***')
-    st.markdown(f'##### ***:green[Goalkeeper < $5.0]***')
-    st.markdown(f'##### ***:green[Defender < $5.0]***')
-    st.markdown(f'##### ***:green[Midfielder < $6.0]***')
-    st.markdown(f'##### ***:green[Forward < $6.5]***')
-    st.altair_chart(price_chart, use_container_width=True, theme="streamlit")
+    # st.markdown(f'### Top Eleven In-Form Budget Players')
+    # st.markdown(f'##### ***Top Performer Player For Last 3 Gameweeks With Budget Price***')
+    # st.markdown(f'##### ***:green[Goalkeeper < $5.0]***')
+    # st.markdown(f'##### ***:green[Defender < $5.0]***')
+    # st.markdown(f'##### ***:green[Midfielder < $6.0]***')
+    # st.markdown(f'##### ***:green[Forward < $6.5]***')
+    # st.altair_chart(price_chart, use_container_width=True, theme="streamlit")
     
-    st.markdown(f'### Yellow Cards Record')
-    st.altair_chart(yc_chart, use_container_width=True, theme="streamlit")
-    st.markdown(f'### Suspension Warning')
-    st.altair_chart(yc_warn_chart, use_container_width=True, theme="streamlit")
-    st.markdown(f'### Red Cards Record')
-    st.altair_chart(rc_chart, use_container_width=True, theme="streamlit")
+    # st.markdown(f'### Yellow Cards Record')
+    # st.altair_chart(yc_chart, use_container_width=True, theme="streamlit")
+    # st.markdown(f'### Suspension Warning')
+    # st.altair_chart(yc_warn_chart, use_container_width=True, theme="streamlit")
+    # st.markdown(f'### Red Cards Record')
+    # st.altair_chart(rc_chart, use_container_width=True, theme="streamlit")
 
 
     
