@@ -689,8 +689,8 @@ if selected == "Manager Details":
 if selected == "Match Prediction":
     st.markdown(f'### Match Prediction from FiveThirtyEight.com')
     st.markdown(f'##### ***Prediction For League Standings & Upcoming Matches***')
-    with st.echo():
-        st.write(f"streamlit version: {st.__version__}")
+    # with st.echo():
+    #     st.write(f"streamlit version: {st.__version__}")
 
     # embed streamlit docs in a streamlit app
     components.iframe("https://projects.fivethirtyeight.com/soccer-predictions/premier-league/", width=1500, height=2000, scrolling=True)
