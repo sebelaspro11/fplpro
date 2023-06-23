@@ -1,4 +1,3 @@
 streamlit_option_menu
 pymongo
 configparser
-request
