@@ -2,4 +2,4 @@ streamlit_option_menu
 pymongo
 configparser
 plotly
-cv2
+numpy
