@@ -5,7 +5,7 @@ import altair as alt
 from pymongo.mongo_client import MongoClient
 from pymongo import MongoClient
 import requests
-import cv2
+#import cv2
 from PIL import Image
 
 
