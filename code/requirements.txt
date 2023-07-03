@@ -3,3 +3,4 @@ pymongo
 configparser
 plotly
 numpy
+opencv-python
