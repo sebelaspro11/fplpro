@@ -13,7 +13,7 @@ from PIL import Image
 
 
 def perform_manager():
-    image = Image.open("../data/Fantasy_ID.png")
+    image = Image.open("data/Fantasy_ID.png")
         
     st.image(image, caption='Player ID')
     manager_id = st.text_input("Enter manager ID:")
