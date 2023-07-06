@@ -44,7 +44,7 @@ def perform_point_fixture():
     st.markdown('##### ***Select Multiple Players For Comparison***')
     # Fetch history and fixtures data
     df_history_2023 = fetch_data_history(collection_details)
-    df_fixtures_2023 = pd.read_csv('D:/streamlit/fpl/fixtures_update-20230526.csv')
+    df_fixtures_2023 = pd.read_csv('data/fixtures_update-20230526.csv')
     df_fixtures_2023 = df_fixtures_2023.sort_values(by='Gameweek')
 
     # Sidebar filters
@@ -121,6 +121,7 @@ def perform_point_fixture():
         #     return fig
 
 
+
         # tooltip = {
         # "Total Points": {"Player Name": True, "Team": True, "Total Points": True}
         # }
@@ -128,3 +129,5 @@ def perform_point_fixture():
         # fig_points = record_fixture_chart(df_history_2023_player, "Total Points", tooltip)
         # st.plotly_chart(fig_points, theme="streamlit", use_container_width=True)
     
+        #st.altair_chart(d, use_container_width=True, theme="streamlit")
+
