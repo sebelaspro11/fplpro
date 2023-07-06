@@ -67,339 +67,299 @@ def perform_analysis():
     st.markdown('### Player Overall Data', unsafe_allow_html=True)
     st.dataframe(df_filtered_player.sort_values('Total Points', ascending=False).reset_index(drop=True))
    
-   
+    
         # Define custom colors for each position
     position_colors = {
-        'Goalkeeper': 'red',
-        'Defender': 'pink',
-        'Midfielder': 'green',
-        'Forward': 'blue',
+        'Goalkeeper': '#60DB00',
+        'Defender': '#B141FF',
+        'Midfielder': '#00DADA',
+        'Forward': '#9DB600',
     }
     
-    # Filter the data to include only the top 5 players
-    df = df_filtered_player.sort_values('Total Influence', ascending=False).reset_index(drop=True).head(5)
-    
-    # Create the bar chart
-    fig_influence = px.bar(
-        df,
-        y="Player Name",
-        x="Total Influence",
-        color="Position",
-        color_discrete_map=position_colors,  # Set custom colors for each position
-        #text_auto=True,
-        text="Team"
-    )
-    custom_font_family = "Arial"
-    
+    st.markdown('### Overall Chart')
+    #st.markdown('##### ***Player Total Goals per 90 Minutes***')    
+    def all_chart(df_filtered_player, category, tooltip):
 
-    # Set the custom font for the text
-    fig_influence.update_layout(
-        font_family=custom_font_family,
-        font_color="black",  # Optionally, set the font color
         
-    )
-    
-    
-     # Filter the data to include only the top 5 players
-    df_goal = df_filtered_player.sort_values('Total Goals', ascending=False).reset_index(drop=True).head(5)
-    
-    # Create the bar chart
-    fig_goal = px.bar(
-        df_goal,
-        y="Player Name",
-        x="Total Goals",
-        color="Position",
-        color_discrete_map=position_colors,  # Set custom colors for each position
-        #text_auto=True,
-        text="Team"
-    )
-    custom_font_family = "Arial"
-    
+        # Filter the data to include only the top 5 players
+        df = df_filtered_player.sort_values(category, ascending=False).reset_index(drop=True).head(5)
+        
+        # Create the bar chart
+        fig = px.bar(
+            df,
+            y="Player Name",
+            x=category,
+            color="Position",
+            color_discrete_map=position_colors,  # Set custom colors for each position
+            text="Team",
+            hover_data=tooltip.get(category, {})
 
-    # Set the custom font for the text
-    fig_goal.update_layout(
-        font_family=custom_font_family,
-        font_color="black",  # Optionally, set the font color
+        )
+        custom_font_family = "Arial"
         
-    )
-    
-    
-     # Filter the data to include only the top 5 players
-    df_assists = df_filtered_player.sort_values('Total Assists', ascending=False).reset_index(drop=True).head(5)
-    
-    # Create the bar chart
-    fig_assists = px.bar(
-        df_assists,
-        y="Player Name",
-        x="Total Assists",
-        color="Position",
-        color_discrete_map=position_colors,  # Set custom colors for each position
-        #text_auto=True,
-        text="Team"
-    )
-    custom_font_family = "Arial"
-    
+        # Set the custom font for the text
+        fig.update_layout(
+            font_family=custom_font_family,
+            font_color="black",  # Optionally, set the font color
+        )
+        
+        return fig
 
-    # Set the custom font for the text
-    fig_assists.update_layout(
-        font_family=custom_font_family,
-        font_color="black",  # Optionally, set the font color
-        
-    )
-    
-     # Filter the data to include only the top 5 players
-    df_creative = df_filtered_player.sort_values('Total Creativity', ascending=False).reset_index(drop=True).head(5)
-    
-    # Create the bar chart
-    fig_creative = px.bar(
-        df_creative,
-        y="Player Name",
-        x="Total Creativity",
-        color="Position",
-        color_discrete_map=position_colors,  # Set custom colors for each position
-        #text_auto=True,
-        text="Team"
-    )
-    custom_font_family = "Arial"
-    
 
-    # Set the custom font for the text
-    fig_creative.update_layout(
-        font_family=custom_font_family,
-        font_color="black",  # Optionally, set the font color
-        
-    )
-    
-     # Filter the data to include only the top 5 players
-    df_xg = df_filtered_player.sort_values('Total xG', ascending=False).reset_index(drop=True).head(5)
-    
-    # Create the bar chart
-    fig_xg = px.bar(
-        df_xg,
-        y="Player Name",
-        x="Total xG",
-        color="Position",
-        color_discrete_map=position_colors,  # Set custom colors for each position
-        #text_auto=True,
-        text="Team"
-    )
-    custom_font_family = "Arial"
-    
+    tooltip = {
+    "Total Points": {"Player Name": True, "Team": True, "Total Points": True},
+    "Total Bonus": {"Player Name": True, "Team": True, "Total Bonus": True},
+    "Dreamteam": {"Player Name": True, "Team": True, "Dreamteam": True},
+    "Total YC": {"Player Name": True, "Team": True, "Total YC": True},
+    "Total RC": {"Player Name": True, "Team": True, "Total RC": True},
 
-    # Set the custom font for the text
-    fig_xg.update_layout(
-        font_family=custom_font_family,
-        font_color="black",  # Optionally, set the font color
+    }
+    tab_points, tab_bonus, tab_dreamteam, tab_yc, tab_rc = st.tabs(["Points", "Bonus", "Dreamteam", "Yellow Cards", "Red Cards"])
+
+    with tab_points:
+        fig_points = all_chart(df_filtered_player, "Total Points", tooltip)
+        st.plotly_chart(fig_points, theme="streamlit", use_container_width=True)
+    with tab_bonus:
+        fig_bonus = all_chart(df_filtered_player, "Total Bonus", tooltip)
+        st.plotly_chart(fig_bonus, theme="streamlit", use_container_width=True)
+
+    with tab_dreamteam:
+        fig_dreamteam = all_chart(df_filtered_player, "Dreamteam", tooltip)
+        st.plotly_chart(fig_dreamteam, theme="streamlit", use_container_width=True)
+
+    with tab_yc:
+        fig_yc = all_chart(df_filtered_player, "Total YC", tooltip)
+        st.plotly_chart(fig_yc, theme="streamlit", use_container_width=True)
+
+    with tab_rc:
+        fig_rc = all_chart(df_filtered_player, "Total RC", tooltip)
+        st.plotly_chart(fig_rc, theme="streamlit", use_container_width=True)
+    
+     
+    st.markdown('### Offensive Chart')  
+    def off_chart(df_filtered_player, category, tootltip):
+
         
-    )
+        # Filter the data to include only the top 5 players
+        df = df_filtered_player.sort_values(category, ascending=False).reset_index(drop=True).head(5)
+        
+        # Create the bar chart
+        fig = px.bar(
+            df,
+            y="Player Name",
+            x=category,
+            color="Position",
+            color_discrete_map=position_colors,  # Set custom colors for each position
+            text="Team",
+            hover_data=tooltip.get(category, {})
+
+        )
+        custom_font_family = "Arial"
+        
+        # Set the custom font for the text
+        fig.update_layout(
+            font_family=custom_font_family,
+            font_color="black",  # Optionally, set the font color
+        )
+        
+        return fig
+
+    tooltip = {
+    "Total Goals": {"Player Name": True, "Team": True, "Total Goals": True},
+    "Total Assists": {"Player Name": True, "Team": True, "Total Assists": True},
+    "Total xG": {"Player Name": True, "Team": True, "Total xG": ":.2f"},
+    "Total Creativity": {"Player Name": True, "Team": True, "Total Creativity": ":.2f"},
+    "Total Influence": {"Player Name": True, "Team": True, "Total Influence": ":.2f"},
+    "Total ICT Index": {"Player Name": True, "Team": True, "Total ICT Index": ":.2f"}
+    }
+
     
     
-    tab_goal, tab_assists, tab_xg, tab_creative, tab_influence = st.tabs(["Goals", "Assists", "xG", "Creatvity", "Influence"])
+    
+    tab_goal, tab_assists, tab_xg, tab_creative, tab_influence, tab_ict = st.tabs(["Goals", "Assists", "xG", "Creatvity", "Influence", "ICT Index"])
 
     with tab_goal:
+        fig_goal = off_chart(df_filtered_player, "Total Goals", tooltip)
         st.plotly_chart(fig_goal, theme="streamlit", use_container_width=True)
+
     with tab_assists:
+        fig_assists = off_chart(df_filtered_player, "Total Assists", tooltip)
         st.plotly_chart(fig_assists, theme="streamlit", use_container_width=True)
+
     with tab_xg:
+        fig_xg = off_chart(df_filtered_player, "Total xG", tooltip)
         st.plotly_chart(fig_xg, theme="streamlit", use_container_width=True)
+
     with tab_creative:
+        fig_creative = off_chart(df_filtered_player, "Total Creativity", tooltip)
         st.plotly_chart(fig_creative, theme="streamlit", use_container_width=True)
+
     with tab_influence:
+        fig_influence = off_chart(df_filtered_player, "Total Influence", tooltip)
         st.plotly_chart(fig_influence, theme="streamlit", use_container_width=True)
-   
-   
-   
-    # Filter the data to include only the top 5 players
-    #df_cost_price = df_filtered_player.sort_values('Total Po', ascending=False).reset_index(drop=True).head(5)
-    
-    # Create the bar chart
-    fig_cost_price = px.scatter(
-        df_filtered_player,
-        y="Total Points",
-        x="Price",
-        color="Position",
-        color_discrete_map=position_colors,
-        # Set custom colors for each position
-        #text_auto=True,
-        #text="Team"
-    )
-    custom_font_family = "Arial"
-    
 
-    # Set the custom font for the text
-    fig_cost_price.update_layout(
-        font_family=custom_font_family,
-        font_color="black",  # Optionally, set the font color
+    with tab_ict:
+        fig_ict = off_chart(df_filtered_player, "Total ICT Index", tooltip)
+        st.plotly_chart(fig_ict, theme="streamlit", use_container_width=True)
         
-    )
-    
-    st.plotly_chart(fig_cost_price, theme="streamlit", use_container_width=True)
-    
-    
-    
-    
-    # Create the bar chart
-    fig_point_p90 = px.scatter(
-        df_filtered_player,
-        y="Total Assists P90",
-        x="Total Goals P90",
-        color="Position",
-        color_discrete_map=position_colors,
-        # Set custom colors for each position
-        #text_auto=True,
-        #text="Team"
-    )
-    custom_font_family = "Arial"
-    
+    st.markdown('### Defensive Chart')    
+    def def_chart(df_filtered_player, category, tooltip):
 
-    # Set the custom font for the text
-    fig_point_p90.update_layout(
-        font_family=custom_font_family,
-        font_color="black",  # Optionally, set the font color
         
-    )
+        # Filter the data to include only the top 5 players
+        df = df_filtered_player.sort_values(category, ascending=False).reset_index(drop=True).head(5)
+            
+        # Create the bar chart
+        fig = px.bar(
+            df,
+            y="Player Name",
+            x=category,
+            color="Position",
+            color_discrete_map=position_colors,  # Set custom colors for each position
+            text="Team",
+            hover_data=tooltip.get(category, {})
+            )
+        custom_font_family = "Arial"
+            
+        # Set the custom font for the text
+        fig.update_layout(
+            font_family=custom_font_family,
+            font_color="black",  # Optionally, set the font color
+            )
+            
+        return fig
+
+
     
-    st.plotly_chart(fig_point_p90, theme="streamlit", use_container_width=True)
+    tooltip = {
+    "Total Clean Sheets": {"Player Name": True, "Team": True, "Total Clean Sheets": True},
+    "Total Saves": {"Player Name": True, "Team": True, "Total Saves": True},
+    }
+    tab_cs, tab_saves= st.tabs(["Clean Sheets", "Saves"])
 
-    #download data
-    # my_large_df = df_filtered_player
-    # @st.cache
-    # def convert_df_to_csv(df):
-    # # IMPORTANT: Cache the conversion to prevent computation on every rerun
-    #     return df.to_csv().encode('utf-8')
+    with tab_cs:
+        fig_cs = def_chart(df_filtered_player, "Total Clean Sheets", tooltip)
+        st.plotly_chart(fig_cs, theme="streamlit", use_container_width=True)
 
-    # st.download_button(
-    #     label="Download data as CSV",
-    #     data=convert_df_to_csv(my_large_df),
-    #     file_name='player.csv',
-    #     mime='text/csv',
-    # )
-
-
-
-    # # Define position colors
-    # pos_colors = {
-    #     'Defender': 'pink',
-    #     'Forward': 'blue',
-    #     'Goalkeeper': 'red',
-    #     'Midfielder': 'green',
+    with tab_saves:
+        fig_saves = def_chart(df_filtered_player, "Total Saves", tooltip)
+        st.plotly_chart(fig_saves, theme="streamlit", use_container_width=True)
         
-    # }
     
-    
-    
-    # # Define color scale based on positions
-    # pos_color_scale = {
-    #     'field': 'Position',
-    #     'type': 'nominal',
-    #     'scale': {'range': [pos_colors[pos] for pos in df_filtered_player['Position'].unique()]}
-    # }
-    # color_pos = set(df_filtered_player['Position']) 
-    # pos_colors = {pos: color for pos, color in pos_colors.items() if pos in color_pos}
-    
-    # st.markdown('### Points')
-    # # st.vega_lite_chart(df_filtered_player.sort_values('Total Points', ascending=False).reset_index(drop=True).head(5), {
-    # #      'mark': {'type': 'bar', 'tooltip': True},
-    # #      'encoding': {
-    # #          'x': {'field': 'Total Points', 'type': 'quantitative'},
-    # #          'y': {'field': 'Player Name', 'type': 'nominal', 'sort': '-y'},
-    # #          'color': {
-    # #          'field': 'Position',
-    # #          'type': 'nominal',
-    # #          'scale': {
-    # #              'domain': list(pos_colors.keys()),  # List of position values
-    # #              'range': list(pos_colors.values())  # List of corresponding colors
-    # #          },
-    # #      },
-    # #          #'color': {'field': 'Position', 'type': 'nominal'},
-    # #          #'color': pos_color_scale,
-    # #          'tooltip': [{"field": 'Player Name', 'type': 'nominal'}, {'field': 'Price', 'type': 'quantitative'}, {'field': 'Total Points', 'type': 'quantitative'}],
-    # #      },
-    # #      'width': 800,
-    # #      'height': 400,
-    # #  })
+   
 
-    # # Create the bar chart
-    # goalkeeper_chart = alt.Chart(df_filtered_player.sort_values('Total Points', ascending=False).reset_index(drop=True).head(5)).mark_bar().encode(
-    #     x=alt.X('Player Name', sort=alt.EncodingSortField('Gameweek'), axis=alt.Axis(labelAngle=0)),
-    #     y=alt.Y('Total Points'),
-    #     fill=alt.Fill('Position:N', scale=alt.Scale(domain=list(pos_colors.keys()), range=list(pos_colors.values()))),
-    #     tooltip=[
-    #         'Player Name',
-    #         'Price'
-    #     ]
-    # ).configure_axis(grid=False)
-    # st.altair_chart(goalkeeper_chart, use_container_width=True, theme="streamlit")
- 
-    
-    # st.markdown('### Goals')
-    # st.vega_lite_chart(df_filtered_player.sort_values('Total Goals', ascending=False).reset_index(drop=True).head(5), {
-    #      'mark': {'type': 'bar', 'tooltip': True},
-    #      'encoding': {
-    #          'x': {'field': 'Total Goals', 'type': 'quantitative'},
-    #          'y': {'field': 'Player Name', 'type': 'nominal', 'sort': '-y'},
-    #          'color': pos_color_scale,
-    #          'tooltip': [{"field": 'Player Name', 'type': 'nominal'}, {'field': 'Price', 'type': 'quantitative'}, {'field': 'Total Points', 'type': 'quantitative'}],
-    #      },
-    #      'width': 800,
-    #      'height': 400,
-    #  })
-    
-    # st.markdown('### Assists')
-    # st.vega_lite_chart(df_filtered_player.sort_values('Total Assists', ascending=False).reset_index(drop=True).head(5), {
-    #      'mark': {'type': 'bar', 'tooltip': True},
-    #      'encoding': {
-    #          'x': {'field': 'Total Assists', 'type': 'quantitative'},
-    #          'y': {'field': 'Player Name', 'type': 'nominal', 'sort': '-y'},
-    #          'color': pos_color_scale,
-    #          'tooltip': [{"field": 'Player Name', 'type': 'nominal'}, {'field': 'Price', 'type': 'quantitative'}, {'field': 'Total Points', 'type': 'quantitative'}],
-    #      },
-    #      'width': 800,
-    #      'height': 400,
-    #  })
-    
-    # st.markdown('### Bonus')
-    # st.vega_lite_chart(df_filtered_player.sort_values('Total Bonus', ascending=False).reset_index(drop=True).head(5), {
-    #      'mark': {'type': 'bar', 'tooltip': True},
-    #      'encoding': {
-    #          'x': {'field': 'Total Bonus', 'type': 'quantitative'},
-    #          'y': {'field': 'Player Name', 'type': 'nominal', 'sort': '-y'},
-    #          'color': pos_color_scale,
-    #          'tooltip': [{"field": 'Player Name', 'type': 'nominal'}, {'field': 'Price', 'type': 'quantitative'}, {'field': 'Total Points', 'type': 'quantitative'}],
-    #      },
-    #      'width': 800,
-    #      'height': 400,
-    #  })
-    
     # Cost vs 22/23 Season Points chart
     st.markdown('### Cost vs 22/23 Season Points')
     st.markdown('##### ***Identify Low Price Player With High Points Return***')
-    st.vega_lite_chart(df_filtered_player, {
-         'mark': {'type': 'circle', 'tooltip': True},
-         'encoding': {
-             'x': {'field': 'Price', 'type': 'quantitative'},
-             'y': {'field': 'Total Points', 'type': 'quantitative'},
-             'color': {'field': 'Position', 'type': 'nominal'},
-             'tooltip': [{"field": 'Player Name', 'type': 'nominal'}, {'field': 'Price', 'type': 'quantitative'}, {'field': 'Total Points', 'type': 'quantitative'}],
-         },
-         'width': 800,
-         'height': 400,
-     })
+    # Define custom markers for each position
+    position_markers = {
+        'Goalkeeper': 'circle',
+        'Defender': 'square',
+        'Midfielder': 'diamond',
+        'Forward': 'star',
+    }
+    
+    st.markdown('### Points per 90')
+    st.markdown('##### ***Player Total Points per 90 Minutes***')    
+    def points_p90_chart(df_filtered_player):
 
-    # Goals per 90 chart
+
+        # Create the scatter plot
+        fig = px.scatter(
+            df_filtered_player,
+            y="Total Points",
+            x="Price",
+            color="Position",
+            color_discrete_map=position_colors,
+            symbol="Position",
+            symbol_map=position_markers,
+            # Set custom colors and markers for each position
+            #text_auto=True,
+            #text="Team"
+        )
+        custom_font_family = "Arial"
+
+        # Set the custom font for the text
+        fig.update_layout(
+            font_family=custom_font_family,
+            font_color="black",  # Optionally, set the font color
+        )
+
+        return fig
+
+
+
+    # Create the scatter plot with differentiated position markers and colors
+    fig_cost_price = points_p90_chart(df_filtered_player)
+
+    # Display the scatter plot using Streamlit
+    st.plotly_chart(fig_cost_price, theme="streamlit", use_container_width=True)
+    
+    
     st.markdown('### Goals per 90')
-    st.markdown('##### ***Player Total Goals, Assists and Points per 90 Minutes***')
-    st.vega_lite_chart(df_filtered_player, {
-     'mark': {'type': 'circle', 'tooltip': True},
-     'encoding': {
-         'x': {'field': 'Total Goals P90', 'type': 'quantitative'},
-         'y': {'field': 'Total Assists P90', 'type': 'quantitative'},
-         'color': {'field': 'Position', 'type': 'nominal'},
-         'tooltip': [{"field": 'Player Name', 'type': 'nominal'}, {'field': 'Price', 'type': 'quantitative'}, {'field': 'Total Goals P90', 'type': 'quantitative'}, {'field': 'Total Assists P90', 'type': 'quantitative'}, {'field': 'Total Points P90', 'type': 'quantitative'}],
-     },
-     'width': 800,
-     'height': 400,
-    })
+    st.markdown('##### ***Player Total Goals per 90 Minutes***')
+    
+    def goals_p90_chart(df_filtered_player):
+
+
+        # Create the scatter plot
+        fig = px.scatter(
+            df_filtered_player,
+            y="Total Goals",
+            x="Price",
+            color="Position",
+            color_discrete_map=position_colors,
+            symbol="Position",
+            symbol_map=position_markers,
+            # Set custom colors and markers for each position
+            #text_auto=True,
+            #text="Team"
+        )
+        custom_font_family = "Arial"
+
+        # Set the custom font for the text
+        fig.update_layout(
+            font_family=custom_font_family,
+            font_color="black",  # Optionally, set the font color
+        )
+
+        return fig
+
+
+
+    # Create the scatter plot with differentiated position markers and colors
+    fig_goals_price = goals_p90_chart(df_filtered_player)
+
+    # Display the scatter plot using Streamlit
+    st.plotly_chart(fig_goals_price, theme="streamlit", use_container_width=True)
+   
+    
+    # st.vega_lite_chart(df_filtered_player, {
+    #      'mark': {'type': 'circle', 'tooltip': True},
+    #      'encoding': {
+    #          'x': {'field': 'Price', 'type': 'quantitative'},
+    #          'y': {'field': 'Total Points', 'type': 'quantitative'},
+    #          'color': {'field': 'Position', 'type': 'nominal'},
+    #          'tooltip': [{"field": 'Player Name', 'type': 'nominal'}, {'field': 'Price', 'type': 'quantitative'}, {'field': 'Total Points', 'type': 'quantitative'}],
+    #      },
+    #      'width': 800,
+    #      'height': 400,
+    #  })
+
+    # # Goals per 90 chart
+    # st.markdown('### Goals per 90')
+    # st.markdown('##### ***Player Total Goals, Assists and Points per 90 Minutes***')
+    # st.vega_lite_chart(df_filtered_player, {
+    #  'mark': {'type': 'circle', 'tooltip': True},
+    #  'encoding': {
+    #      'x': {'field': 'Total Goals P90', 'type': 'quantitative'},
+    #      'y': {'field': 'Total Assists P90', 'type': 'quantitative'},
+    #      'color': {'field': 'Position', 'type': 'nominal'},
+    #      'tooltip': [{"field": 'Player Name', 'type': 'nominal'}, {'field': 'Price', 'type': 'quantitative'}, {'field': 'Total Goals P90', 'type': 'quantitative'}, {'field': 'Total Assists P90', 'type': 'quantitative'}, {'field': 'Total Points P90', 'type': 'quantitative'}],
+    #  },
+    #  'width': 800,
+    #  'height': 400,
+    # })
     
     # st.markdown('### Influence')
     # st.vega_lite_chart(df_filtered_player.sort_values('Total Influence', ascending=False).reset_index(drop=True).head(5), {

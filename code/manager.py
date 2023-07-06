@@ -5,7 +5,6 @@ import altair as alt
 from pymongo.mongo_client import MongoClient
 from pymongo import MongoClient
 import requests
-#import cv2
 from PIL import Image
 
 
@@ -13,8 +12,9 @@ from PIL import Image
 
 
 def perform_manager():
+
     image = Image.open("data/Fantasy_ID.png")
-        
+
     st.image(image, caption='Player ID')
     manager_id = st.text_input("Enter manager ID:")
     if manager_id:
