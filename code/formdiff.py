@@ -143,6 +143,52 @@ def perform_formdiff():
             color="Position",
             color_discrete_map=position_colors,  # Set custom colors for each position
             text="Team",
+            hover_name="Player Name",
+            hover_data=tooltip.get(category, {})
+
+        )
+        custom_font_family = "Arial"
+        
+        # Set the custom font for the text
+        fig.update_layout(
+            font_family=custom_font_family,
+            font_color="black",  # Optionally, set the font color
+        )
+        
+
+        # Adjust the text properties for the 'Team' labels
+        fig.update_traces(
+            texttemplate="%{text}",
+            textposition="inside",
+            textfont=dict(family=custom_font_family, color="black"),
+        )
+        
+        
+        return fig
+    
+    
+        #st.markdown('##### ***Player Total Goals per 90 Minutes***')    
+    def bonus_chart(df_bonus_player, category, tooltip):
+
+                # Define custom colors for each position
+        position_colors = {
+            'Goalkeeper': '#60DB00',
+            'Defender': '#B141FF',
+            'Midfielder': '#00DADA',
+            'Forward': '#9DB600',
+    }
+        # Filter the data to include only the top 5 players
+        df = df_bonus_player.sort_values(category, ascending=False).reset_index(drop=True).head(5)
+        
+        # Create the bar chart
+        fig = px.bar(
+            df,
+            x=category,
+            y="Last 3 GW Bonus Points",
+            color="Position",
+            color_discrete_map=position_colors,  # Set custom colors for each position
+            text="Team",
+            hover_name="Player Name",
             hover_data=tooltip.get(category, {})
 
         )
@@ -217,165 +263,9 @@ def perform_formdiff():
         fig_price = perform_chart(price_players, "Player Name", tooltip_price)
         st.plotly_chart(fig_price, theme="streamlit", use_container_width=True)
     with tab_bonus:
-        fig_bonus = perform_chart(bonus_top, "Player Name", tooltip_bonus)
+        fig_bonus = bonus_chart(bonus_top, "Player Name", tooltip_bonus)
         st.plotly_chart(fig_bonus, theme="streamlit", use_container_width=True)
     
     
-    
-    
-    # # Filter team_colors dictionary based on teams in the data
-    # color_gk_top = set(gk_top['Team'])  # Assuming 'Team' is the column name in the data
-    # color_def_top = set(def_top['Team'])  # Assuming 'Team' is the column name in the data
-    # color_mid_top = set(mid_top['Team'])  # Assuming 'Team' is the column name in the data
-    # color_fwd_top = set(fwd_top['Team'])  # Assuming 'Team' is the column name in the data
-    # team_colors_gk_top = {team: color for team, color in team_colors.items() if team in color_gk_top}
-    # team_colors_def_top  = {team: color for team, color in team_colors.items() if team in color_def_top}
-    # team_colors_mid_top  = {team: color for team, color in team_colors.items() if team in color_mid_top}
-    # team_colors_fwd_top  = {team: color for team, color in team_colors.items() if team in color_fwd_top}
-
-
-    
-    
-    
-    # # Create the bar chart
-    # goalkeeper_chart = alt.Chart(gk_top).mark_bar().encode(
-    #     x=alt.X('Player Name', sort=alt.EncodingSortField('Gameweek'), axis=alt.Axis(labelAngle=0)),
-    #     y=alt.Y('Last 3 GW Points'),
-    #     fill=alt.Fill('Team:N', scale=alt.Scale(domain=list(team_colors_gk_top.keys()), range=list(team_colors_gk_top.values()))),
-    #     tooltip=[
-    #         'Last 3 GW Points',
-    #         'Last 3 GW Clean Sheets',
-    #         'Last 3 GW Bonus Points',
-    #         'Last 3 GW Saves',
-    #         'Last 3 GW Conceded',
-    #         'Last 3 GW xG Conceded',
-    #         'Total Yellow Cards'
-    #     ]
-    # ).configure_axis(grid=False)
-
-    # defender_chart = alt.Chart(def_top).mark_bar().encode(
-    #     x=alt.X('Player Name', sort=alt.EncodingSortField('Gameweek'), axis=alt.Axis(labelAngle=0)),
-    #     y=alt.Y('Last 3 GW Points'),
-    #     #color=alt.Color('Team'),
-    #     #color=alt.Color('Team:N', scale=color_scale, condition=alt.condition('datum.Total Yellow Cards == 4', alt.value('red'))),
-    #     color=alt.Color('Team:N', scale=alt.Scale(domain=list(team_colors_def_top.keys()), range=list(team_colors_def_top.values()))),
-    #     tooltip=['Last 3 GW Points', 'Last 3 GW Goals', 'Last 3 GW Bonus Points', 'Last 3 GW Clean Sheets', 'Last 3 GW xG', 'Last 3 GW xA', 'Last 3 GW Conceded', 'Last 3 GW xG Conceded', 'Total Yellow Cards']
-    # ).configure_axis(grid=False)
-
-    # color_scale = alt.Scale(domain=[4], range=['red'])
-
-    # midfielder_chart = alt.Chart(mid_top).mark_bar().encode(
-    #     x=alt.X('Player Name', sort=alt.EncodingSortField('Gameweek'), axis=alt.Axis(labelAngle=0)),
-    #     y=alt.Y('Last 3 GW Points'),
-    #     fill=alt.Fill('Team:N', scale=alt.Scale(domain=list(team_colors_mid_top.keys()), range=list(team_colors_mid_top.values()))),
-    #     tooltip=['Last 3 GW Points', 'Last 3 GW Goals', 'Last 3 GW Bonus Points', 'Last 3 GW xG', 'Last 3 GW xA', 'Total Yellow Cards']
-    # ).configure_axis(grid=False)
-
-
-    # forward_chart = alt.Chart(fwd_top).mark_bar().encode(
-    #     x=alt.X('Player Name', sort=alt.EncodingSortField('Gameweek'), axis=alt.Axis(labelAngle=0)),
-    #     y=alt.Y('Last 3 GW Points'),
-    #     #color=alt.Color('Team'),
-    #     fill=alt.Fill('Team:N', scale=alt.Scale(domain=list(team_colors_fwd_top.keys()), range=list(team_colors_fwd_top.values()))),
-    #     tooltip=['Last 3 GW Points', 'Last 3 GW Goals', 'Last 3 GW Bonus Points', 'Last 3 GW xG', 'Last 3 GW xA', 'Total Yellow Cards']
-    # ).configure_axis(grid=False)
-    
-    # diff_chart = alt.Chart(diff_players).mark_bar().encode(
-    #     x=alt.X('Player Name', sort=alt.EncodingSortField('Gameweek'), axis=alt.Axis(labelAngle=0)),
-    #     y=alt.Y('Last 3 GW Points'),
-    #     color=alt.Color('Position'),
-    #     tooltip=['Selected By(%)','Last 3 GW Points', 'Last 3 GW Goals', 'Last 3 GW Bonus Points', 'Last 3 GW xG', 'Last 3 GW xA', 'Total Yellow Cards']
-    # ).configure_axis(grid=False).configure_axis(grid=False)
-    
-    # price_chart = alt.Chart(price_players).mark_bar().encode(
-    #     x=alt.X('Player Name', sort=alt.EncodingSortField('Gameweek'), axis=alt.Axis(labelAngle=0)),
-    #     y=alt.Y('Last 3 GW Points'),
-    #     color=alt.Color('Position'),
-    #     tooltip=['Price','Last 3 GW Points', 'Last 3 GW Goals', 'Last 3 GW Bonus Points', 'Last 3 GW xG', 'Last 3 GW xA', 'Total Yellow Cards']
-    # ).configure_axis(grid=False)
-    
-    
-    # #     # Filter the DataFrame to select the top 10 players with the most yellow cards
-    # # top_10_yellow_cards = df_history_2023.sort_values('Total Yellow Cards', ascending=False)
-    # # top_10_yellow_cards = top_10_yellow_cards.drop_duplicates(subset=['Player Name']).head(10)
-
-    # # # Create the altair chart
-    # # yc_chart = alt.Chart(top_10_yellow_cards).mark_bar().encode(
-    # #     y=alt.Y('Player Name', sort=alt.EncodingSortField('Total Yellow Cards:Q'), axis=alt.Axis(labelAngle=0)),
-    # #     x=alt.X('Total Yellow Cards', axis=alt.Axis(labelAngle=0, format='d')),
-    # #     color=alt.Color('Position'),
-    # #     tooltip=['Player Name', 'Total Yellow Cards']
-    # # ).properties(
-    # #     width=500,
-    # #     height=300).configure_axis(grid=False)
-    
-    
-    # # Define the specific total yellow card values
-    # total_yellow_cards = [4, 9, 14, 19]
-
-    # # Filter the DataFrame to select players with the desired total yellow card values
-    # warn_yellow_cards = df_history_2023[df_history_2023['Total Yellow Cards'].isin(total_yellow_cards)]
-
-    # warn_yellow_cards = warn_yellow_cards.sort_values('Total Yellow Cards', ascending=False)
-    # warn_yellow_cards = warn_yellow_cards.drop_duplicates(subset=['Player Name']).head(10)
-    
-    
-    # yc_warn_chart = alt.Chart(warn_yellow_cards).mark_bar().encode(
-    #     x=alt.X('Total Yellow Cards', axis=alt.Axis(labelAngle=0, format='d')),
-    #     y=alt.Y('Player Name', sort=alt.EncodingSortField('Total Yellow Cards:Q'), axis=alt.Axis(labelAngle=0)),
-    #     color=alt.Color('Position'),
-    #     tooltip=['Player Name', 'Total Yellow Cards']
-    # ).properties(
-    #     width=500,
-    #     height=300).configure_axis(grid=False)
-
-
-    # # Create a multi-select widget to select the charts
-    # selected_charts = st.multiselect("Select Charts", ["Goalkeeper Chart", "Defender Chart", "Midfielder Chart", "Forward Chart", "Budget Player Chart", "Differential Player Chart",  "Yellow Cards Chart", "Suspension Warning Chart", "Red Cards Chart", "Dreamteam Chart"])
-
-    # # Check if the Goalkeeper Chart is selected
-    # if "Goalkeeper Chart" in selected_charts:
-    #     st.markdown(f'##### ***Goalkeeper***')
-    #     st.altair_chart(goalkeeper_chart, use_container_width=True, theme="streamlit")
-
-    # # Check if the Defender Chart is selected
-    # if "Defender Chart" in selected_charts:
-    #     st.markdown(f'##### ***Defender***')
-    #     st.altair_chart(defender_chart, use_container_width=True, theme="streamlit")
-
-    # # Check if the Midfielder Chart is selected
-    # if "Midfielder Chart" in selected_charts:
-    #     st.markdown(f'##### ***Midfielder***')
-    #     st.altair_chart(midfielder_chart, use_container_width=True, theme="streamlit")
-
-    # # Check if the Forward Chart is selected
-    # if "Forward Chart" in selected_charts:
-    #     st.markdown(f'##### ***Forwards***')
-    #     st.altair_chart(forward_chart, use_container_width=True, theme="streamlit")
-    
-    # if "Budget Player Chart" in selected_charts:    
-    #     st.markdown(f'### Top Eleven In-Form Budget Players')
-    #     st.markdown(f'##### ***Top Performer Player For Last 3 Gameweeks With Budget Price***')
-    #     st.markdown(f'##### ***:green[Goalkeeper < $5.0]***')
-    #     st.markdown(f'##### ***:green[Defender < $5.0]***')
-    #     st.markdown(f'##### ***:green[Midfielder < $6.0]***')
-    #     st.markdown(f'##### ***:green[Forward < $6.5]***')
-    #     st.altair_chart(price_chart, use_container_width=True, theme="streamlit")
-        
-    # if "Differential Player Chart" in selected_charts:    
-    #     st.markdown(f'### Top Eleven In-Form Differential Players')
-    #     st.markdown(f'##### ***Top Performer Player For Last 3 Gameweeks With Selected By Lower Than 10%***')
-    #     st.markdown(f'##### ***Value of Selected By Subject To Change***')
-    #     st.altair_chart(diff_chart, use_container_width=True, theme="streamlit")
-
-    # # # Check if the Yellow Cards Chart is selected
-    # # if "Yellow Cards Chart" in selected_charts:
-    # #     st.markdown(f'### Yellow Cards Record')
-    # #     st.altair_chart(yc_chart, use_container_width=True, theme="streamlit")
-
-    # # Check if the Red Cards Chart is selected
-    # if "Suspension Warning Chart" in selected_charts:
-    #     st.markdown(f'### Suspension Warning')
-    #     st.altair_chart(yc_warn_chart, use_container_width=True, theme="streamlit")
         
 

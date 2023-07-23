@@ -63,6 +63,7 @@ if selected == "Manager Details":
     
 if selected == "Match Prediction":
     perform_predict()
+
     
     
     
