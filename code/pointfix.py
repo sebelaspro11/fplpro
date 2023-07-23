@@ -52,9 +52,9 @@ def perform_point_fixture():
     positions.sort()
     position_choice = st.sidebar.selectbox('Choose position:', positions)
     teams_filter = list(df_history_2023['Team'].drop_duplicates())
-    teams_choice = st.sidebar.multiselect('Choose team:', teams_filter)
-    players_filter = df_history_2023[(df_history_2023['Team'].isin(teams_choice)) & (df_history_2023['Position'] == position_choice)]
-    players_choice = st.sidebar.multiselect('Choose player:', players_filter['Player Name'].unique())
+    teams_choice = st.sidebar.multiselect('Choose team:', teams_filter, default = [teams_filter[0]])
+    players_filter = df_history_2023.sort_values("Total Points", ascending=False)[(df_history_2023['Team'].isin(teams_choice)) & (df_history_2023['Position'] == position_choice)]
+    players_choice = st.sidebar.multiselect('Choose player:', players_filter['Player Name'].unique(), default=[players_filter['Player Name'].unique()[0]])
 
     # Display player points and fixtures
     for player in players_choice:
@@ -74,7 +74,7 @@ def perform_point_fixture():
                 x=alt.X('Opponent'),
                 y=alt.Y('Gameweek Points:Q', axis=alt.Axis(format='d')),
                 color=alt.Color('Venue:N', scale=alt.Scale(domain=['Home', 'Away'], range=['#B6006C', '#00B6A3'])),
-                tooltip=['Gameweek:N', 'Gameweek Points:Q', 'Goals Scored:Q', 'Assists:Q', 'Bonus:Q']
+                tooltip=['Player Name:N', 'Gameweek:N', 'Gameweek Points:Q', 'Goals Scored:Q', 'Assists:Q', 'Bonus:Q']
             ).configure_axis(grid=True)
             st.altair_chart(c, use_container_width=True, theme="streamlit")
 
@@ -88,7 +88,7 @@ def perform_point_fixture():
                 x=alt.X('Opponent:N', sort=alt.EncodingSortField('Gameweek'), axis=alt.Axis(labelAngle=0)),
                 y=alt.Y('Difficulty:Q', axis=alt.Axis(format='d'), scale=alt.Scale(domain=y_limit)),
                 color=alt.Color('Difficulty:Q', scale=color_scale),
-                tooltip=['Venue:N','Gameweek:N', 'Player Name:N', 'Opponent:N', 'Difficulty:Q']
+                tooltip=['Player Name:N', 'Venue:N','Gameweek:N', 'Opponent:N', 'Difficulty:Q']
             ).configure_axis(grid=True)
 
             st.altair_chart(d, use_container_width=True, theme="streamlit")
