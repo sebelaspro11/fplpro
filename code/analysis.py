@@ -614,10 +614,10 @@ def perform_analysis():
     
         # Define custom colors for each position
     position_colors = {
-        'Goalkeeper': '#60DB00',
-        'Defender': '#B141FF',
-        'Midfielder': '#00DADA',
-        'Forward': '#9DB600',
+        'Goalkeeper': '#008000',
+        'Defender': '#a52a2a',
+        'Midfielder': '#ffdab9',
+        'Forward': '#ffd700',
     }
     if show_filtered:
         st.markdown('### Overall Chart')
