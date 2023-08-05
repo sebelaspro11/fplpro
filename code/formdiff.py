@@ -127,10 +127,10 @@ def perform_formdiff():
 
                 # Define custom colors for each position
         position_colors = {
-            'Goalkeeper': '#60DB00',
-            'Defender': '#B141FF',
-            'Midfielder': '#00DADA',
-            'Forward': '#9DB600',
+           'Goalkeeper': '#008000',
+           'Defender': '#a52a2a',
+           'Midfielder': '#ffdab9',
+           'Forward': '#ffd700',
     }
         # Filter the data to include only the top 5 players
         df = df_perform_player.sort_values(category, ascending=False).reset_index(drop=True).head(5)
@@ -172,10 +172,10 @@ def perform_formdiff():
 
                 # Define custom colors for each position
         position_colors = {
-            'Goalkeeper': '#60DB00',
-            'Defender': '#B141FF',
-            'Midfielder': '#00DADA',
-            'Forward': '#9DB600',
+           'Goalkeeper': '#008000',
+           'Defender': '#a52a2a',
+           'Midfielder': '#ffdab9',
+           'Forward': '#ffd700',
     }
         # Filter the data to include only the top 5 players
         df = df_bonus_player.sort_values(category, ascending=False).reset_index(drop=True).head(5)
