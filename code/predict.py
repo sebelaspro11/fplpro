@@ -14,11 +14,11 @@ def perform_predict():
 
 
     contact_form = """
-    <form action="https://formsubmit.co/08846d17827714e0118e2ad7990d53fd" method="POST">
+    <form action="https://formsubmit.co/sebelaspro11@gmail.com" method="POST">
         <input type="hidden" name="_captcha" value="false">
         <input type="text" name="name" placeholder="Your name" required>
-        <input type="email" name="email" placeholder="Your email" required>
-        <textarea name="message" placeholder="Your message here"></textarea>
+        <input type="email" name="email" placeholder="Your email (Optional)">
+        <textarea name="message" placeholder="Your message here" required></textarea>
         <button type="submit">Send</button>
     </form>
     """
