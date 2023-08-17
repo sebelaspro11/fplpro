@@ -11,6 +11,7 @@ import streamlit.components.v1 as components
 def perform_predict():
     
     st.header(":mailbox: Get In Touch With Me!")
+    st.markdown('##### ***Suggestions for any feature improvements :keyboard:***')
 
 
     contact_form = """
@@ -22,7 +23,6 @@ def perform_predict():
         <button type="submit">Send</button>
     </form>
     """
-
     st.markdown(contact_form, unsafe_allow_html=True)
 
     # Use Local CSS File
@@ -31,7 +31,7 @@ def perform_predict():
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 
-    local_css("css/style.css")
+    local_css("D:/streamlit/fpl/style.css")
     
     # st.markdown(f'### Match Prediction from FiveThirtyEight.com')
     # st.markdown(f'##### ***Prediction For League Standings & Upcoming Matches***')
