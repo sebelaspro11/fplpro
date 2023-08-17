@@ -128,7 +128,7 @@ def perform_formdiff():
                 # Define custom colors for each position
         position_colors = {
            'Goalkeeper': '#008000',
-           'Defender': '#a52a2a',
+           'Defender': '#FF4B4B',
            'Midfielder': '#ffdab9',
            'Forward': '#ffd700',
     }
@@ -173,7 +173,7 @@ def perform_formdiff():
                 # Define custom colors for each position
         position_colors = {
            'Goalkeeper': '#008000',
-           'Defender': '#a52a2a',
+           'Defender': '#FF4B4B',
            'Midfielder': '#ffdab9',
            'Forward': '#ffd700',
     }
