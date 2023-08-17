@@ -31,7 +31,7 @@ def perform_predict():
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 
-    local_css("D:/streamlit/fpl/style.css")
+    local_css("css/style.css")
     
     # st.markdown(f'### Match Prediction from FiveThirtyEight.com')
     # st.markdown(f'##### ***Prediction For League Standings & Upcoming Matches***')
