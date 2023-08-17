@@ -615,18 +615,19 @@ def perform_analysis():
         # Define custom colors for each position
     position_colors = {
         'Goalkeeper': '#008000',
-        'Defender': '#a52a2a',
+        'Defender': '#FF4B4B',
         'Midfielder': '#ffdab9',
         'Forward': '#ffd700',
     }
     if show_filtered:
         st.markdown('### Overall Chart')
-        #st.markdown('##### ***Player Total Goals per 90 Minutes***')    
+        st.markdown('##### ***Player Total Goals per 90 Minutes***')    
         def all_chart(df_filtered_player, category, tooltip):
 
             
             # Filter the data to include only the top 5 players
             df = df_filtered_player.sort_values(category, ascending=False).reset_index(drop=True).head(5)
+        
             
             # Create the bar chart
             fig = px.bar(
@@ -675,9 +676,17 @@ def perform_analysis():
             fig_yc = all_chart(df_filtered_player, "Total YC", tooltip)
             st.plotly_chart(fig_yc, theme="streamlit", use_container_width=True)
 
+        # with tab_rc:
+        #     fig_rc = all_chart(df_filtered_player, "Total RC", tooltip)
+        #     st.plotly_chart(fig_rc, theme="streamlit", use_container_width=True)
+        
         with tab_rc:
-            fig_rc = all_chart(df_filtered_player, "Total RC", tooltip)
+            red_card_players = df_filtered_player[df_filtered_player['Total RC'] > 0]['Player Name'].tolist()
+
+        with tab_rc:
+            fig_rc = all_chart(df_filtered_player, "Total RC", tooltip, red_card_players)
             st.plotly_chart(fig_rc, theme="streamlit", use_container_width=True)
+
         
         
         st.markdown('### Offensive Chart')  
