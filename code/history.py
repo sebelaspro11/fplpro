@@ -49,6 +49,7 @@ def perform_history():
     
     # Apply filters to the player data
     df_filtered_player = df_past_history_2023[df_past_history_2023['Seasons'].isin(season_hist) & df_past_history_2023['Player Name'].isin(player_hist) & (df_past_history_2023['End Price'] < price_choice)]
+    
     if show_filtered:
             st.data_editor(
     df_filtered_player.sort_values('Total Points', ascending=False).reset_index(drop=True),
@@ -157,7 +158,7 @@ def perform_history():
             max_value=1496.2,
             format="%d",
         ),
-         "Total Own Goals": st.column_config.ProgressColumn(
+         "Total OG": st.column_config.ProgressColumn(
             "Total OG",
             help="Player Total Own Goals",
             min_value=0,
@@ -171,14 +172,14 @@ def perform_history():
             max_value=3,
             format="%d",
         ),
-         "Total Red Cards": st.column_config.ProgressColumn(
+         "Total RC": st.column_config.ProgressColumn(
             "Total RC",
             help="Player Total Red Cards",
             min_value=0,
             max_value=2,
             format="%d",
         ),
-         "Total Yellow Cards": st.column_config.ProgressColumn(
+         "Total YC": st.column_config.ProgressColumn(
             "Total YC",
             help="Player Total Yellow Cards",
             min_value=0,
@@ -239,9 +240,9 @@ def perform_history():
             max_value=31.65,
             format="%d",
         ),
-          "Total Penalty Missed": st.column_config.ProgressColumn(
-            "Total Penalty Missed",
-            help="Player Total Penalty Missed",
+          "Total Penalties Missed": st.column_config.ProgressColumn(
+            "Total Penalties Missed",
+            help="Player Total Penalties Missed",
         
             min_value=0,
             max_value=14,
@@ -254,6 +255,8 @@ def perform_history():
     hide_index=True,
 )
     else:
+        
+        
         st.data_editor(
     df_past_history_2023.sort_values('Total Points', ascending=False).reset_index(drop=True),
     column_config={
@@ -361,7 +364,7 @@ def perform_history():
             max_value=1496.2,
             format="%d",
         ),
-         "Total Own Goals": st.column_config.ProgressColumn(
+         "Total OG": st.column_config.ProgressColumn(
             "Total OG",
             help="Player Total Own Goals",
             min_value=0,
@@ -375,14 +378,14 @@ def perform_history():
             max_value=3,
             format="%d",
         ),
-         "Total Red Cards": st.column_config.ProgressColumn(
+         "Total RC": st.column_config.ProgressColumn(
             "Total RC",
             help="Player Total Red Cards",
             min_value=0,
             max_value=2,
             format="%d",
         ),
-         "Total Yellow Cards": st.column_config.ProgressColumn(
+         "Total YC": st.column_config.ProgressColumn(
             "Total YC",
             help="Player Total Yellow Cards",
             min_value=0,
@@ -443,9 +446,9 @@ def perform_history():
             max_value=31.65,
             format="%d",
         ),
-          "Total Penalty Missed": st.column_config.ProgressColumn(
-            "Total Penalty Missed",
-            help="Player Total Penalty Missed",
+          "Total Penalties Missed": st.column_config.ProgressColumn(
+            "Total Penalties Missed",
+            help="Player Total Penalties Missed",
         
             min_value=0,
             max_value=14,
@@ -716,11 +719,11 @@ def perform_history():
             st.plotly_chart(fig_bonus, theme="streamlit", use_container_width=True)
 
         with tab_yc:
-            fig_yc = all_chart_history(df_past_history_2023, "Total Yellow Cards", tooltip)
+            fig_yc = all_chart_history(df_past_history_2023, "Total YC", tooltip)
             st.plotly_chart(fig_yc, theme="streamlit", use_container_width=True)
 
         with tab_rc:
-            fig_rc = all_chart_history(df_past_history_2023, "Total Red Cards", tooltip)
+            fig_rc = all_chart_history(df_past_history_2023, "Total RC", tooltip)
             st.plotly_chart(fig_rc, theme="streamlit", use_container_width=True)
             
             
@@ -828,7 +831,7 @@ def perform_history():
         tab_cs, tab_saves= st.tabs(["Clean Sheets", "Saves"])
 
         with tab_cs:
-            fig_cs = def_chart(df_past_history_2023, "Total Clean Sheets", tooltip)
+            fig_cs = def_chart(df_past_history_2023, "Total CS", tooltip)
             st.plotly_chart(fig_cs, theme="streamlit", use_container_width=True)
 
         with tab_saves:
