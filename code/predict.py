@@ -11,7 +11,7 @@ import streamlit.components.v1 as components
 def perform_predict():
     
     st.header(":mailbox: Get In Touch With Me!")
-    st.markdown('##### ***Suggestions for any feature improvementsss :keyboard:***')
+    st.markdown('##### ***Suggestions for any feature improvements :keyboard:***')
 
 
     contact_form = """
