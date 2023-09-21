@@ -1047,13 +1047,13 @@ def perform_analysis():
 
         
         tooltip = {
-        "Total Clean Sheets": {"Player Name": True, "Team": True, "Total Clean Sheets": True},
+        "Total CS": {"Player Name": True, "Team": True, "Total CS": True},
         "Total Saves": {"Player Name": True, "Team": True, "Total Saves": True},
         }
         tab_cs, tab_saves= st.tabs(["Clean Sheets", "Saves"])
 
         with tab_cs:
-            fig_cs = def_chart(df_player, "Total Clean Sheets", tooltip)
+            fig_cs = def_chart(df_player, "Total CS", tooltip)
             st.plotly_chart(fig_cs, theme="streamlit", use_container_width=True)
 
         with tab_saves:
