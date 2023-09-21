@@ -532,11 +532,11 @@ def perform_history():
             st.plotly_chart(fig_bonus, theme="streamlit", use_container_width=True)
 
         with tab_yc:
-            fig_yc = all_chart_history(df_filtered_player, "Total Yellow Cards", tooltip)
+            fig_yc = all_chart_history(df_filtered_player, "Total YC", tooltip)
             st.plotly_chart(fig_yc, theme="streamlit", use_container_width=True)
 
         with tab_rc:
-            fig_rc = all_chart_history(df_filtered_player, "Total Red Cards", tooltip)
+            fig_rc = all_chart_history(df_filtered_player, "Total RC", tooltip)
             st.plotly_chart(fig_rc, theme="streamlit", use_container_width=True)
             
             
