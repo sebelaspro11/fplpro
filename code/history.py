@@ -116,7 +116,7 @@ def perform_history():
             max_value=1040,
             format="%d",
         ),
-         "Total Clean Sheets": st.column_config.ProgressColumn(
+         "Total CS": st.column_config.ProgressColumn(
             "Total CS",
             help="Player Total Clean Sheets",
             min_value=0,
@@ -137,7 +137,7 @@ def perform_history():
             max_value=36,
             format="%d",
         ),
-         "Total Goals Conceded": st.column_config.ProgressColumn(
+         "Total GC": st.column_config.ProgressColumn(
             "Total GC",
             help="Player Total Goals Conceded",
             min_value=0,
@@ -343,7 +343,7 @@ def perform_history():
             max_value=36,
             format="%d",
         ),
-         "Total Goals Conceded": st.column_config.ProgressColumn(
+         "Total GC": st.column_config.ProgressColumn(
             "Total GC",
             help="Player Total Goals Conceded",
             min_value=0,
@@ -644,7 +644,7 @@ def perform_history():
         tab_cs, tab_saves= st.tabs(["Clean Sheets", "Saves"])
 
         with tab_cs:
-            fig_cs = def_chart(df_filtered_player, "Total Clean Sheets", tooltip)
+            fig_cs = def_chart(df_filtered_player, "Total CS", tooltip)
             st.plotly_chart(fig_cs, theme="streamlit", use_container_width=True)
 
         with tab_saves:
