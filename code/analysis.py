@@ -683,10 +683,10 @@ def perform_analysis():
         # with tab_rc:
         #     red_card_players = df_filtered_player[df_filtered_player['Total RC'] > 0]['Player Name'].tolist()
 
-        with tab_rc:
-            #red_card_players = df_filtered_player[df_filtered_player["Total RC"] > 0]['Player Name'].tolist()
-            fig_rc = all_chart(df_filtered_player, "Total RC", tooltip) #red_card_players)
-            st.plotly_chart(fig_rc, theme="streamlit", use_container_width=True)
+        # with tab_rc:
+        #     #red_card_players = df_filtered_player[df_filtered_player["Total RC"] > 0]['Player Name'].tolist()
+        #     fig_rc = all_chart(df_filtered_player, "Total RC", tooltip) #red_card_players)
+        #     st.plotly_chart(fig_rc, theme="streamlit", use_container_width=True)
 
         
         
