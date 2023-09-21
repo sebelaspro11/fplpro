@@ -40,7 +40,7 @@ def perform_formdiff():
 
     df_history_2023 = fetch_data_history(collection_details)
 
-    st.markdown(f'### Top Performer Player Based On Last 2 Gameweeks')
+    st.markdown(f'### Top Performer Player Based On Last 3 Gameweeks')
 
     
     df_history_2023['Last 3 GW Goals'] = df_history_2023.groupby('Player Name')['Goals Scored'].rolling(window=3, min_periods=1).sum().reset_index(0, drop=True)
