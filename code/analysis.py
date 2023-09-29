@@ -67,7 +67,7 @@ def perform_analysis():
     # Apply filters to the player data
     df_filtered_player = df_player[df_player['Position'].isin(positions) & df_player['Team'].isin(teams) & (df_player['Price'] < price_choice)]
 
-    
+
     
         
     # Display player data
@@ -75,9 +75,11 @@ def perform_analysis():
     #st.dataframe(df_filtered_player.sort_values('Total Points', ascending=False).reset_index(drop=True))
     
     if show_filtered:
-                st.data_editor(
+        min_values = df_filtered_player.min()
+        max_values = df_filtered_player.max()
+        st.data_editor(
         df_filtered_player.sort_values('Total Points', ascending=False).reset_index(drop=True),
-        column_config={
+                column_config={
             "Player Name": st.column_config.TextColumn(
                 "Player Name",
                 help="Player Name",
@@ -96,245 +98,178 @@ def perform_analysis():
                 max_chars=50,
                 validate="^st\.[a-z_]+$",
             ),
-            "Price": st.column_config.ProgressColumn(
+            "Price": st.column_config.NumberColumn(
                 "Price",
                 help="Player Price",
-                min_value=3.7,
-                max_value=13.1,
                 format="$%.1f",
             ),
             "Total Points": st.column_config.NumberColumn(
                 "Total Points",
                 help="Player Total Points",
-                min_value=0,
-                max_value=272,
                 format="%d",
             ),
-            "Total Goals": st.column_config.ProgressColumn(
+            "Total Goals": st.column_config.NumberColumn(
                 "Total Goals",
                 help="Player Total of Goals",
-                min_value=0,
-                max_value=36,
                 format="%d",
                 
             ),
-            "Total Assists": st.column_config.ProgressColumn(
+            "Total Assists": st.column_config.NumberColumn(
                 "Total Assists",
                 help="Player Total of Assists",
-                min_value=0,
-                max_value=18,
                 format="%d",
                 
             ),
-            "Total CS": st.column_config.ProgressColumn(
+            "Total CS": st.column_config.NumberColumn(
                 "Total CS",
                 help="Player Total Clean Sheets",
-                min_value=0,
-                max_value=18,
                 format="%d",
             ),
-            "Total Bonus": st.column_config.ProgressColumn(
+            "Total Bonus": st.column_config.NumberColumn(
                 "Total Bonus",
                 help="Player Total of Bonus Points",
-                min_value=0,
-                max_value=48,
                 format="%d",
             ),
-            "Minutes Played": st.column_config.ProgressColumn(
+            "Minutes Played": st.column_config.NumberColumn(
                 "Minutes Played",
                 help="Player Minutes Played",
-                min_value=0,
-                max_value=3420,
                 format="%d",
             ),
-            "Total Saves": st.column_config.ProgressColumn(
+            "Total Saves": st.column_config.NumberColumn(
                 "Total Saves",
                 help="Player Total Saves (GK)",
-                min_value=0,
-                max_value=154,
                 format="%d",
             ),
-            "Dreamteam": st.column_config.ProgressColumn(
+            "Dreamteam": st.column_config.NumberColumn(
                 "Dreamteam",
                 help="Player Total Number Of Dreamteam Selected",
-                min_value=-0,
-                max_value=11,
                 format="%d",
             ),
-            "Total Influence": st.column_config.ProgressColumn(
+            "Total Influence": st.column_config.NumberColumn(
                 "Total Influence",
                 help="Player Total Influence Points",
-                min_value=0,
-                max_value=1390.2,
                 format="%d",
             ),
             "Influence Rank": st.column_config.NumberColumn(
                 "Influence Rank",
                 help="Player Influence Points Overall Rank",
-                min_value=1,
-                max_value=778,
                 format="%d",
             ),
             "Position Influence Rank": st.column_config.NumberColumn(
                 "Position Influence Rank",
                 help="Player Influence Points Rank Based On Position",
-                min_value=1,
-                max_value=338,
                 format="%d",
             ),
-            "Total Creativity": st.column_config.ProgressColumn(
+            "Total Creativity": st.column_config.NumberColumn(
                 "Total Creativity",
                 help="Player Total Creativity Points",
-                min_value=0,
-                max_value=1824,
                 format="%d",
             ),
-            "Total Threat": st.column_config.ProgressColumn(
+            "Total Threat": st.column_config.NumberColumn(
                 "Total Threat",
                 help="Player Total Threat Points",
-                min_value=0,
-                max_value=1825,
                 format="%d",
             ),
-            "Total xG": st.column_config.ProgressColumn(
+            "Total xG": st.column_config.NumberColumn(
                 "Total xG",
                 help="Player Total Expected Goals",
-                min_value=0,
-                max_value=28.54,
                 format="%d",
             ),
-            "Total xA": st.column_config.ProgressColumn(
+            "Total xA": st.column_config.NumberColumn(
                 "Total xA",
                 help="Player Total Expected Assists",
-            
-                min_value=0,
-                max_value=13.69,
                 format="%d",
             ),           
             "Creativity Rank": st.column_config.NumberColumn(
                 "Creativity Rank",
                 help="Player Total GC",
-                min_value=1,
-                max_value=778,
                 format="%d",
             ),
             "Position Creativity Rank": st.column_config.NumberColumn(
                 "Position Creativity Rank",
                 help="Player Total Creativity Rank Based On Position",
-                min_value=1,
-                max_value=338,
                 format="%d",
             ),
             "Threat Rank": st.column_config.NumberColumn(
                 "Threat Rank",
                 help="Player Total Threat Overall Rank",
-                min_value=1,
-                max_value=778,
                 format="%d",
             ),
             "Position Threat Rank": st.column_config.NumberColumn(
                 "Position Threat Rank",
                 help="Player Total Threat Rank Based On Position",
-                min_value=1,
-                max_value=338,
                 format="%d",
             ),
-            "Total ICT Index": st.column_config.ProgressColumn(
+            "Total ICT Index": st.column_config.NumberColumn(
                 "Total ICT Index",
                 help="Player Total ICT Index Points",
-                min_value=0,
-                max_value=386.3,
                 format="%d",
             ),
             "ICT Index Rank": st.column_config.NumberColumn(
                 "ICT Index Rank",
                 help="Player Total ICT Index Overall Rank",
-                min_value=0,
-                max_value=386.3,
                 format="%d",
             ),
             "Position ICT Index Rank": st.column_config.NumberColumn(
                 "Position ICT Index Rank",
                 help="Player Total ICT Index Rank Based On Position",
-                min_value=1,
-                max_value=338,
                 format="%d",
             ),
             "Corners/Indirect Freekick Order": st.column_config.NumberColumn(
                 "Corners/Indirect Freekick Order",
                 help="Players Corners/Indirect Freekick Order",
-                min_value=0,
-                max_value=6,
                 format="%d",
             ),
             "Direct Freekick Order": st.column_config.NumberColumn(
                 "Direct Freekick Order",
                 help="Players Direct Freekick Order",
-                min_value=0,
-                max_value=6,
                 format="%d",
             ),
             "Form Rank": st.column_config.NumberColumn(
                 "Form Rank",
                 help="Players Form Overall Ranking",
-                min_value=0,
-                max_value=778,
                 format="%d",
             ),
             "Position Form Rank": st.column_config.NumberColumn(
                 "Position Form Rank",
                 help="Players Form Ranking Based On Position",
-                min_value=0,
-                max_value=778,
                 format="%d",
             ),
             "Points/Game Rank": st.column_config.NumberColumn(
                 "Points/Game Ranking",
                 help="Players Points Per Game Overall Ranking",
-                min_value=1,
-                max_value=778,
                 format="%d",
             ),
             "Position Points/Game Rank": st.column_config.NumberColumn(
                 "Position Points/Game Ranking",
                 help="Players Points Per Game Ranking Based On Position",
-                min_value=1,
-                max_value=338,
                 format="%d",
             ),
-            "Total YC": st.column_config.ProgressColumn(
+            "Total YC": st.column_config.NumberColumn(
                 "Total YC",
                 help="Player Total Yellow Cards",
-                min_value=0,
-                max_value=14,
+
                 format="%d",
             ),
-            "Total RC": st.column_config.ProgressColumn(
+            "Total RC": st.column_config.NumberColumn(
                 "Total RC",
                 help="Player Total Red Cards",
-                min_value=0,
-                max_value=2,
+
                 format="%d",
             ),
-            "Total Goals P90": st.column_config.ProgressColumn(
+            "Total Goals P90": st.column_config.NumberColumn(
                 "Total Goals P90",
                 help="Player Total Goals Per 90",
-                min_value=0,
-                max_value=1.3366,
                 format="%d",
             ),
-            "Total Assists P90": st.column_config.ProgressColumn(
+            "Total Assists P90": st.column_config.NumberColumn(
                 "Total Assists P90",
                 help="Player Total Assists Per 90",
-                min_value=0,
-                max_value=15,
                 format="%d",
             ),
-            "Total Points P90": st.column_config.ProgressColumn(
+            "Total Points P90": st.column_config.NumberColumn(
                 "Total Points P90",
                 help="Player Total Points Per 90",
-                min_value=0,
-                max_value=90,
                 format="%d",
             ),   
         },
@@ -362,245 +297,176 @@ def perform_analysis():
                 max_chars=50,
                 validate="^st\.[a-z_]+$",
             ),
-            "Price": st.column_config.ProgressColumn(
+            "Price": st.column_config.NumberColumn(
                 "Price",
                 help="Player Price",
-                min_value=3.7,
-                max_value=13.1,
                 format="$%.1f",
             ),
             "Total Points": st.column_config.NumberColumn(
                 "Total Points",
                 help="Player Total Points",
-                min_value=0,
-                max_value=272,
                 format="%d",
             ),
-            "Total Goals": st.column_config.ProgressColumn(
+            "Total Goals": st.column_config.NumberColumn(
                 "Total Goals",
                 help="Player Total of Goals",
-                min_value=0,
-                max_value=36,
                 format="%d",
                 
             ),
-            "Total Assists": st.column_config.ProgressColumn(
+            "Total Assists": st.column_config.NumberColumn(
                 "Total Assists",
                 help="Player Total of Assists",
-                min_value=0,
-                max_value=18,
                 format="%d",
                 
             ),
-            "Total CS": st.column_config.ProgressColumn(
+            "Total CS": st.column_config.NumberColumn(
                 "Total CS",
                 help="Player Total Clean Sheets",
-                min_value=0,
-                max_value=18,
                 format="%d",
             ),
-            "Total Bonus": st.column_config.ProgressColumn(
+            "Total Bonus": st.column_config.NumberColumn(
                 "Total Bonus",
                 help="Player Total of Bonus Points",
-                min_value=0,
-                max_value=48,
                 format="%d",
             ),
-            "Minutes Played": st.column_config.ProgressColumn(
+            "Minutes Played": st.column_config.NumberColumn(
                 "Minutes Played",
                 help="Player Minutes Played",
-                min_value=0,
-                max_value=3420,
                 format="%d",
             ),
-            "Total Saves": st.column_config.ProgressColumn(
+            "Total Saves": st.column_config.NumberColumn(
                 "Total Saves",
                 help="Player Total Saves (GK)",
-                min_value=0,
-                max_value=154,
                 format="%d",
             ),
-            "Dreamteam": st.column_config.ProgressColumn(
+            "Dreamteam": st.column_config.NumberColumn(
                 "Dreamteam",
                 help="Player Total Number Of Dreamteam Selected",
-                min_value=-0,
-                max_value=11,
                 format="%d",
             ),
-            "Total Influence": st.column_config.ProgressColumn(
+            "Total Influence": st.column_config.NumberColumn(
                 "Total Influence",
                 help="Player Total Influence Points",
-                min_value=0,
-                max_value=1390.2,
                 format="%d",
             ),
             "Influence Rank": st.column_config.NumberColumn(
                 "Influence Rank",
                 help="Player Influence Points Overall Rank",
-                min_value=1,
-                max_value=778,
                 format="%d",
             ),
             "Position Influence Rank": st.column_config.NumberColumn(
                 "Position Influence Rank",
                 help="Player Influence Points Rank Based On Position",
-                min_value=1,
-                max_value=338,
                 format="%d",
             ),
-            "Total Creativity": st.column_config.ProgressColumn(
+            "Total Creativity": st.column_config.NumberColumn(
                 "Total Creativity",
                 help="Player Total Creativity Points",
-                min_value=0,
-                max_value=1824,
                 format="%d",
             ),
-            "Total Threat": st.column_config.ProgressColumn(
+            "Total Threat": st.column_config.NumberColumn(
                 "Total Threat",
                 help="Player Total Threat Points",
-                min_value=0,
-                max_value=1825,
                 format="%d",
             ),
-            "Total xG": st.column_config.ProgressColumn(
+            "Total xG": st.column_config.NumberColumn(
                 "Total xG",
                 help="Player Total Expected Goals",
-                min_value=0,
-                max_value=28.54,
                 format="%d",
             ),
-            "Total xA": st.column_config.ProgressColumn(
+            "Total xA": st.column_config.NumberColumn(
                 "Total xA",
                 help="Player Total Expected Assists",
-            
-                min_value=0,
-                max_value=13.69,
                 format="%d",
             ),           
             "Creativity Rank": st.column_config.NumberColumn(
                 "Creativity Rank",
                 help="Player Total Goals Conceded",
-                min_value=1,
-                max_value=778,
                 format="%d",
             ),
             "Position Creativity Rank": st.column_config.NumberColumn(
                 "Position Creativity Rank",
                 help="Player Total Creativity Rank Based On Position",
-                min_value=1,
-                max_value=338,
                 format="%d",
             ),
             "Threat Rank": st.column_config.NumberColumn(
                 "Threat Rank",
                 help="Player Total Threat Overall Rank",
-                min_value=1,
-                max_value=778,
                 format="%d",
             ),
             "Position Threat Rank": st.column_config.NumberColumn(
                 "Position Threat Rank",
                 help="Player Total Threat Rank Based On Position",
-                min_value=1,
-                max_value=338,
                 format="%d",
             ),
-            "Total ICT Index": st.column_config.ProgressColumn(
+            "Total ICT Index": st.column_config.NumberColumn(
                 "Total ICT Index",
                 help="Player Total ICT Index Points",
-                min_value=0,
-                max_value=386.3,
                 format="%d",
             ),
             "ICT Index Rank": st.column_config.NumberColumn(
                 "ICT Index Rank",
                 help="Player Total ICT Index Overall Rank",
-                min_value=0,
-                max_value=386.3,
                 format="%d",
             ),
             "Position ICT Index Rank": st.column_config.NumberColumn(
                 "Position ICT Index Rank",
                 help="Player Total ICT Index Rank Based On Position",
-                min_value=1,
-                max_value=338,
                 format="%d",
             ),
             "Corners/Indirect Freekick Order": st.column_config.NumberColumn(
                 "Corners/Indirect Freekick Order",
                 help="Players Corners/Indirect Freekick Order",
-                min_value=0,
-                max_value=6,
                 format="%d",
             ),
             "Direct Freekick Order": st.column_config.NumberColumn(
                 "Direct Freekick Order",
                 help="Players Direct Freekick Order",
-                min_value=0,
-                max_value=6,
                 format="%d",
             ),
             "Form Rank": st.column_config.NumberColumn(
                 "Form Rank",
                 help="Players Form Overall Ranking",
-                min_value=0,
-                max_value=778,
                 format="%d",
             ),
             "Position Form Rank": st.column_config.NumberColumn(
                 "Position Form Rank",
                 help="Players Form Ranking Based On Position",
-                min_value=0,
-                max_value=778,
                 format="%d",
             ),
             "Points/Game Rank": st.column_config.NumberColumn(
                 "Points/Game Ranking",
                 help="Players Points Per Game Overall Ranking",
-                min_value=1,
-                max_value=778,
                 format="%d",
             ),
             "Position Points/Game Rank": st.column_config.NumberColumn(
                 "Position Points/Game Ranking",
                 help="Players Points Per Game Ranking Based On Position",
-                min_value=1,
-                max_value=338,
                 format="%d",
             ),
-            "Total YC": st.column_config.ProgressColumn(
+            "Total YC": st.column_config.NumberColumn(
                 "Total YC",
                 help="Player Total Yellow Cards",
-                min_value=0,
-                max_value=14,
                 format="%d",
             ),
-            "Total RC": st.column_config.ProgressColumn(
+            "Total RC": st.column_config.NumberColumn(
                 "Total RC",
                 help="Player Total Red Cards",
-                min_value=0,
-                max_value=2,
                 format="%d",
             ),
-            "Total Goals P90": st.column_config.ProgressColumn(
+            "Total Goals P90": st.column_config.NumberColumn(
                 "Total Goals P90",
                 help="Player Total Goals Per 90",
-                min_value=0,
-                max_value=1.3366,
                 format="%d",
             ),
-            "Total Assists P90": st.column_config.ProgressColumn(
+            "Total Assists P90": st.column_config.NumberColumn(
                 "Total Assists P90",
                 help="Player Total Assists Per 90",
-                min_value=0,
-                max_value=15,
                 format="%d",
             ),
-            "Total Points P90": st.column_config.ProgressColumn(
+            "Total Points P90": st.column_config.NumberColumn(
                 "Total Points P90",
                 help="Player Total Points Per 90",
-                min_value=0,
-                max_value=90,
                 format="%d",
             ),   
         },
@@ -620,82 +486,18 @@ def perform_analysis():
         'Forward': '#ffd700',
     }
     if show_filtered:
-        st.markdown('### Overall Chart')
-        st.markdown('##### ***Player Total Goals per 90 Minutes***')    
-        def all_chart(df_filtered_player, category, tooltip):
-
-            
-            # Filter the data to include only the top 5 players
-            df = df_filtered_player.sort_values(category, ascending=False).reset_index(drop=True).head(5)
         
-            
-            # Create the bar chart
-            fig = px.bar(
-                df,
-                y="Player Name",
-                x=category,
-                color="Position",
-                color_discrete_map=position_colors,  # Set custom colors for each position
-                text="Team",
-                hover_data=tooltip.get(category, {})
-
-            )
-            custom_font_family = "Arial"
-            
-            # Set the custom font for the text
-            fig.update_layout(
-                font_family=custom_font_family,
-                font_color="black",  # Optionally, set the font color
-            )
-            
-            return fig
-
-
-        tooltip = {
-        "Total Points": {"Player Name": True, "Team": True, "Total Points": True},
-        "Total Bonus": {"Player Name": True, "Team": True, "Total Bonus": True},
-        "Dreamteam": {"Player Name": True, "Team": True, "Dreamteam": True},
-        "Total YC": {"Player Name": True, "Team": True, "Total YC": True},
-        "Total RC": {"Player Name": True, "Team": True, "Total RC": True},
-
-        }
-        tab_points, tab_bonus, tab_dreamteam, tab_yc, tab_rc = st.tabs(["Points", "Bonus", "Dreamteam", "Yellow Cards", "Red Cards"])
-
-        with tab_points:
-            fig_points = all_chart(df_filtered_player, "Total Points", tooltip)
-            st.plotly_chart(fig_points, theme="streamlit", use_container_width=True)
-        with tab_bonus:
-            fig_bonus = all_chart(df_filtered_player, "Total Bonus", tooltip)
-            st.plotly_chart(fig_bonus, theme="streamlit", use_container_width=True)
-
-        with tab_dreamteam:
-            fig_dreamteam = all_chart(df_filtered_player, "Dreamteam", tooltip)
-            st.plotly_chart(fig_dreamteam, theme="streamlit", use_container_width=True)
-
-        with tab_yc:
-            fig_yc = all_chart(df_filtered_player, "Total YC", tooltip)
-            st.plotly_chart(fig_yc, theme="streamlit", use_container_width=True)
-
-        # with tab_rc:
-        #     fig_rc = all_chart(df_filtered_player, "Total RC", tooltip)
-        #     st.plotly_chart(fig_rc, theme="streamlit", use_container_width=True)
-        
-        # with tab_rc:
-        #     red_card_players = df_filtered_player[df_filtered_player['Total RC'] > 0]['Player Name'].tolist()
-
-        with tab_rc:
-            #red_card_players = df_filtered_player[df_filtered_player["Total RC"] > 0]['Player Name'].tolist()
-            fig_rc = all_chart(df_filtered_player, "Total RC", tooltip) #red_card_players)
-            st.plotly_chart(fig_rc, theme="streamlit", use_container_width=True)
 
         
         
         st.markdown('### Offensive Chart')  
-        def off_chart(df_filtered_player, category, tootltip):
+        def off_chart(df_filtered_player, category, tooltip):
 
             
             # Filter the data to include only the top 5 players
-            df = df_filtered_player.sort_values(category, ascending=False).reset_index(drop=True).head(5)
+            #df = df_filtered_player.sort_values(category, ascending=False).reset_index(drop=True).head(5)
+            df = df_filtered_player.sort_values(category, ascending=False).reset_index(drop=True).head(10)
+
             
             # Create the bar chart
             fig = px.bar(
@@ -761,7 +563,7 @@ def perform_analysis():
 
             
             # Filter the data to include only the top 5 players
-            df = df_filtered_player.sort_values(category, ascending=False).reset_index(drop=True).head(5)
+            df = df_filtered_player.sort_values(category, ascending=False).reset_index(drop=True).head(10)
                 
             # Create the bar chart
             fig = px.bar(
@@ -800,6 +602,75 @@ def perform_analysis():
             st.plotly_chart(fig_saves, theme="streamlit", use_container_width=True)
             
         
+        
+        st.markdown('### Overall Chart')
+        st.markdown('##### ***Player Total Goals per 90 Minutes***')    
+        def all_chart(df_filtered_player, category, tooltip):
+
+            
+            # Filter the data to include only the top 5 players
+            #df = df_filtered_player.sort_values(category, ascending=False).reset_index(drop=True).head(5)
+            df = df_filtered_player.sort_values(category, ascending=False).reset_index(drop=True).head(10)
+
+            
+            # Create the bar chart
+            fig = px.bar(
+                df,
+                y="Player Name",
+                x=category,
+                color="Position",
+                color_discrete_map=position_colors,  # Set custom colors for each position
+                text="Team",
+                hover_data=tooltip.get(category, {})
+
+            )
+            custom_font_family = "Arial"
+            
+            # Set the custom font for the text
+            fig.update_layout(
+                font_family=custom_font_family,
+                font_color="black",  # Optionally, set the font color
+            )
+            
+            return fig
+
+
+        tooltip = {
+        "Total Points": {"Player Name": True, "Team": True, "Total Points": True},
+        "Total Bonus": {"Player Name": True, "Team": True, "Total Bonus": True},
+        "Dreamteam": {"Player Name": True, "Team": True, "Dreamteam": True},
+        "Total YC": {"Player Name": True, "Team": True, "Total YC": True},
+        "Total RC": {"Player Name": True, "Team": True, "Total RC": True},
+
+        }
+        tab_points, tab_bonus, tab_dreamteam, tab_yc, tab_rc = st.tabs(["Points", "Bonus", "Dreamteam", "Yellow Cards", "Red Cards"])
+
+        with tab_points:
+            fig_points = all_chart(df_filtered_player, "Total Points", tooltip)
+            st.plotly_chart(fig_points, theme="streamlit", use_container_width=True)
+        with tab_bonus:
+            fig_bonus = all_chart(df_filtered_player, "Total Bonus", tooltip)
+            st.plotly_chart(fig_bonus, theme="streamlit", use_container_width=True)
+
+        with tab_dreamteam:
+            fig_dreamteam = all_chart(df_filtered_player, "Dreamteam", tooltip)
+            st.plotly_chart(fig_dreamteam, theme="streamlit", use_container_width=True)
+
+        with tab_yc:
+            fig_yc = all_chart(df_filtered_player, "Total YC", tooltip)
+            st.plotly_chart(fig_yc, theme="streamlit", use_container_width=True)
+
+        # with tab_rc:
+        #     fig_rc = all_chart(df_filtered_player, "Total RC", tooltip)
+        #     st.plotly_chart(fig_rc, theme="streamlit", use_container_width=True)
+        
+        # with tab_rc:
+        #     red_card_players = df_filtered_player[df_filtered_player['Total RC'] > 0]['Player Name'].tolist()
+
+        with tab_rc:
+            #red_card_players = df_filtered_player[df_filtered_player["Total RC"] > 0]['Player Name'].tolist()
+            fig_rc = all_chart(df_filtered_player, "Total RC", tooltip) #red_card_players)
+            st.plotly_chart(fig_rc, theme="streamlit", use_container_width=True)
     
 
         # Cost vs 22/23 Season Points chart
@@ -888,73 +759,17 @@ def perform_analysis():
         st.plotly_chart(fig_goals_price, theme="streamlit", use_container_width=True)
     
     else:
-        st.markdown('### Overall Chart')
-        #st.markdown('##### ***Player Total Goals per 90 Minutes***')    
-        def all_chart(df_player, category, tooltip):
-
-            
-            # Filter the data to include only the top 5 players
-            df = df_player.sort_values(category, ascending=False).reset_index(drop=True).head(5)
-            
-            # Create the bar chart
-            fig = px.bar(
-                df,
-                y="Player Name",
-                x=category,
-                color="Position",
-                color_discrete_map=position_colors,  # Set custom colors for each position
-                text="Team",
-                hover_name="Player Name",
-                hover_data=tooltip.get(category, {})
-
-            )
-            custom_font_family = "Arial"
-            
-            # Set the custom font for the text
-            fig.update_layout(
-                font_family=custom_font_family,
-                font_color="black",  # Optionally, set the font color
-            )
-            
-            return fig
-
-
-        tooltip = {
-        "Total Points": {"Player Name": True, "Team": True, "Total Points": True},
-        "Total Bonus": {"Player Name": True, "Team": True, "Total Bonus": True},
-        "Dreamteam": {"Player Name": True, "Team": True, "Dreamteam": True},
-        "Total YC": {"Player Name": True, "Team": True, "Total YC": True},
-        "Total RC": {"Player Name": True, "Team": True, "Total RC": True},
-
-        }
-        tab_points, tab_bonus, tab_dreamteam, tab_yc, tab_rc = st.tabs(["Points", "Bonus", "Dreamteam", "Yellow Cards", "Red Cards"])
-
-        with tab_points:
-            fig_points = all_chart(df_player, "Total Points", tooltip)
-            st.plotly_chart(fig_points, theme="streamlit", use_container_width=True)
-        with tab_bonus:
-            fig_bonus = all_chart(df_player, "Total Bonus", tooltip)
-            st.plotly_chart(fig_bonus, theme="streamlit", use_container_width=True)
-
-        with tab_dreamteam:
-            fig_dreamteam = all_chart(df_player, "Dreamteam", tooltip)
-            st.plotly_chart(fig_dreamteam, theme="streamlit", use_container_width=True)
-
-        with tab_yc:
-            fig_yc = all_chart(df_player, "Total YC", tooltip)
-            st.plotly_chart(fig_yc, theme="streamlit", use_container_width=True)
-
-        with tab_rc:
-            fig_rc = all_chart(df_player, "Total RC", tooltip)
-            st.plotly_chart(fig_rc, theme="streamlit", use_container_width=True)
+        
         
         
         st.markdown('### Offensive Chart')  
-        def off_chart(df_player, category, tootltip):
+        def off_chart(df_player, category, tooltip):
 
             
             # Filter the data to include only the top 5 players
-            df = df_player.sort_values(category, ascending=False).reset_index(drop=True).head(5)
+            df = df_player.sort_values(category, ascending=False).reset_index(drop=True).head(10)
+            # Set the 'Player Name' column as the index for proper sorting in the chart
+            #df.set_index('Player Name', inplace=True)
             
             # Create the bar chart
             fig = px.bar(
@@ -964,7 +779,7 @@ def perform_analysis():
                 color="Position",
                 color_discrete_map=position_colors,  # Set custom colors for each position
                 text="Team",
-                hover_name="Player Name",
+                hover_name="Total Points",
                 hover_data=tooltip.get(category, {})
 
             )
@@ -1021,7 +836,7 @@ def perform_analysis():
 
             
             # Filter the data to include only the top 5 players
-            df = df_player.sort_values(category, ascending=False).reset_index(drop=True).head(5)
+            df = df_player.sort_values(category, ascending=False).reset_index(drop=True).head(10)
                 
             # Create the bar chart
             fig = px.bar(
@@ -1041,7 +856,7 @@ def perform_analysis():
                 font_family=custom_font_family,
                 font_color="black",  # Optionally, set the font color
                 )
-                
+            fig.update_xaxes(tickvals=list(map(int, df[category].unique())), tickmode='linear') 
             return fig
 
 
@@ -1061,7 +876,68 @@ def perform_analysis():
             st.plotly_chart(fig_saves, theme="streamlit", use_container_width=True)
             
                 
-        
+        st.markdown('### Overall Chart')
+        #st.markdown('##### ***Player Total Goals per 90 Minutes***')    
+        def all_chart(df_player, category, tooltip):
+
+            
+            # Filter the data to include only the top 5 players
+            df = df_player.sort_values(category, ascending=False).reset_index(drop=True).head(10)
+            #df = df_player.sort_values('Total Points', ascending=False).reset_index(drop=True).head(10)
+            
+            
+            # Create the bar chart
+            fig = px.bar(
+                df,
+                y="Player Name",
+                x=category,
+                color="Position",
+                color_discrete_map=position_colors,  # Set custom colors for each position
+                text="Team",
+                hover_name="Player Name",
+                hover_data=tooltip.get(category, {})
+
+            )
+            custom_font_family = "Arial"
+            
+            # Set the custom font for the text
+            fig.update_layout(
+                font_family=custom_font_family,
+                font_color="black",  # Optionally, set the font color
+            )
+            #fig.update_xaxes(tickformat=".f")
+            fig.update_xaxes(tickvals=list(map(int, df[category].unique())), tickmode='linear')
+            return fig
+
+
+        tooltip = {
+        "Total Points": {"Player Name": True, "Team": True, "Total Points": True},
+        "Total Bonus": {"Player Name": True, "Team": True, "Total Bonus": True},
+        "Dreamteam": {"Player Name": True, "Team": True, "Dreamteam": True},
+        "Total YC": {"Player Name": True, "Team": True, "Total YC": True},
+        "Total RC": {"Player Name": True, "Team": True, "Total RC": True},
+
+        }
+        tab_points, tab_bonus, tab_dreamteam, tab_yc, tab_rc = st.tabs(["Points", "Bonus", "Dreamteam", "Yellow Cards", "Red Cards"])
+
+        with tab_points:
+            fig_points = all_chart(df_player, "Total Points", tooltip)
+            st.plotly_chart(fig_points, theme="streamlit", use_container_width=True)
+        with tab_bonus:
+            fig_bonus = all_chart(df_player, "Total Bonus", tooltip)
+            st.plotly_chart(fig_bonus, theme="streamlit", use_container_width=True)
+
+        with tab_dreamteam:
+            fig_dreamteam = all_chart(df_player, "Dreamteam", tooltip)
+            st.plotly_chart(fig_dreamteam, theme="streamlit", use_container_width=True)
+
+        with tab_yc:
+            fig_yc = all_chart(df_player, "Total YC", tooltip)
+            st.plotly_chart(fig_yc, theme="streamlit", use_container_width=True)
+
+        with tab_rc:
+            fig_rc = all_chart(df_player, "Total RC", tooltip)
+            st.plotly_chart(fig_rc, theme="streamlit", use_container_width=True)
     
 
         # Cost vs 22/23 Season Points chart
@@ -1146,7 +1022,3 @@ def perform_analysis():
 
         # Display the scatter plot using Streamlit
         st.plotly_chart(fig_goals_price, theme="streamlit", use_container_width=True)
-        
-    
-    
-
