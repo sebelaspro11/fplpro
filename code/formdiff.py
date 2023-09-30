@@ -133,7 +133,7 @@ def perform_formdiff():
     
     st.markdown(f'### Top Performer Player Based On Last 3 Gameweeks')
     st.markdown(f'##### ***Top 10 Player For Every Position***')
-    st.markdown(f'##### ***:green[Points]***')
+    st.markdown(f'##### ***:gray[Points]***')
     
 
 
@@ -396,7 +396,7 @@ def perform_formdiff():
         st.plotly_chart(fig_fwd, theme="streamlit", use_container_width=True)
 
     
-    st.markdown(f'##### ***Differential***')
+    st.markdown(f'##### ***:gray[Differential]***')
 
     tab_diff_gk, tab_diff_def, tab_diff_mid, tab_diff_fwd = st.tabs(["Goalkeeper", "Defender", "Midfielder", "Forward"])
     
@@ -415,7 +415,7 @@ def perform_formdiff():
         st.plotly_chart(fig_diff_fwd, theme="streamlit", use_container_width=True)
     
     
-    st.markdown(f'##### ***Budget***')
+    st.markdown(f'##### ***:gray[Budget]***')
 
     tab_price_gk, tab_price_def, tab_price_mid, tab_price_fwd = st.tabs(["Goalkeeper", "Defender", "Midfielder", "Forward"])
     
@@ -434,7 +434,7 @@ def perform_formdiff():
         st.plotly_chart(fig_price_fwd, theme="streamlit", use_container_width=True)
         
         
-    st.markdown(f'##### ***Bonus***')
+    st.markdown(f'##### ***:gray[Bonus]***')
 
     tab_bonus_gk, tab_bonus_def, tab_bonus_mid, tab_bonus_fwd = st.tabs(["Goalkeeper", "Defender", "Midfielder", "Forward"])
     
