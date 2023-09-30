@@ -133,7 +133,7 @@ def perform_formdiff():
     
     st.markdown(f'### Top Performer Player Based On Last 3 Gameweeks')
     st.markdown(f'##### ***Top 10 Player For Every Position***')
-    st.markdown(f'##### ****Points****')
+    st.markdown(f'##### ***:green[Points]***')
     
 
 
@@ -151,7 +151,7 @@ def perform_formdiff():
         # Filter the data to include only the top 5 players
         #df = df_perform_player.sort_values(category, ascending=False).reset_index(drop=True).head(10)
         
-        df = df_perform_player.sort_values('Last 3 GW Points', ascending=False).reset_index(drop=True).head(10)
+        df = df_perform_player.sort_values('Last 3 GW Points', ascending=False).reset_index(drop=True).head(5)
 
         
         # Create the bar chart
@@ -197,7 +197,7 @@ def perform_formdiff():
         # Filter the data to include only the top 5 players
         #df = df_perform_player.sort_values(category, ascending=False).reset_index(drop=True).head(10)
         
-        df = df_diff_player.sort_values('Last 3 GW Points', ascending=False).reset_index(drop=True).head(10)
+        df = df_diff_player.sort_values('Last 3 GW Points', ascending=False).reset_index(drop=True).head(5)
 
         df['Selected By(%)'] = df['Selected By(%)'].astype(str) + '%'
         # Create the bar chart
@@ -245,7 +245,7 @@ def perform_formdiff():
         # Filter the data to include only the top 5 players
         #df = df_perform_player.sort_values(category, ascending=False).reset_index(drop=True).head(10)
         
-        df = df_price_player.sort_values('Last 3 GW Points', ascending=False).reset_index(drop=True).head(10)
+        df = df_price_player.sort_values('Last 3 GW Points', ascending=False).reset_index(drop=True).head(5)
 
         df['Price'] = '£' + df['Price'].astype(str)
         # Create the bar chart
@@ -293,7 +293,7 @@ def perform_formdiff():
            'Forward': '#ffd700',
     }
         # Filter the data to include only the top 5 players
-        df = df_bonus_player.sort_values(category, ascending=False).reset_index(drop=True).head(10)
+        df = df_bonus_player.sort_values(category, ascending=False).reset_index(drop=True).head(5)
         
         # Create the bar chart
         fig = px.bar(
