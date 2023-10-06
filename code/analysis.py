@@ -78,7 +78,7 @@ def perform_analysis():
         min_values = df_filtered_player.min()
         max_values = df_filtered_player.max()
         st.data_editor(
-        df_filtered_player.sort_values('Total Points', ascending=False),
+        df_filtered_player.sort_values('Total Points', ascending=False).reset_index(drop=True),
                 column_config={
             "Player Name": st.column_config.TextColumn(
                 "Player Name",
@@ -278,13 +278,6 @@ def perform_analysis():
     else:
         st.data_editor(
         df_player.sort_values('Total Points', ascending=False).reset_index(drop=True),
-                column_config={
-            "Index": st.column_config.TextColumn(
-                "Index",
-                help="Player Name",
-                max_chars=50,
-                validate="^st\.[a-z_]+$",
-            ),
             "Player Name": st.column_config.TextColumn(
                 "Player Name",
                 help="Player Name",
