@@ -106,24 +106,24 @@ def perform_formdiff():
     
     
     # Select top players for each position
-    gk_top = gk_top.head(5).drop_duplicates(subset=['Player Name'])
-    def_top = def_top.head(5).drop_duplicates(subset=['Player Name'])
-    mid_top = mid_top.head(5).drop_duplicates(subset=['Player Name'])
-    fwd_top = fwd_top.head(5).drop_duplicates(subset=['Player Name'])
-    bonus_top = bonus_top.head(5).drop_duplicates(subset=['Player Name'])
-    gk_diff = gk_diff.head(5).drop_duplicates(subset=['Player Name'])
-    def_diff = def_diff.head(5).drop_duplicates(subset=['Player Name'])
-    mid_diff = mid_diff.head(5).drop_duplicates(subset=['Player Name'])
-    fwd_diff = fwd_diff.head(5).drop_duplicates(subset=['Player Name'])
-    gk_price = gk_price.head(5).drop_duplicates(subset=['Player Name'])
-    def_price = def_price.head(5).drop_duplicates(subset=['Player Name'])
-    mid_price = mid_price.head(5).drop_duplicates(subset=['Player Name'])
-    fwd_price = fwd_price.head(5).drop_duplicates(subset=['Player Name'])
+    gk_top = gk_top.head(10).drop_duplicates(subset=['Player Name'])
+    def_top = def_top.head(10).drop_duplicates(subset=['Player Name'])
+    mid_top = mid_top.head(10).drop_duplicates(subset=['Player Name'])
+    fwd_top = fwd_top.head(10).drop_duplicates(subset=['Player Name'])
+    bonus_top = bonus_top.head(10).drop_duplicates(subset=['Player Name'])
+    gk_diff = gk_diff.head(10).drop_duplicates(subset=['Player Name'])
+    def_diff = def_diff.head(10).drop_duplicates(subset=['Player Name'])
+    mid_diff = mid_diff.head(10).drop_duplicates(subset=['Player Name'])
+    fwd_diff = fwd_diff.head(10).drop_duplicates(subset=['Player Name'])
+    gk_price = gk_price.head(10).drop_duplicates(subset=['Player Name'])
+    def_price = def_price.head(10).drop_duplicates(subset=['Player Name'])
+    mid_price = mid_price.head(10).drop_duplicates(subset=['Player Name'])
+    fwd_price = fwd_price.head(10).drop_duplicates(subset=['Player Name'])
     
-    gk_bonus = gk_bonus.head(5).drop_duplicates(subset=['Player Name'])
-    def_bonus = def_bonus.head(5).drop_duplicates(subset=['Player Name'])
-    mid_bonus = mid_bonus.head(5).drop_duplicates(subset=['Player Name'])
-    fwd_bonus = fwd_bonus.head(5).drop_duplicates(subset=['Player Name'])
+    gk_bonus = gk_bonus.head(10).drop_duplicates(subset=['Player Name'])
+    def_bonus = def_bonus.head(10).drop_duplicates(subset=['Player Name'])
+    mid_bonus = mid_bonus.head(10).drop_duplicates(subset=['Player Name'])
+    fwd_bonus = fwd_bonus.head(10).drop_duplicates(subset=['Player Name'])
 
     # Concatenate selected players into a final DataFrame
     selected_players = pd.concat([gk_top, def_top, mid_top, fwd_top])
@@ -133,7 +133,7 @@ def perform_formdiff():
     
     st.markdown(f'### Top Performer Player Based On Last 3 Gameweeks')
     st.markdown(f'##### ***Top 10 Player For Every Position***')
-    st.markdown(f'##### ***:yellow[Points]***')
+    st.markdown(f'##### ****Points****')
     
 
 
@@ -143,15 +143,15 @@ def perform_formdiff():
 
                 # Define custom colors for each position
         position_colors = {
-           'Goalkeeper': '#008000',
-           'Defender': '#FF4B4B',
-           'Midfielder': '#ffdab9',
-           'Forward': '#ffd700',
-    }
+            'Goalkeeper': '#04f5ff',
+            'Defender': '#cc0249',
+            'Midfielder': '#fa9b28',
+            'Forward': '#00ff85',
+        }
         # Filter the data to include only the top 5 players
         #df = df_perform_player.sort_values(category, ascending=False).reset_index(drop=True).head(10)
         
-        df = df_perform_player.sort_values('Last 3 GW Points', ascending=False).reset_index(drop=True).head(5)
+        df = df_perform_player.sort_values('Last 3 GW Points', ascending=False).reset_index(drop=True).head(10)
 
         
         # Create the bar chart
@@ -189,15 +189,15 @@ def perform_formdiff():
 
                 # Define custom colors for each position
         position_colors = {
-           'Goalkeeper': '#008000',
-           'Defender': '#FF4B4B',
-           'Midfielder': '#ffdab9',
-           'Forward': '#ffd700',
-    }
+            'Goalkeeper': '#04f5ff',
+            'Defender': '#cc0249',
+            'Midfielder': '#fa9b28',
+            'Forward': '#00ff85',
+        }
         # Filter the data to include only the top 5 players
         #df = df_perform_player.sort_values(category, ascending=False).reset_index(drop=True).head(10)
         
-        df = df_diff_player.sort_values('Last 3 GW Points', ascending=False).reset_index(drop=True).head(5)
+        df = df_diff_player.sort_values('Last 3 GW Points', ascending=False).reset_index(drop=True).head(10)
 
         df['Selected By(%)'] = df['Selected By(%)'].astype(str) + '%'
         # Create the bar chart
@@ -237,15 +237,15 @@ def perform_formdiff():
 
                 # Define custom colors for each position
         position_colors = {
-           'Goalkeeper': '#008000',
-           'Defender': '#FF4B4B',
-           'Midfielder': '#ffdab9',
-           'Forward': '#ffd700',
-    }
-        # Filter the data to include only the top 5 players
+            'Goalkeeper': '#04f5ff',
+            'Defender': '#cc0249',
+            'Midfielder': '#fa9b28',
+            'Forward': '#00ff85',
+        }
+            # Filter the data to include only the top 5 players
         #df = df_perform_player.sort_values(category, ascending=False).reset_index(drop=True).head(10)
         
-        df = df_price_player.sort_values('Last 3 GW Points', ascending=False).reset_index(drop=True).head(5)
+        df = df_price_player.sort_values('Last 3 GW Points', ascending=False).reset_index(drop=True).head(10)
 
         df['Price'] = '£' + df['Price'].astype(str)
         # Create the bar chart
@@ -287,13 +287,13 @@ def perform_formdiff():
 
                 # Define custom colors for each position
         position_colors = {
-           'Goalkeeper': '#008000',
-           'Defender': '#FF4B4B',
-           'Midfielder': '#ffdab9',
-           'Forward': '#ffd700',
-    }
+            'Goalkeeper': '#04f5ff',
+            'Defender': '#cc0249',
+            'Midfielder': '#fa9b28',
+            'Forward': '#00ff85',
+        }
         # Filter the data to include only the top 5 players
-        df = df_bonus_player.sort_values(category, ascending=False).reset_index(drop=True).head(5)
+        df = df_bonus_player.sort_values('Last 3 GW Bonus Points', ascending=False).reset_index(drop=True).head(10)
         
         # Create the bar chart
         fig = px.bar(
@@ -396,7 +396,7 @@ def perform_formdiff():
         st.plotly_chart(fig_fwd, theme="streamlit", use_container_width=True)
 
     
-    st.markdown(f'##### ***:yellow[Differential]***')
+    st.markdown(f'##### ***Differential***')
 
     tab_diff_gk, tab_diff_def, tab_diff_mid, tab_diff_fwd = st.tabs(["Goalkeeper", "Defender", "Midfielder", "Forward"])
     
@@ -415,7 +415,7 @@ def perform_formdiff():
         st.plotly_chart(fig_diff_fwd, theme="streamlit", use_container_width=True)
     
     
-    st.markdown(f'##### ***:yellow[Budget]***')
+    st.markdown(f'##### ***Budget***')
 
     tab_price_gk, tab_price_def, tab_price_mid, tab_price_fwd = st.tabs(["Goalkeeper", "Defender", "Midfielder", "Forward"])
     
@@ -434,7 +434,7 @@ def perform_formdiff():
         st.plotly_chart(fig_price_fwd, theme="streamlit", use_container_width=True)
         
         
-    st.markdown(f'##### ***:yellow[Bonus]***')
+    st.markdown(f'##### ***Bonus***')
 
     tab_bonus_gk, tab_bonus_def, tab_bonus_mid, tab_bonus_fwd = st.tabs(["Goalkeeper", "Defender", "Midfielder", "Forward"])
     
