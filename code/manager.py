@@ -15,7 +15,7 @@ def perform_manager():
 
     image = Image.open("data/fpl.png")
 
-    st.image(image, caption='Player ID')
+    st.image(image, caption='Manager ID')
     manager_id = st.text_input("Enter manager ID:")
     if st.button("Get Manager Details"):
         if manager_id:
