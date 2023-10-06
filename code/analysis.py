@@ -278,6 +278,7 @@ def perform_analysis():
     else:
         st.data_editor(
         df_player.sort_values('Total Points', ascending=False).reset_index(drop=True),
+            column_config={
             "Player Name": st.column_config.TextColumn(
                 "Player Name",
                 help="Player Name",
