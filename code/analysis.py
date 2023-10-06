@@ -41,8 +41,8 @@ def perform_analysis():
   
 
 
-    st.markdown('### Player Points and Stats Across 2023/2024 Season')
-    st.markdown('##### ***Please select Show filtered data checkbox after filtering the display.***')
+    st.markdown('### Player Points Across 2022/2023 Season & Next Fixture Difficulty')
+    st.markdown('##### ***Select Multiple Players For Comparison***')
 
 
     # Calculate additional columns
@@ -78,7 +78,7 @@ def perform_analysis():
         min_values = df_filtered_player.min()
         max_values = df_filtered_player.max()
         st.data_editor(
-        df_filtered_player.sort_values('Total Points', ascending=False).reset_index(drop=True),
+        df_filtered_player.sort_values('Total Points', ascending=False),
                 column_config={
             "Player Name": st.column_config.TextColumn(
                 "Player Name",
@@ -279,6 +279,12 @@ def perform_analysis():
         st.data_editor(
         df_player.sort_values('Total Points', ascending=False).reset_index(drop=True),
                 column_config={
+            "Index": st.column_config.TextColumn(
+                "Index",
+                help="Player Name",
+                max_chars=50,
+                validate="^st\.[a-z_]+$",
+            ),
             "Player Name": st.column_config.TextColumn(
                 "Player Name",
                 help="Player Name",
@@ -480,10 +486,10 @@ def perform_analysis():
     
         # Define custom colors for each position
     position_colors = {
-        'Goalkeeper': '#008000',
-        'Defender': '#FF4B4B',
-        'Midfielder': '#ffdab9',
-        'Forward': '#ffd700',
+        'Goalkeeper': '#04f5ff',
+        'Defender': '#cc0249',
+        'Midfielder': '#fa9b28',
+        'Forward': '#00ff85',
     }
     if show_filtered:
         
