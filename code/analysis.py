@@ -42,7 +42,7 @@ def perform_analysis():
 
 
     st.markdown('### Player Points and Stats Across 2023/2024 Season')
-    st.markdown('##### ***Click Show filtered data to see filtered data***')
+    st.markdown('##### ***"Please check 'Show filtered data' after filtering the display.***')
 
 
     # Calculate additional columns
