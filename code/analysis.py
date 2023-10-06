@@ -41,8 +41,8 @@ def perform_analysis():
   
 
 
-    st.markdown('### Player Points Across 2022/2023 Season & Next Fixture Difficulty')
-    st.markdown('##### ***Select Multiple Players For Comparison***')
+    st.markdown('### Player Points and Stats Across 2023/2024 Season')
+    st.markdown('##### ***Click Show filtered data to see filtered data***')
 
 
     # Calculate additional columns
