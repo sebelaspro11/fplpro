@@ -12,7 +12,7 @@ from predict import perform_predict
 page_title = "Fantasy Football Analyzer"
 page_icon = ":bar_chart:"  # emojis: https://www.webfx.com/tools/emoji-cheat-sheet/
 layout = "wide"
-# st.markdown('##### *****"Powered by Sebelaspro*****')
+st.markdown('##### *****Powered by Sebelaspro*****')
 # --------------------------------------
 
 st.set_page_config(page_title=page_title, page_icon=page_icon, layout=layout)
