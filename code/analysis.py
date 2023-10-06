@@ -278,7 +278,13 @@ def perform_analysis():
     else:
         st.data_editor(
         df_player.sort_values('Total Points', ascending=False).reset_index(drop=True),
-            column_config={
+                column_config={
+            "Index": st.column_config.TextColumn(
+                "Index",
+                help="Player Name",
+                max_chars=50,
+                validate="^st\.[a-z_]+$",
+            ),
             "Player Name": st.column_config.TextColumn(
                 "Player Name",
                 help="Player Name",
@@ -507,6 +513,7 @@ def perform_analysis():
                 color="Position",
                 color_discrete_map=position_colors,  # Set custom colors for each position
                 text="Team",
+                hover_name="Player Name",
                 hover_data=tooltip.get(category, {})
 
             )
@@ -515,18 +522,18 @@ def perform_analysis():
             # Set the custom font for the text
             fig.update_layout(
                 font_family=custom_font_family,
-                font_color="black",  # Optionally, set the font color
+                font_color="white",  # Optionally, set the font color
             )
             
             return fig
 
-        tooltip = {
+        tooltip_att = {
         "Total Goals": {"Player Name": True, "Team": True, "Total Goals": True},
         "Total Assists": {"Player Name": True, "Team": True, "Total Assists": True},
-        "Total xG": {"Player Name": True, "Team": True, "Total xG": ":.2f"},
-        "Total Creativity": {"Player Name": True, "Team": True, "Total Creativity": ":.2f"},
-        "Total Influence": {"Player Name": True, "Team": True, "Total Influence": ":.2f"},
-        "Total ICT Index": {"Player Name": True, "Team": True, "Total ICT Index": ":.2f"}
+        "Total xG": {"Player Name": True, "Team": True, "Total xG": True},
+        "Total Creativity": {"Player Name": True, "Team": True, "Total Creativity": True},
+        "Total Influence": {"Player Name": True, "Team": True, "Total Influence": True},
+        "Total ICT Index": {"Player Name": True, "Team": True, "Total ICT Index": True}
         }
 
         
@@ -535,27 +542,27 @@ def perform_analysis():
         tab_goal, tab_assists, tab_xg, tab_creative, tab_influence, tab_ict = st.tabs(["Goals", "Assists", "xG", "Creatvity", "Influence", "ICT Index"])
 
         with tab_goal:
-            fig_goal = off_chart(df_filtered_player, "Total Goals", tooltip)
+            fig_goal = off_chart(df_filtered_player, "Total Goals", tooltip_att)
             st.plotly_chart(fig_goal, theme="streamlit", use_container_width=True)
 
         with tab_assists:
-            fig_assists = off_chart(df_filtered_player, "Total Assists", tooltip)
+            fig_assists = off_chart(df_filtered_player, "Total Assists", tooltip_att)
             st.plotly_chart(fig_assists, theme="streamlit", use_container_width=True)
 
         with tab_xg:
-            fig_xg = off_chart(df_filtered_player, "Total xG", tooltip)
+            fig_xg = off_chart(df_filtered_player, "Total xG", tooltip_att)
             st.plotly_chart(fig_xg, theme="streamlit", use_container_width=True)
 
         with tab_creative:
-            fig_creative = off_chart(df_filtered_player, "Total Creativity", tooltip)
+            fig_creative = off_chart(df_filtered_player, "Total Creativity", tooltip_att)
             st.plotly_chart(fig_creative, theme="streamlit", use_container_width=True)
 
         with tab_influence:
-            fig_influence = off_chart(df_filtered_player, "Total Influence", tooltip)
+            fig_influence = off_chart(df_filtered_player, "Total Influence", tooltip_att)
             st.plotly_chart(fig_influence, theme="streamlit", use_container_width=True)
 
         with tab_ict:
-            fig_ict = off_chart(df_filtered_player, "Total ICT Index", tooltip)
+            fig_ict = off_chart(df_filtered_player, "Total ICT Index", tooltip_att)
             st.plotly_chart(fig_ict, theme="streamlit", use_container_width=True)
             
         st.markdown('### Defensive Chart')    
@@ -573,6 +580,7 @@ def perform_analysis():
                 color="Position",
                 color_discrete_map=position_colors,  # Set custom colors for each position
                 text="Team",
+                hover_name="Player Name",
                 hover_data=tooltip.get(category, {})
                 )
             custom_font_family = "Arial"
@@ -580,7 +588,7 @@ def perform_analysis():
             # Set the custom font for the text
             fig.update_layout(
                 font_family=custom_font_family,
-                font_color="black",  # Optionally, set the font color
+                font_color="white",  # Optionally, set the font color
                 )
                 
             return fig
@@ -621,6 +629,7 @@ def perform_analysis():
                 color="Position",
                 color_discrete_map=position_colors,  # Set custom colors for each position
                 text="Team",
+                hover_name="Player Name",
                 hover_data=tooltip.get(category, {})
 
             )
@@ -629,7 +638,7 @@ def perform_analysis():
             # Set the custom font for the text
             fig.update_layout(
                 font_family=custom_font_family,
-                font_color="black",  # Optionally, set the font color
+                font_color="white",  # Optionally, set the font color
             )
             
             return fig
@@ -698,6 +707,7 @@ def perform_analysis():
                 color_discrete_map=position_colors,
                 symbol="Position",
                 symbol_map=position_markers,
+                hover_name="Player Name",
                 # Set custom colors and markers for each position
                 #text_auto=True,
                 #text="Team"
@@ -707,7 +717,7 @@ def perform_analysis():
             # Set the custom font for the text
             fig.update_layout(
                 font_family=custom_font_family,
-                font_color="black",  # Optionally, set the font color
+                font_color="white",  # Optionally, set the font color
             )
 
             return fig
@@ -736,6 +746,7 @@ def perform_analysis():
                 color_discrete_map=position_colors,
                 symbol="Position",
                 symbol_map=position_markers,
+                hover_name="Player Name",
                 # Set custom colors and markers for each position
                 #text_auto=True,
                 #text="Team"
@@ -745,7 +756,7 @@ def perform_analysis():
             # Set the custom font for the text
             fig.update_layout(
                 font_family=custom_font_family,
-                font_color="black",  # Optionally, set the font color
+                font_color="white",  # Optionally, set the font color
             )
 
             return fig
@@ -779,7 +790,7 @@ def perform_analysis():
                 color="Position",
                 color_discrete_map=position_colors,  # Set custom colors for each position
                 text="Team",
-                hover_name="Total Points",
+                hover_name="Player Name",
                 hover_data=tooltip.get(category, {})
 
             )
@@ -788,7 +799,7 @@ def perform_analysis():
             # Set the custom font for the text
             fig.update_layout(
                 font_family=custom_font_family,
-                font_color="black",  # Optionally, set the font color
+                font_color="white",  # Optionally, set the font color
             )
             
             return fig
@@ -797,9 +808,9 @@ def perform_analysis():
         "Total Goals": {"Player Name": True, "Team": True, "Total Goals": True},
         "Total Assists": {"Player Name": True, "Team": True, "Total Assists": True},
         "Total xG": {"Player Name": True, "Team": True, "Total xG": ":.2f"},
-        "Total Creativity": {"Player Name": True, "Team": True, "Total Creativity": ":.2f"},
-        "Total Influence": {"Player Name": True, "Team": True, "Total Influence": ":.2f"},
-        "Total ICT Index": {"Player Name": True, "Team": True, "Total ICT Index": ":.2f"}
+        "Total Creativity": {"Player Name": True, "Team": True, "Total Creativity": True},
+        "Total Influence": {"Player Name": True, "Team": True, "Total Influence": True},
+        "Total ICT Index": {"Player Name": True, "Team": True, "Total ICT Index": True}
         }
 
         
@@ -854,7 +865,7 @@ def perform_analysis():
             # Set the custom font for the text
             fig.update_layout(
                 font_family=custom_font_family,
-                font_color="black",  # Optionally, set the font color
+                font_color="white",  # Optionally, set the font color
                 )
             fig.update_xaxes(tickvals=list(map(int, df[category].unique())), tickmode='linear') 
             return fig
@@ -865,6 +876,7 @@ def perform_analysis():
         "Total CS": {"Player Name": True, "Team": True, "Total CS": True},
         "Total Saves": {"Player Name": True, "Team": True, "Total Saves": True},
         }
+        
         tab_cs, tab_saves= st.tabs(["Clean Sheets", "Saves"])
 
         with tab_cs:
@@ -903,7 +915,7 @@ def perform_analysis():
             # Set the custom font for the text
             fig.update_layout(
                 font_family=custom_font_family,
-                font_color="black",  # Optionally, set the font color
+                font_color="white",  # Optionally, set the font color
             )
             #fig.update_xaxes(tickformat=".f")
             fig.update_xaxes(tickvals=list(map(int, df[category].unique())), tickmode='linear')
@@ -973,7 +985,7 @@ def perform_analysis():
             # Set the custom font for the text
             fig.update_layout(
                 font_family=custom_font_family,
-                font_color="black",  # Optionally, set the font color
+                font_color="white",  # Optionally, set the font color
             )
 
             return fig
@@ -1010,7 +1022,7 @@ def perform_analysis():
             # Set the custom font for the text
             fig.update_layout(
                 font_family=custom_font_family,
-                font_color="black",  # Optionally, set the font color
+                font_color="white",  # Optionally, set the font color
             )
 
             return fig
