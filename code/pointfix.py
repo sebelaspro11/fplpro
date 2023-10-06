@@ -78,7 +78,7 @@ def perform_point_fixture():
         with tab1:
             st.markdown(f'### {player} Match Points')
             c = alt.Chart(df_history_2023_player).mark_bar().encode(
-                x=alt.X('Opponent'),
+                x=alt.X('Opponent', sort=alt.EncodingSortField('Gameweek')),
                 y=alt.Y('Gameweek Points:Q', axis=alt.Axis(format='d')),
                 color=alt.Color('Venue:N', scale=alt.Scale(domain=['Home', 'Away'], range=['#B6006C', '#00B6A3'])),
                 tooltip=['Player Name:N', 'Gameweek:N', 'Gameweek Points:Q', 'Goals Scored:Q', 'Assists:Q', 'Bonus:Q']
