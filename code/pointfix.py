@@ -1,22 +1,11 @@
 import pandas as pd
 import streamlit as st
 import altair as alt
-from streamlit_option_menu import option_menu
 from pymongo.mongo_client import MongoClient
-from pymongo import MongoClient
-import streamlit.components.v1 as components
-import plotly.express as px
-
-
-
-
-
-
-
 
 def perform_point_fixture():
 
-# Fetch data using cache
+    # Fetch data using cache
     @st.cache_resource
     def init_connection():
         # Read the secrets file
@@ -39,19 +28,18 @@ def perform_point_fixture():
     def fetch_data_history(_collect):
         # Fetch the data from the collection
         return pd.DataFrame(list(_collect.find({}, {"_id": 0})))
-    
+
     @st.cache_resource
     def fetch_data_fixture(_collect):
         # Fetch the data from the collection
         return pd.DataFrame(list(_collect.find({}, {"_id": 0})))
 
-
-    st.markdown('### Player Points Across 2022/2023 Season & Next Fixture Difficulty')
+    st.markdown('## Player Gameweek Points & Fixture Difficulty Ranking')
     st.markdown('##### ***Select Multiple Players For Comparison***')
+    
     # Fetch history and fixtures data
     df_history_2023 = fetch_data_history(collection_details)
     df_fixtures_2023 = fetch_data_fixture(collection_fixture)
-    # df_fixtures_2023 = pd.read_csv('D:/streamlit/fpl/all_fixture_2023-20230815.csv')
     df_fixtures_2023 = df_fixtures_2023.sort_values(by='Gameweek')
 
     # Sidebar filters
@@ -59,13 +47,21 @@ def perform_point_fixture():
     positions.sort()
     position_choice = st.sidebar.selectbox('Choose position:', positions)
     teams_filter = list(df_history_2023['Team'].drop_duplicates())
-    teams_choice = st.sidebar.multiselect('Choose team:', teams_filter, default = [teams_filter[0]])
+    
+    # Initialize teams_choice with a default value if it's empty
+    teams_choice = st.sidebar.multiselect('Choose team:', teams_filter, default=[teams_filter[0]])
+
+    # Handle the scenario when no teams are selected
+    if not teams_choice:
+        teams_choice = [teams_filter[0]]  # Provide a default team
+
     players_filter = df_history_2023.sort_values("Total Points", ascending=False)[(df_history_2023['Team'].isin(teams_choice)) & (df_history_2023['Position'] == position_choice)]
     players_choice = st.sidebar.multiselect('Choose player:', players_filter['Player Name'].unique(), default=[players_filter['Player Name'].unique()[0]])
 
     # Display player points and fixtures
     for player in players_choice:
         df_history_2023_player = df_history_2023[(df_history_2023['Player Name'] == player) & (df_history_2023['Position'] == position_choice) & (df_history_2023['Team'].isin(teams_choice))]
+
         # Define custom colors for each position
         position_colors = {
             'Goalkeeper': '#60DB00',
@@ -90,7 +86,6 @@ def perform_point_fixture():
         with tab2:
             
             st.markdown(f'### {player} Next Fixtures')
-            # st.dataframe(df_fixtures_2023.sort_values('Gameweek', ascending=False).reset_index(drop=True))
             color_scale = alt.Scale(domain=[2, 3, 4, 5], range=['green', 'blue', 'yellow', 'red'])
             y_limit = [0, 5]
             d = alt.Chart(df_fixtures_2023_player_next5).mark_bar().encode(
@@ -101,5 +96,3 @@ def perform_point_fixture():
             ).configure_axis(grid=True)
 
             st.altair_chart(d, use_container_width=True, theme="streamlit")
-      
-
