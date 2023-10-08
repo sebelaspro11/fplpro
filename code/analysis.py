@@ -41,8 +41,8 @@ def perform_analysis():
   
 
 
-    st.markdown('### Player Points Across 2022/2023 Season & Next Fixture Difficulty')
-    st.markdown('##### ***Select Multiple Players For Comparison***')
+    st.markdown('## Player Performance Across 2023/2024 Season')
+    st.markdown('##### ***Search and Filter Teams and Positions***')
 
 
     # Calculate additional columns
@@ -75,8 +75,6 @@ def perform_analysis():
     #st.dataframe(df_filtered_player.sort_values('Total Points', ascending=False).reset_index(drop=True))
     
     if show_filtered:
-        min_values = df_filtered_player.min()
-        max_values = df_filtered_player.max()
         st.data_editor(
         df_filtered_player.sort_values('Total Points', ascending=False).reset_index(drop=True),
                 column_config={
@@ -173,12 +171,12 @@ def perform_analysis():
             "Total xG": st.column_config.NumberColumn(
                 "Total xG",
                 help="Player Total Expected Goals",
-                format="%d",
+                format="%f",
             ),
             "Total xA": st.column_config.NumberColumn(
                 "Total xA",
                 help="Player Total Expected Assists",
-                format="%d",
+                format="%f",
             ),           
             "Creativity Rank": st.column_config.NumberColumn(
                 "Creativity Rank",
@@ -378,12 +376,12 @@ def perform_analysis():
             "Total xG": st.column_config.NumberColumn(
                 "Total xG",
                 help="Player Total Expected Goals",
-                format="%d",
+                format="%f",
             ),
             "Total xA": st.column_config.NumberColumn(
                 "Total xA",
                 help="Player Total Expected Assists",
-                format="%d",
+                format="%f",
             ),           
             "Creativity Rank": st.column_config.NumberColumn(
                 "Creativity Rank",
@@ -581,7 +579,7 @@ def perform_analysis():
                 color_discrete_map=position_colors,  # Set custom colors for each position
                 text="Team",
                 hover_name="Player Name",
-                hover_data=tooltip.get(category, {})
+                #hover_data=tooltip.get(category, {})
                 )
             custom_font_family = "Arial"
                 
@@ -590,15 +588,16 @@ def perform_analysis():
                 font_family=custom_font_family,
                 font_color="white",  # Optionally, set the font color
                 )
-                
+            fig.update_xaxes(tickvals=list(map(int, df[category].unique())), tickmode='linear') 
             return fig
 
 
         
         tooltip = {
-        "Total Clean Sheets": {"Player Name": True, "Team": True, "Total CS": True},
+        "Total CS": {"Player Name": True, "Team": True, "Total CS": True},
         "Total Saves": {"Player Name": True, "Team": True, "Total Saves": True},
         }
+        
         tab_cs, tab_saves= st.tabs(["Clean Sheets", "Saves"])
 
         with tab_cs:
@@ -612,7 +611,7 @@ def perform_analysis():
         
         
         st.markdown('### Overall Chart')
-        st.markdown('##### ***Player Total Goals per 90 Minutes***')    
+        #st.markdown('##### ***Player Total Goals per 90 Minutes***')    
         def all_chart(df_filtered_player, category, tooltip):
 
             
@@ -668,13 +667,6 @@ def perform_analysis():
         with tab_yc:
             fig_yc = all_chart(df_filtered_player, "Total YC", tooltip)
             st.plotly_chart(fig_yc, theme="streamlit", use_container_width=True)
-
-        # with tab_rc:
-        #     fig_rc = all_chart(df_filtered_player, "Total RC", tooltip)
-        #     st.plotly_chart(fig_rc, theme="streamlit", use_container_width=True)
-        
-        # with tab_rc:
-        #     red_card_players = df_filtered_player[df_filtered_player['Total RC'] > 0]['Player Name'].tolist()
 
         with tab_rc:
             #red_card_players = df_filtered_player[df_filtered_player["Total RC"] > 0]['Player Name'].tolist()
@@ -894,9 +886,9 @@ def perform_analysis():
 
             
             # Filter the data to include only the top 5 players
+            #df = df_filtered_player.sort_values(category, ascending=False).reset_index(drop=True).head(5)
             df = df_player.sort_values(category, ascending=False).reset_index(drop=True).head(10)
-            #df = df_player.sort_values('Total Points', ascending=False).reset_index(drop=True).head(10)
-            
+
             
             # Create the bar chart
             fig = px.bar(
@@ -917,8 +909,7 @@ def perform_analysis():
                 font_family=custom_font_family,
                 font_color="white",  # Optionally, set the font color
             )
-            #fig.update_xaxes(tickformat=".f")
-            fig.update_xaxes(tickvals=list(map(int, df[category].unique())), tickmode='linear')
+            
             return fig
 
 
@@ -948,12 +939,13 @@ def perform_analysis():
             st.plotly_chart(fig_yc, theme="streamlit", use_container_width=True)
 
         with tab_rc:
-            fig_rc = all_chart(df_player, "Total RC", tooltip)
+            #red_card_players = df_filtered_player[df_filtered_player["Total RC"] > 0]['Player Name'].tolist()
+            fig_rc = all_chart(df_filtered_player, "Total RC", tooltip) #red_card_players)
             st.plotly_chart(fig_rc, theme="streamlit", use_container_width=True)
     
 
         # Cost vs 22/23 Season Points chart
-        st.markdown('### Cost vs 22/23 Season Points')
+        st.markdown('## Cost vs 22/23 Season Points')
         st.markdown('##### ***Identify Low Price Player With High Points Return***')
         # Define custom markers for each position
         position_markers = {
