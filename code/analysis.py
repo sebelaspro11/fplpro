@@ -55,8 +55,9 @@ def perform_analysis():
     
     # all_positions = list(df_player['Position'].drop_duplicates())
     # Sidebar filters
-    teams = st.sidebar.multiselect("Teams:", list(df_player['Team'].drop_duplicates()), default=list(df_player['Team'].drop_duplicates()))
-    positions = st.sidebar.multiselect("Position:", list(df_player['Position'].drop_duplicates()), default=list(df_player['Position'].drop_duplicates()))
+    teams = st.sidebar.multiselect("Teams:", list(df_player['Team'].drop_duplicates()))
+    positions = st.sidebar.multiselect("Position:", list(df_player['Position'].drop_duplicates()))
+
     # positions = st.sidebar.multiselect("Position:", [all_positions] + list(df_player['Position'].drop_duplicates()), default=[all_positions])
     # if all_positions in positions:
     #     filtered_df = df_player  # No position filtering
