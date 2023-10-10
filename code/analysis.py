@@ -63,7 +63,7 @@ def perform_analysis():
     # else:
     #     filtered_df = df_player[df_player['Position'].isin(positions)]  # Filter based on selected positions
     price_choice = st.sidebar.slider('Max Price:', min_value=4.0, max_value=15.0, step=0.5, value=15.0)
-    show_filtered = st.sidebar.checkbox("Show filtered data", value=False)
+    filter_button = st.sidebar.button("Apply Filters")
     # Apply filters to the player data
     df_filtered_player = df_player[df_player['Position'].isin(positions) & df_player['Team'].isin(teams) & (df_player['Price'] < price_choice)]
 
