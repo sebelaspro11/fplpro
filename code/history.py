@@ -39,7 +39,7 @@ def perform_history():
     
     
     # Sidebar filters
-    season_hist = st.sidebar.multiselect("Seasons:", list(df_past_history_2023['Seasons'].drop_duplicates()))
+    season_hist = st.sidebar.multiselect("Seasons:", list(df_past_history_2023['Seasons'].drop_duplicates()), default=list(df_past_history_2023['Seasons'].drop_duplicates()))
     player_hist = st.sidebar.multiselect("Player Name:", df_past_history_2023.sort_values("Total Points", ascending=False)[df_past_history_2023['Seasons'].isin(season_hist)]['Player Name'].drop_duplicates().tolist())
     price_choice = st.sidebar.slider('Max Price:', min_value=4.0, max_value=15.0, step=0.5, value=15.0)
     show_filtered = st.sidebar.button("Apply Filters")
