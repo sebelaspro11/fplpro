@@ -33,8 +33,8 @@ st.markdown(hide_st_style, unsafe_allow_html=True)
 # --- NAVIGATION MENU ---
 selected = option_menu(
     menu_title=None,
-    options=["Analysis", "Points & Fixture", "In-Form & Differential Player", "FPL History", "Manager Details", "About"],
-    icons=["bi-magic", "bi-file-earmark-bar-graph-fill", "bi-capslock", "bi-clock-history", "bi-person-circle", "bi-card-list"], # https://icons.getbootstrap.com/
+    options=["Analysis", "Points & Fixture", "In-Form & Differential Player",  "Manager Details", "FPL History", "About"],
+    icons=["bi-magic", "bi-file-earmark-bar-graph-fill", "bi-capslock",  "bi-person-circle", "bi-clock-history", "bi-card-list"], # https://icons.getbootstrap.com/
     orientation="horizontal",
 )
 
@@ -55,22 +55,15 @@ if selected == "In-Form & Differential Player":
     
 
     
-if selected == "FPL History":
-    perform_history()
 
 if selected == "Manager Details":
     perform_manager()
 
     
-    
+if selected == "FPL History":
+    perform_history()
+
     
     
 if selected == "About":
     perform_predict()
-
-    
-    
-    
-    
-
-#client.close()
