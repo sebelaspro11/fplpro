@@ -13,9 +13,9 @@ from PIL import Image
 
 def perform_manager():
 
-    image = Image.open("data/fpl.png")
+    image = Image.open("data/Fantasy_ID.png")
 
-    st.image(image, caption='Manager ID')
+    st.image(image, caption='Player ID')
     manager_id = st.text_input("Enter manager ID:")
     if st.button("Get Manager Details"):
         if manager_id:
@@ -41,11 +41,35 @@ def perform_manager():
                 "current_event" : "Gameweek"
             }
             manager_df = manager_df.rename(columns=new_names)
+            
+            # Format the URL with the manager_id
+            url_hist = f'https://fantasy.premierleague.com/api/entry/{manager_id}/history'
 
+            # Make a GET request to the URL
+            r = requests.get(url_hist)
+
+            # Check the response
+            if r.status_code == 200:
+                json_data = r.json()
+                # Process the JSON data as needed
+                # ...
+            else:
+                print(f"Failed to retrieve data. Status code: {r.status_code}")
     
-    
-    
+            
+            manager_hist_df = pd.DataFrame(json_data['past'])
+             # Rename the columns using the rename() method
+            new_names_hist = {
+                "season_name" : "Seasons",
+                "total_points" : "Total Points",
+                "rank" : "Overall Ranking"
+            }
+            manager_hist_df = manager_hist_df.rename(columns=new_names_hist)
+            
+            
+            
         # Display First Name and Last Name
+        st.markdown('##### ***Manager Details***')
         st.write("First Name:", manager_df['First Name'].values[0])
         st.write("Last Name:", manager_df['Last Name'].values[0])
         st.write("Registered Time:", manager_df['Registered Time'].values[0])
@@ -55,6 +79,10 @@ def perform_manager():
         st.write("Gameweek Rank:", manager_df['Gameweek Rank'].values[0])
         st.write("Last Rank:", manager_df['Last Rank'].values[0])
         st.write("Gameweek:", manager_df['Gameweek'].values[0])
+        st.markdown('##### ***Manager Performance History***')
+        st.dataframe(manager_hist_df)
         
         
+        
+
         
