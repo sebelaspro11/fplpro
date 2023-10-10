@@ -9,7 +9,7 @@ from manager import perform_manager
 from predict import perform_predict
 
 
-page_title = "Fantasy Football Analyzer"
+page_title =  "Fantasy Premier League Analyzer"
 page_icon = ":bar_chart:"  # emojis: https://www.webfx.com/tools/emoji-cheat-sheet/
 layout = "wide"
 #st.markdown('##### *****Powered by Sebelaspro*****')
