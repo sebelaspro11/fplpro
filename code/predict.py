@@ -10,8 +10,17 @@ import streamlit.components.v1 as components
 
 def perform_predict():
     
+    st.header("About")
+    st.write('##### ***Fantasy Premier League player since 2010***')
+    st.write('##### ***X/Twitter: @sebe11aspro***')
+    
+    
+    st.header("Mission")
+    st.write('##### ***Try to make every Gameweek FPL transfer easier based on data***')
+
+    
     st.header(":mailbox: Get In Touch With Me!")
-    st.markdown('##### ***Suggestions for any feature improvements :keyboard:***')
+    st.markdown('##### ***:keyboard: Comments and suggestions for any feature improvements are very much appreciated***')
 
 
     contact_form = """
