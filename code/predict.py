@@ -15,8 +15,8 @@ def perform_predict():
     st.write('##### ***X/Twitter: @sebe11aspro***')
     
     
-    st.header("Mission")
-    st.write('##### ***Try to make every Gameweek FPL transfer easier based on data***')
+    st.header("Goal")
+    st.write('##### ***Unlock the Power of Data for Painless FPL Gameweek Transfers!***')
 
     
     st.header(":mailbox: Get In Touch With Me!")
