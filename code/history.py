@@ -9,7 +9,7 @@ import plotly.express as px
     
     
 def perform_history():    
-    @st.cache_resource
+    @st.cache_resource(show_spinner=False)
     def init_connection():
         # Read the secrets file
         secrets = st.secrets["mongo"]
@@ -29,7 +29,7 @@ def perform_history():
     
     
     
-    @st.cache_resource
+    @st.cache_resource(show_spinner=False)
     def fetch_data_past_history(_collect):
     # Fetch the data from the collection
         return pd.DataFrame(list(_collect.find({}, {"_id": 0})))
