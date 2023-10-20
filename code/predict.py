@@ -16,7 +16,7 @@ def perform_predict():
     
     
     st.header("Goal")
-    st.write('##### ***Unlock the Power of Data for Painless FPL Gameweek Transfers!***')
+    st.write('##### ***Data-Driven FPL Transfers: Simplifying Every Gameweek!***')
 
     
     st.header(":mailbox: Get In Touch With Me!")
