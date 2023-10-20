@@ -13,7 +13,7 @@ import plotly.graph_objects as go
 
 def perform_formdiff():
 
-    @st.cache_resource
+    @st.cache_resource(show_spinner=False)
     def init_connection():
         # Read the secrets file
         secrets = st.secrets["mongo"]
@@ -33,7 +33,7 @@ def perform_formdiff():
     
     
     
-    @st.cache_resource
+    @st.cache_resource(show_spinner=False)
     def fetch_data_history(_collect):
     # Fetch the data from the collection
         return pd.DataFrame(list(_collect.find({}, {"_id": 0})))
