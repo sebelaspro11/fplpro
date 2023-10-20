@@ -68,7 +68,11 @@ def perform_analysis():
     # Apply filters to the player data
     df_filtered_player = df_player[df_player['Position'].isin(positions) & df_player['Team'].isin(teams) & (df_player['Price'] < price_choice)]
 
-
+    if not positions:
+    # If no specific positions are selected, include all positions in the filter
+        df_filtered_player = df_player[df_player['Team'].isin(teams) & (df_player['Price'] < price_choice)]
+    else:
+        df_filtered_player = df_player[df_player['Position'].isin(positions) & df_player['Team'].isin(teams) & (df_player['Price'] < price_choice)]
     
         
     # Display player data
