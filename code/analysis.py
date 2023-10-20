@@ -12,7 +12,7 @@ import plotly.io as pio
 # Define the function for the "Analysis" process
 def perform_analysis():
     # Fetch the data using cache
-    @st.cache_resource
+    @st.cache_resource(show_spinner=False) 
     def init_connection():
         # Read the secrets file
         secrets = st.secrets["mongo"]
@@ -30,13 +30,14 @@ def perform_analysis():
     collection_player = db["player"]
 
 
-    @st.cache_resource
+    @st.cache_resource(show_spinner=False)
     def fetch_data_player(_collect):
         # Fetch the data from the collection
         return pd.DataFrame(list(_collect.find({}, {"_id": 0})))
 
     # Fetch the player data
     df_player = fetch_data_player(collection_player)
+   
     
   
 
@@ -53,31 +54,25 @@ def perform_analysis():
     df_player = df_player.drop('90s', axis=1)
 
     
-    # all_positions = list(df_player['Position'].drop_duplicates())
-    # Sidebar filters
-    teams = st.sidebar.multiselect("Teams:", list(df_player['Team'].drop_duplicates()), default=list(df_player['Team'].drop_duplicates()))
+    
+    teams = st.sidebar.multiselect("Teams:", list(df_player['Team'].drop_duplicates()))
+
     positions = st.sidebar.multiselect("Position:", list(df_player['Position'].drop_duplicates()))
 
-    # positions = st.sidebar.multiselect("Position:", [all_positions] + list(df_player['Position'].drop_duplicates()), default=[all_positions])
-    # if all_positions in positions:
-    #     filtered_df = df_player  # No position filtering
-    # else:
-    #     filtered_df = df_player[df_player['Position'].isin(positions)]  # Filter based on selected positions
+
     price_choice = st.sidebar.slider('Max Price:', min_value=4.0, max_value=15.0, step=0.5, value=15.0)
     show_filtered = st.sidebar.button("Apply Filters")
-    # Apply filters to the player data
     df_filtered_player = df_player[df_player['Position'].isin(positions) & df_player['Team'].isin(teams) & (df_player['Price'] < price_choice)]
 
+    
     if not positions:
     # If no specific positions are selected, include all positions in the filter
         df_filtered_player = df_player[df_player['Team'].isin(teams) & (df_player['Price'] < price_choice)]
     else:
         df_filtered_player = df_player[df_player['Position'].isin(positions) & df_player['Team'].isin(teams) & (df_player['Price'] < price_choice)]
-    
         
     # Display player data
     st.markdown('### Player Overall Data', unsafe_allow_html=True)
-    #st.dataframe(df_filtered_player.sort_values('Total Points', ascending=False).reset_index(drop=True))
     
     if show_filtered:
         st.data_editor(
@@ -501,13 +496,11 @@ def perform_analysis():
         
         st.markdown('### Offensive Chart')  
         def off_chart(df_filtered_player, category, tooltip):
-
-            
-            # Filter the data to include only the top 5 players
-            #df = df_filtered_player.sort_values(category, ascending=False).reset_index(drop=True).head(5)
-            df = df_filtered_player.sort_values(category, ascending=False).reset_index(drop=True).head(10)
-
-            
+            # Filter the data to include only the top 10 players and remove rows with null values
+            df = df_filtered_player.dropna(subset=[category]).sort_values(category, ascending=False).head(10)
+            # Exclude players with zero values in the specified category
+            df = df[df[category] != 0]
+                    
             # Create the bar chart
             fig = px.bar(
                 df,
@@ -574,7 +567,7 @@ def perform_analysis():
             
             # Filter the data to include only the top 5 players
             df = df_filtered_player.sort_values(category, ascending=False).reset_index(drop=True).head(10)
-                
+            df = df[df[category] != 0]
             # Create the bar chart
             fig = px.bar(
                 df,
@@ -624,7 +617,7 @@ def perform_analysis():
             #df = df_filtered_player.sort_values(category, ascending=False).reset_index(drop=True).head(5)
             df = df_filtered_player.sort_values(category, ascending=False).reset_index(drop=True).head(10)
 
-            
+            df = df[df[category] != 0]
             # Create the bar chart
             fig = px.bar(
                 df,
@@ -705,9 +698,6 @@ def perform_analysis():
                 symbol="Position",
                 symbol_map=position_markers,
                 hover_name="Player Name",
-                # Set custom colors and markers for each position
-                #text_auto=True,
-                #text="Team"
             )
             custom_font_family = "Arial"
 
@@ -775,9 +765,11 @@ def perform_analysis():
 
             
             # Filter the data to include only the top 5 players
-            df = df_player.sort_values(category, ascending=False).reset_index(drop=True).head(10)
+            #df = df_player.sort_values(category, ascending=False).reset_index(drop=True).head(10)
             # Set the 'Player Name' column as the index for proper sorting in the chart
-            #df.set_index('Player Name', inplace=True)
+            df = df_player.dropna(subset=[category]).sort_values(category, ascending=False).head(10)
+            # Exclude players with zero values in the specified category
+            df = df[df[category] != 0]
             
             # Create the bar chart
             fig = px.bar(
@@ -845,7 +837,7 @@ def perform_analysis():
             
             # Filter the data to include only the top 5 players
             df = df_player.sort_values(category, ascending=False).reset_index(drop=True).head(10)
-                
+            df = df[df[category] != 0]
             # Create the bar chart
             fig = px.bar(
                 df,
@@ -893,7 +885,7 @@ def perform_analysis():
             # Filter the data to include only the top 5 players
             #df = df_filtered_player.sort_values(category, ascending=False).reset_index(drop=True).head(5)
             df = df_player.sort_values(category, ascending=False).reset_index(drop=True).head(10)
-
+            df = df[df[category] != 0]
             
             # Create the bar chart
             fig = px.bar(
