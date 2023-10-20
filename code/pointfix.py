@@ -6,7 +6,7 @@ from pymongo.mongo_client import MongoClient
 def perform_point_fixture():
 
     # Fetch data using cache
-    @st.cache_resource
+    @st.cache_resource(show_spinner=False)
     def init_connection():
         # Read the secrets file
         secrets = st.secrets["mongo"]
@@ -24,12 +24,12 @@ def perform_point_fixture():
     collection_details = db["details"]
     collection_fixture = db["fixture"]
 
-    @st.cache_resource
+    @st.cache_resource(show_spinner=False)
     def fetch_data_history(_collect):
         # Fetch the data from the collection
         return pd.DataFrame(list(_collect.find({}, {"_id": 0})))
 
-    @st.cache_resource
+    @st.cache_resource(show_spinner=False)
     def fetch_data_fixture(_collect):
         # Fetch the data from the collection
         return pd.DataFrame(list(_collect.find({}, {"_id": 0})))
