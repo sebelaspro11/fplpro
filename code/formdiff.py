@@ -329,40 +329,40 @@ def perform_formdiff():
 
 
     tooltip_gk = {
-    "Player Name": {"Player Name": True, "Team": True, "Last 3 GW Points": True, "Last 3 GW Saves": True, "Last 3 GW Clean Sheets": True},
+    "Player Name": {"Player Name": True, "Team": True, "Last 3 GW Points": True, "Last 3 GW Saves": True, "Last 3 GW Clean Sheets": True, "Last 3 GW Bonus Points": True},
     }
 
     tooltip_def = {
-        "Player Name": {"Player Name": True, "Team": True, "Last 3 GW Points": True, "Last 3 GW Clean Sheets": True, "Last 3 GW Goals": True, "Last 3 GW Assists": True},
+        "Player Name": {"Player Name": True, "Team": True, "Last 3 GW Points": True, "Last 3 GW Clean Sheets": True, "Last 3 GW Goals": True, "Last 3 GW Assists": True, "Last 3 GW Bonus Points": True},
     }
 
     tooltip_mid = {
-        "Player Name": {"Player Name": True, "Team": True, "Last 3 GW Points": True, "Last 3 GW Goals": True, "Last 3 GW Assists": True}
+        "Player Name": {"Player Name": True, "Team": True, "Last 3 GW Points": True, "Last 3 GW Goals": True, "Last 3 GW Assists": True, "Last 3 GW Bonus Points": True}
     }
 
     tooltip_fwd = {
-        "Player Name": {"Player Name": True, "Team": True, "Last 3 GW Points": True, "Last 3 GW Goals": True, "Last 3 GW Assists": True},
+        "Player Name": {"Player Name": True, "Team": True, "Last 3 GW Points": True, "Last 3 GW Goals": True, "Last 3 GW Assists": True, "Last 3 GW Bonus Points": True},
     }
 
     tooltip_diff_gk = {
-    "Player Name": {"Player Name": True, "Team": True, "Last 3 GW Points": True, "Selected By(%)": True, "Last 3 GW Saves": True, "Last 3 GW Clean Sheets": True},
+    "Player Name": {"Player Name": True, "Team": True, "Last 3 GW Points": True, "Selected By(%)": True, "Last 3 GW Saves": True, "Last 3 GW Clean Sheets": True, "Last 3 GW Bonus Points": True},
     }
     tooltip_diff_def = {
-        "Player Name": {"Player Name": True, "Team": True, "Last 3 GW Points": True, "Last 3 GW Clean Sheets": True, "Last 3 GW Goals": True, "Last 3 GW Assists": True},
+        "Player Name": {"Player Name": True, "Team": True, "Last 3 GW Points": True, "Last 3 GW Clean Sheets": True, "Last 3 GW Goals": True, "Last 3 GW Assists": True, "Last 3 GW Bonus Points": True},
     }
     tooltip_diff_mid_fwd = {
-        "Player Name": {"Player Name": True, "Team": True, "Last 3 GW Points": True, "Last 3 GW Clean Sheets": True, "Last 3 GW Goals": True, "Last 3 GW Assists": True},
+        "Player Name": {"Player Name": True, "Team": True, "Last 3 GW Points": True, "Last 3 GW Clean Sheets": True, "Last 3 GW Goals": True, "Last 3 GW Assists": True, "Last 3 GW Bonus Points": True},
     }
 
 
     tooltip_price_gk = {
-        "Player Name": {"Player Name": True, "Team": True, "Last 3 GW Points": True, "Price": True,  "Last 3 GW Saves": True, "Last 3 GW Clean Sheets": True},
+        "Player Name": {"Player Name": True, "Team": True, "Last 3 GW Points": True, "Price": True,  "Last 3 GW Saves": True, "Last 3 GW Clean Sheets": True, "Last 3 GW Bonus Points": True},
     }
     tooltip_price_def = {
-        "Player Name": {"Player Name": True, "Team": True, "Last 3 GW Points": True, "Price": True, "Last 3 GW Clean Sheets": True, "Last 3 GW Goals": True, "Last 3 GW Assists": True},
+        "Player Name": {"Player Name": True, "Team": True, "Last 3 GW Points": True, "Price": True, "Last 3 GW Clean Sheets": True, "Last 3 GW Goals": True, "Last 3 GW Assists": True, "Last 3 GW Bonus Points": True},
     }
     tooltip_price_mid_fwd = {
-        "Player Name": {"Player Name": True, "Team": True, "Last 3 GW Points": True, "Price": True, "Last 3 GW Goals": True, "Last 3 GW Assists": True},
+        "Player Name": {"Player Name": True, "Team": True, "Last 3 GW Points": True, "Price": True, "Last 3 GW Goals": True, "Last 3 GW Assists": True, "Last 3 GW Bonus Points": True},
     }
     
     tooltip_bonus_gk = {
