@@ -941,7 +941,7 @@ def perform_analysis():
             st.plotly_chart(fig_rc, theme="streamlit", use_container_width=True)
     
 
-        # Cost vs 22/23 Season Points chart
+        # Cost vs 23/24 Season Points chart
         st.markdown('## Cost vs 22/23 Season Points')
         st.markdown('##### ***Identify Low Price Player With High Points Return***')
         # Define custom markers for each position
