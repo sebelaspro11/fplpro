@@ -561,13 +561,13 @@ def perform_analysis():
             fig_ict = off_chart(df_filtered_player, "Total ICT Index", tooltip_att)
             st.plotly_chart(fig_ict, theme="streamlit", use_container_width=True)
             
-        st.markdown('### Defensive Chart')    
-        def def_chart(df_filtered_player, category, tooltip):
+                st.markdown('### Defensive Chart')    
 
-            
-            # Filter the data to include only the top 5 players
-            df = df_filtered_player.sort_values(category, ascending=False).reset_index(drop=True).head(10)
+        def def_chart(df_player, category, tooltip):
+            # Filter the data to include only defenders and goalkeepers
+            df = df_player[df_player['Position'].isin(['Defender', 'Goalkeeper'])].sort_values(category, ascending=False).reset_index(drop=True).head(10)
             df = df[df[category] != 0]
+            
             # Create the bar chart
             fig = px.bar(
                 df,
@@ -577,33 +577,30 @@ def perform_analysis():
                 color_discrete_map=position_colors,  # Set custom colors for each position
                 text="Team",
                 hover_name="Player Name",
-                #hover_data=tooltip.get(category, {})
-                )
+            )
             custom_font_family = "Arial"
-                
+            
             # Set the custom font for the text
             fig.update_layout(
                 font_family=custom_font_family,
                 font_color="white",  # Optionally, set the font color
-                )
-            fig.update_xaxes(tickvals=list(map(int, df[category].unique())), tickmode='linear') 
+            )
+            #fig.update_xaxes(tickvals=list(map(int, df[category].unique())), tickmode='linear') 
             return fig
 
-
-        
         tooltip = {
-        "Total CS": {"Player Name": True, "Team": True, "Total CS": True},
-        "Total Saves": {"Player Name": True, "Team": True, "Total Saves": True},
+            "Total CS": {"Player Name": True, "Team": True, "Total CS": True},
+            "Total Saves": {"Player Name": True, "Team": True, "Total Saves": True},
         }
-        
-        tab_cs, tab_saves= st.tabs(["Clean Sheets", "Saves"])
+
+        tab_cs, tab_saves = st.tabs(["Clean Sheets", "Saves"])
 
         with tab_cs:
-            fig_cs = def_chart(df_filtered_player, "Total CS", tooltip)
+            fig_cs = def_chart(df_player, "Total CS", tooltip)
             st.plotly_chart(fig_cs, theme="streamlit", use_container_width=True)
 
         with tab_saves:
-            fig_saves = def_chart(df_filtered_player, "Total Saves", tooltip)
+            fig_saves = def_chart(df_player, "Total Saves", tooltip)
             st.plotly_chart(fig_saves, theme="streamlit", use_container_width=True)
             
         
