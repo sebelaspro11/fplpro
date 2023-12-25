@@ -561,8 +561,7 @@ def perform_analysis():
             fig_ict = off_chart(df_filtered_player, "Total ICT Index", tooltip_att)
             st.plotly_chart(fig_ict, theme="streamlit", use_container_width=True)
             
-                st.markdown('### Defensive Chart')    
-
+        st.markdown('### Defensive Chart')
         def def_chart(df_player, category, tooltip):
             # Filter the data to include only defenders and goalkeepers
             df = df_player[df_player['Position'].isin(['Defender', 'Goalkeeper'])].sort_values(category, ascending=False).reset_index(drop=True).head(10)
