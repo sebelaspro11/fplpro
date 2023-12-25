@@ -856,7 +856,7 @@ def perform_analysis():
                 font_family=custom_font_family,
                 font_color="white",  # Optionally, set the font color
                 )
-            fig.update_xaxes(tickvals=list(map(int, df[category].unique())), tickmode='linear') 
+            #fig.update_xaxes(tickvals=list(map(int, df[category].unique())), tickmode='linear') 
             return fig
 
 
