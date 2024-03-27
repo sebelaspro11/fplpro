@@ -18,7 +18,7 @@ layout = "wide"
 st.set_page_config(page_title=page_title, page_icon=page_icon, layout=layout)
 st.title(page_title + " " + page_icon)
 st.write(
-    '<div style="position: absolute; bottom: 25px; right: 4px; opacity: 0.2;">Powered by Sebelaspro</div>',
+    '<div style="position: absolute; bottom: 25px; right: 4px; opacity: 0.2;">Powered by @sockan</div>',
     unsafe_allow_html=True
 )
 
