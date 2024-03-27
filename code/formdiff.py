@@ -737,7 +737,7 @@ def perform_formdiff():
     with tab_bonus_gk:
         fig_bonus_gk = bonus_chart(gk_bonus, "Price", tooltip_gk)
         col1, col2 = st.columns(2)
-        selected_columns = ["Player Name", "Team", "Price", "Last 3 GW Points", "Goals Scored", "Assists", "Selected By(%)", "Last 3 GW Bonus Points", "Last 3 GW xG", "Last 3 GW xA"]
+        selected_columns = ["Player Name", "Team", "Price", "Last 3 GW Points", "Total Saves", "Selected By(%)", "Last 3 GW Bonus Points", "Last 3 GW xG", "Last 3 GW xA"]
 
         col1.plotly_chart(fig_bonus_gk, use_container_width=True)
         
@@ -813,7 +813,7 @@ def perform_formdiff():
     with tab_xg_def:
         fig_xg_def = xg_chart(def_xg, "Price", tooltip_gk)
         col1, col2 = st.columns(2)
-        selected_columns = ["Player Name", "Team", "Price", "Last 3 GW Points", "Goals Scored", "Assists", "Selected By(%)", "Last 3 GW Bonus Points", "Last 3 GW xG", "Last 3 GW xA"]
+        selected_columns = ["Player Name", "Team", "Price", "Last 3 GW Points", "Goals Scored", "Assists", "Last 3 GW xG", "Selected By(%)", "Last 3 GW Bonus Points", "Last 3 GW xA"]
 
         col1.plotly_chart(fig_xg_def, use_container_width=True)
         
@@ -830,7 +830,7 @@ def perform_formdiff():
     with tab_xg_mid:
         fig_xg_mid = xg_chart(mid_xg, "Price", tooltip_gk)
         col1, col2 = st.columns(2)
-        selected_columns = ["Player Name", "Team", "Price", "Last 3 GW Points", "Goals Scored", "Assists", "Selected By(%)", "Last 3 GW Bonus Points", "Last 3 GW xG", "Last 3 GW xA"]
+        selected_columns = ["Player Name", "Team", "Price", "Last 3 GW Points", "Goals Scored", "Assists", "Last 3 GW xG", "Selected By(%)", "Last 3 GW Bonus Points", "Last 3 GW xA"]
 
         col1.plotly_chart(fig_xg_mid, use_container_width=True)
         
@@ -847,7 +847,7 @@ def perform_formdiff():
     with tab_xg_fwd:
         fig_xg_fwd = xg_chart(fwd_xg, "Price", tooltip_gk)
         col1, col2 = st.columns(2)
-        selected_columns = ["Player Name", "Team", "Price", "Last 3 GW Points", "Goals Scored", "Assists", "Selected By(%)", "Last 3 GW Bonus Points", "Last 3 GW xG", "Last 3 GW xA"]
+        selected_columns = ["Player Name", "Team", "Price", "Last 3 GW Points", "Goals Scored", "Assists", "Last 3 GW xG", "Selected By(%)", "Last 3 GW Bonus Points", "Last 3 GW xA"]
 
         col1.plotly_chart(fig_xg_fwd, use_container_width=True)
         
