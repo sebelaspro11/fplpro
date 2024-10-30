@@ -13,7 +13,7 @@ import numpy as np
 
 def perform_formdiff():
 
-    @st.cache_resource(show_spinner=False)
+    @st.cache_resource(show_spinner=False,ttl=10800)
     def init_connection():
         # Read the secrets file
         secrets = st.secrets["mongo"]
