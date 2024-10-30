@@ -3,7 +3,7 @@ import streamlit as st
 import altair as alt
 from pymongo.mongo_client import MongoClient
 
-@st.cache_resource(show_spinner=False,ttl=10800)
+
 def perform_point_fixture():
 
     # Fetch data using cache
@@ -30,7 +30,7 @@ def perform_point_fixture():
         # Fetch the data from the collection
         return pd.DataFrame(list(_collect.find({}, {"_id": 0})))
 
-    @st.cache_resource(show_spinner=False)
+    @st.cache_resource(show_spinner=False,ttl=10800)
     def fetch_data_fixture(_collect):
         # Fetch the data from the collection
         return pd.DataFrame(list(_collect.find({}, {"_id": 0})))
