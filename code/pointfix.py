@@ -24,7 +24,7 @@ def perform_point_fixture():
     collection_details = db["details"]
     collection_fixture = db["fixture"]
 
-    @st.cache_resource(show_spinner=False)
+    @st.cache_resource(show_spinner=False,ttl=10800)
     def fetch_data_history(_collect):
         # Fetch the data from the collection
         return pd.DataFrame(list(_collect.find({}, {"_id": 0})))
