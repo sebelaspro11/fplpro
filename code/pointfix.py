@@ -3,10 +3,11 @@ import streamlit as st
 import altair as alt
 from pymongo.mongo_client import MongoClient
 
+@st.cache_resource(show_spinner=False,ttl=10800)
 def perform_point_fixture():
 
     # Fetch data using cache
-    @st.cache_resource(show_spinner=False,ttl=10800)
+    @st.cache_resource(show_spinner=False)
     def init_connection():
         # Read the secrets file
         secrets = st.secrets["mongo"]
