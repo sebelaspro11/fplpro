@@ -12,7 +12,7 @@ import plotly.io as pio
 # Define the function for the "Analysis" process
 def perform_analysis():
     # Fetch the data using cache
-    @st.cache_resource(show_spinner=False) 
+    @st.cache_resource(show_spinner=False,ttl=10800) 
     def init_connection():
         # Read the secrets file
         secrets = st.secrets["mongo"]
