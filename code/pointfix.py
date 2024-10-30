@@ -6,7 +6,7 @@ from pymongo.mongo_client import MongoClient
 def perform_point_fixture():
 
     # Fetch data using cache
-    @st.cache_resource(show_spinner=False)
+    @st.cache_resource(show_spinner=False,ttl=10800)
     def init_connection():
         # Read the secrets file
         secrets = st.secrets["mongo"]
