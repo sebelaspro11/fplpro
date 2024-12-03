@@ -6,7 +6,7 @@ from pymongo import MongoClient
 import altair as alt
 import plotly.express as px
 import plotly.io as pio
-from st_aggrid import AgGrid, GridOptionsBuilder
+#from st_aggrid import AgGrid, GridOptionsBuilder
 import numpy as np
 
 
