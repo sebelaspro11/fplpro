@@ -22,7 +22,7 @@ jobs:
         run: pip install requests beautifulsoup4 pandas
 
       - name: Run Scraper
-        run: python scraper.py  # Ensure the script is named `scraper.py`
+        run: python code/crawler.py  # Ensure the script is named `scraper.py`
 
       - name: Commit and Push CSV
         run: |
