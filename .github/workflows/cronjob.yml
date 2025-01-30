@@ -24,7 +24,7 @@ jobs:
           pip install requests beautifulsoup4 pandas  # Install required libraries
 
       - name: Run Crawler Script
-        run: python crawler.py  # Run the crawler script
+        run: python code/crawler.py  # Run the crawler script
 
       - name: Upload CSV Results
         uses: actions/upload-artifact@v4
