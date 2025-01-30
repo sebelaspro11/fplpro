@@ -1,12 +1,12 @@
-name: Run Python Script on Schedule
+name: Run Crawler Script
 
 on:
   schedule:
     - cron: '*/2 * * * *'  # Runs every day at 2 AM UTC
-  workflow_dispatch:  # Allows manual triggering
+  workflow_dispatch:      # Allows manual triggering
 
 jobs:
-  run-python-script:
+  run-crawler:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,7 +21,14 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt  # Ensure dependencies are installed
+          pip install requests beautifulsoup4 pandas  # Install required libraries
 
-      - name: Run Python Script
-        run: python code/crawler.py  # Replace with your script file
+      - name: Run Crawler Script
+        run: python crawler.py  # Run the crawler script
+
+      - name: Upload CSV Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: csv-results
+          path: |
+            data/test.csv
