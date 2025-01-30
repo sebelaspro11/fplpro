@@ -33,4 +33,4 @@ text_regions = [a_tag.get_text() for region in regions for a_tag in region.find_
 print(text_regions)
 
 text_regions.to_csv("test.csv")
-text_regions.to_csv("./data/test.csv")
+text_regions.to_csv("data/test.csv")
