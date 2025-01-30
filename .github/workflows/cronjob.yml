@@ -1,34 +1,33 @@
-name: Run Crawler Script
+name: Scrape Cinema Regions
 
 on:
   schedule:
-    - cron: '*/2 * * * *'  # Runs every day at 2 AM UTC
-  workflow_dispatch:      # Allows manual triggering
+    - cron: "*/2 * * * *"   # Runs every day at 12 AM UTC
+  workflow_dispatch:  # Allows manual triggering
 
 jobs:
-  run-crawler:
+  scrape_cinema_data:
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4  # Checkout the repository
+        uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set Up Python
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.10'  # Specify the Python version
+          python-version: '3.10'
 
       - name: Install Dependencies
+        run: pip install requests beautifulsoup4 pandas
+
+      - name: Run Scraper
+        run: python scraper.py  # Ensure the script is named `scraper.py`
+
+      - name: Commit and Push CSV
         run: |
-          python -m pip install --upgrade pip
-          pip install requests beautifulsoup4 pandas  # Install required libraries
-
-      - name: Run Crawler Script
-        run: python code/crawler.py  # Run the crawler script
-
-      - name: Upload CSV Results
-        uses: actions/upload-artifact@v4
-        with:
-          name: csv-results
-          path: |
-            data/test.csv
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add data/cinema_regions.csv
+          git commit -m "Update cinema regions data"
+          git push
