@@ -1,7 +1,13 @@
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
+import os
 
+# Ensure 'data/' folder exists
+output_folder = "data"
+os.makedirs(output_folder, exist_ok=True)  # Create the folder if it doesn't exist
+
+# Define the URL and Headers
 url = "https://www.cinema.com.my/cinemas/cinemas.aspx"
 HEADERS = {
     "ACCEPT": "*/*",
@@ -10,17 +16,19 @@ HEADERS = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:130.0) Gecko/20100101 Firefox/130.0"
 }
 
+# Fetch Data
 response = requests.get(url, headers=HEADERS)
 soup = BeautifulSoup(response.text, "html.parser")
 regions = soup.find_all("div", class_="SecHeader")
 
-# Extract text from <a> tags
+# Extract Text from <a> tags
 text_regions = [a_tag.get_text() for region in regions for a_tag in region.find_all("a")]
 
-# Convert list to DataFrame
+# Convert List to DataFrame
 df = pd.DataFrame(text_regions, columns=["Region"])
 
-# Save to CSV
-df.to_csv("test.csv", index=False)
+# Save CSV to 'data/' folder
+csv_file_path = os.path.join(output_folder, "cinema_regions.csv")
+df.to_csv(csv_file_path, index=False)
 
-print("CSV file has been successfully created!")
+print(f"CSV file has been successfully created at {csv_file_path}!")
