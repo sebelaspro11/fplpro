@@ -9,16 +9,25 @@ from manager import perform_manager
 from predict import perform_predict
 
 
-page_title =  "Fantasy Premier League Analyzer"
-page_icon = ":bar_chart:"  # emojis: https://www.webfx.com/tools/emoji-cheat-sheet/
+
+
+# Page Configuration
+page_title = "Fantasy Premier League Analytics"
+page_icon = ":bar_chart:"  # Emoji Icon
 layout = "wide"
-#st.markdown('##### *****Powered by Sebelaspro*****')
-# --------------------------------------
 
 st.set_page_config(page_title=page_title, page_icon=page_icon, layout=layout)
-st.title(page_title + " " + page_icon)
+
+# ✅ Center Title Using HTML & CSS
+st.markdown(
+    f"""
+    <h1 style="text-align: center;">{page_title} 📊</h1>
+    """,
+    unsafe_allow_html=True
+)
+
 st.write(
-    '<div style="position: absolute; bottom: 25px; right: 4px; opacity: 0.2;">Powered by @sockan</div>',
+    '<div style="position: absolute; bottom: 110px; right: 4px; opacity: 0.15;">Powered by Sebelaspro</div>',
     unsafe_allow_html=True
 )
 
@@ -33,8 +42,8 @@ st.markdown(hide_st_style, unsafe_allow_html=True)
 # --- NAVIGATION MENU ---
 selected = option_menu(
     menu_title=None,
-    options=["Analytics", "Points & Fixture", "In-Form & Differential Player",  "Manager Details", "FPL History", "About"],
-    icons=["bi-magic", "bi-file-earmark-bar-graph-fill", "bi-capslock",  "bi-person-circle", "bi-clock-history", "bi-card-list"], # https://icons.getbootstrap.com/
+    options=["Analytics", "Points & Fixture", "Scouting",  "FPL History", "Manager Details",  "About"],
+    icons=["bi-file-earmark-bar-graph-fill", "bi-calendar-check",  "bi-bullseye",  "bi-clock-history", "bi-person-circle",  "bi-card-list"], # https://icons.getbootstrap.com/
     orientation="horizontal",
 )
 
@@ -49,7 +58,7 @@ if selected == "Points & Fixture":
     
         
         
-if selected == "In-Form & Differential Player":
+if selected == "Scouting":
     perform_formdiff()
     
     
