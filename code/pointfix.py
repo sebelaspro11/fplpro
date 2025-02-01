@@ -1,104 +1,3 @@
-# import pandas as pd
-# import streamlit as st
-# import altair as alt
-# from pymongo.mongo_client import MongoClient
-
-
-# def perform_point_fixture():
-
-#     # Fetch data using cache
-#     @st.cache_resource(show_spinner=False)
-#     def init_connection():
-#         # Read the secrets file
-#         secrets = st.secrets["mongo"]
-#         # Create the MongoDB client
-#         client = MongoClient(secrets["host"], username=secrets["username"], password=secrets["password"])
-#         return client
-
-#     # Initialize the connection
-#     client = init_connection()
-
-#     # Access the 'Fplapp' database
-#     db = client["Fplapp"]
-
-#     # Access the collections
-#     collection_details = db["details"]
-#     collection_fixture = db["fixture"]
-
-#     @st.cache_resource(show_spinner=False,ttl=10800)
-#     def fetch_data_history(_collect):
-#         # Fetch the data from the collection
-#         return pd.DataFrame(list(_collect.find({}, {"_id": 0})))
-
-#     @st.cache_resource(show_spinner=False,ttl=10800)
-#     def fetch_data_fixture(_collect):
-#         # Fetch the data from the collection
-#         return pd.DataFrame(list(_collect.find({}, {"_id": 0})))
-
-#     st.markdown('## Player Gameweek Points & Fixture Difficulty Ranking')
-#     st.markdown('##### ***Select Multiple Players For Comparison***')
-    
-#     # Fetch history and fixtures data
-#     df_history_2023 = fetch_data_history(collection_details)
-#     df_fixtures_2023 = fetch_data_fixture(collection_fixture)
-#     df_fixtures_2023 = df_fixtures_2023.sort_values(by='Gameweek')
-
-#     # Sidebar filters
-#     positions = list(df_history_2023['Position'].drop_duplicates())
-#     positions.sort()
-#     position_choice = st.sidebar.selectbox('Choose position:', positions)
-#     teams_filter = list(df_history_2023['Team'].drop_duplicates())
-    
-#     # Initialize teams_choice with a default value if it's empty
-#     teams_choice = st.sidebar.multiselect('Choose team:', teams_filter, default=[teams_filter[0]])
-
-#     # Handle the scenario when no teams are selected
-#     if not teams_choice:
-#         teams_choice = [teams_filter[0]]  # Provide a default team
-
-#     players_filter = df_history_2023.sort_values("Total Points", ascending=False)[(df_history_2023['Team'].isin(teams_choice)) & (df_history_2023['Position'] == position_choice)]
-#     players_choice = st.sidebar.multiselect('Choose player:', players_filter['Player Name'].unique(), default=[players_filter['Player Name'].unique()[0]])
-
-#     # Display player points and fixtures
-#     for player in players_choice:
-#         df_history_2023_player = df_history_2023[(df_history_2023['Player Name'] == player) & (df_history_2023['Position'] == position_choice) & (df_history_2023['Team'].isin(teams_choice))]
-
-#         # Define custom colors for each position
-#         position_colors = {
-#             'Goalkeeper': '#60DB00',
-#             'Defender': '#B141FF',
-#             'Midfielder': '#00DADA',
-#             'Forward': '#9DB600',
-#         }
-#         tab1, tab2 = st.columns(2)
-        
-#         with tab1:
-#             st.markdown(f'### {player} Match Points')
-#             c = alt.Chart(df_history_2023_player).mark_bar().encode(
-#                 x=alt.X('Opponent', sort=alt.EncodingSortField('Gameweek')),
-#                 y=alt.Y('Gameweek Points:Q', axis=alt.Axis(format='d')),
-#                 color=alt.Color('Venue:N', scale=alt.Scale(domain=['Home', 'Away'], range=['#B6006C', '#00B6A3'])),
-#                 tooltip=['Player Name:N', 'Gameweek:N', 'Gameweek Points:Q', 'Goals Scored:Q', 'Assists:Q', 'Bonus:Q']
-#             ).configure_axis(grid=True)
-#             st.altair_chart(c, use_container_width=True, theme="streamlit")
-
-#             df_fixtures_2023_player = df_fixtures_2023[(df_fixtures_2023['Player Name'] == player) & (df_fixtures_2023['Team'].isin(teams_choice))]
-#             df_fixtures_2023_player_next5 = df_fixtures_2023_player.head(5)      
-#         with tab2:
-            
-#             st.markdown(f'### {player} Next Fixtures')
-#             color_scale = alt.Scale(domain=[2, 3, 4, 5], range=['green', 'blue', 'yellow', 'red'])
-#             y_limit = [0, 5]
-#             d = alt.Chart(df_fixtures_2023_player_next5).mark_bar().encode(
-#                 x=alt.X('Opponent:N', sort=alt.EncodingSortField('Gameweek'), axis=alt.Axis(labelAngle=0)),
-#                 y=alt.Y('Difficulty:Q', axis=alt.Axis(format='d'), scale=alt.Scale(domain=y_limit)),
-#                 color=alt.Color('Difficulty:Q', scale=color_scale),
-#                 tooltip=['Player Name:N', 'Venue:N','Gameweek:N', 'Opponent:N', 'Difficulty:Q']
-#             ).configure_axis(grid=True)
-
-#             st.altair_chart(d, use_container_width=True, theme="streamlit")
-
-
 import pandas as pd
 import streamlit as st
 import altair as alt
@@ -145,9 +44,9 @@ def perform_point_fixture():
     df_fixtures_2023 = fetch_data_fixture(collection_fixture)
     df_fixtures_2023 = df_fixtures_2023.sort_values(by='Gameweek')
     
+
+
     
-    df_history_2023["Venue"] = df_history_2023["Venue"].astype(str)
-    df_history_2023["Venue"] = df_history_2023["Venue"].map({True: "Home", False: "Away"}).fillna(df_history_2023["Venue"])
 
 
     # Main Filter Section
@@ -220,18 +119,44 @@ def perform_point_fixture():
 
             # Tab 1: Player Match Points
             with tab1:
-                st.markdown(f'### {player} Match Points')
-                if not df_history_2023_player.empty:
-                 
+                
 
+
+                
+                
+                if not df_history_2023_player.empty:
                     # Sort by Gameweek
                     df_history_2023_player = df_history_2023_player.sort_values('Gameweek')
-                    df_history_2023_player["Venue"] = df_history_2023_player["Venue"].astype(str)
-                    df_history_2023_player["Venue"] = df_history_2023_player["Venue"].map({True: "Home", False: "Away"}).fillna(df_history_2023_player["Venue"])
 
+                        # ✅ Calculate total home and away goals
+                    total_home_goals = df_history_2023_player[df_history_2023_player["Venue"] == "Home"]["Goals Scored"].sum()
+                    total_away_goals = df_history_2023_player[df_history_2023_player["Venue"] == "Away"]["Goals Scored"].sum()
+                    total_home_assists = df_history_2023_player[df_history_2023_player["Venue"] == "Home"]["Assists"].sum()
+                    total_away_assists = df_history_2023_player[df_history_2023_player["Venue"] == "Away"]["Assists"].sum()
+            
+                    # ✅ Create two columns for side-by-side display
+                    col1, col2 = st.columns(2)
 
+                    # ✅ Home Performance in the first column
+                    with col1:
+                        st.markdown(
+                            f"""
+                            ### 🏠 Home Performance  
+                            - **Goals Scored:** {total_home_goals}  
+                            - **Assists:** {total_home_assists}  
+                            """
+                        )
 
-
+                    # ✅ Away Performance in the second column
+                    with col2:
+                        st.markdown(
+                            f"""
+                            ### 🚀 Away Performance  
+                            - **Goals Scored:** {total_away_goals}  
+                            - **Assists:** {total_away_assists}  
+                            """
+                        )
+                
                     # Create a bar chart using Plotly Express
                     fig_points = px.bar(
                         df_history_2023_player,
@@ -239,7 +164,7 @@ def perform_point_fixture():
                         y='Gameweek Points',
                         #color=alt.Color('Venue:N', scale=alt.Scale(domain=['Home', 'Away'], range=['#B6006C', '#00B6A3'])),
                         color='Venue',
-                        color_discrete_map={'Home': '#B6006C', 'Away': '#00B6A3', 'unknown':'#CCCCCC'},
+                        color_discrete_map={'Home': '#3ec0be', 'Away': '#db7400'},
                         title=f"{player} Match Points",
                         hover_data=['Player Name', 'Gameweek', 'Goals Scored', 'Assists', 'Bonus'],
                         labels={'Gameweek Points': 'Points', 'Opponent': 'Opponent Team', 'Venue': 'Venue'}
@@ -251,7 +176,7 @@ def perform_point_fixture():
                         xaxis_title="Opponent",
                         yaxis_title="Gameweek Points",
                         title_x=0.5,
-                        legend_title="Venue"
+                        #legend_title="Venue"
                     )
 
                     # Display the chart
@@ -261,43 +186,38 @@ def perform_point_fixture():
 
             # Tab 2: Player Next Fixtures
             with tab2:
+                
+                df_fixtures_2023 = df_fixtures_2023.sort_values(by='Gameweek')
                 df_fixtures_2023_player = df_fixtures_2023[
                     (df_fixtures_2023['Player Name'] == player) & 
                     (df_fixtures_2023['Team'].isin(teams_choice))
                 ]
                 df_fixtures_2023_player_next5 = df_fixtures_2023_player.head(5)
-                st.markdown(f'### {player} Next Fixtures')
+                st.markdown(f'### 🗓Fixtures')
 
                 if not df_fixtures_2023_player_next5.empty:
-                    # Create a mapping of difficulty levels to colors
-                    difficulty_colors = {
-                        1: "green",
-                        2: "blue",
-                        3: "yellow",
-                        4: "red",
-                        5: "darkred"
-                    }
-
-                    # Add a column for color labels based on difficulty
-                    df_fixtures_2023_player_next5['Difficulty Label'] = df_fixtures_2023_player_next5['Difficulty'].map(difficulty_colors)
-
+                   
+                    df_fixtures_2023_player_next5 = df_fixtures_2023_player_next5.sort_values(by='Gameweek')
                     # Create a bar chart using Plotly Express with discrete colors
                     fig_fixtures = px.bar(
                         df_fixtures_2023_player_next5,
                         x='Opponent',
                         y='Difficulty',
-                        color='Difficulty',  # Use the mapped difficulty labels for color
+                        color='Venue',  # Use the mapped difficulty labels for color
+                        color_discrete_map={'Home': '#3ec0be', 'Away': '#db7400'},
                         title=f"{player} Next 5 Fixtures",
                         hover_data=['Player Name', 'Venue', 'Gameweek', 'Difficulty'],
                         labels={'Difficulty': 'Fixture Difficulty'},
-                        color_discrete_map=difficulty_colors  # Use the custom color mapping
+                        # color_discrete_map=difficulty_colors  # Use the custom color mapping
                     )
 
                     fig_fixtures.update_layout(
                         xaxis_title="Opponent",
                         yaxis_title="Difficulty",
                         title_x=0.5,
-                        legend_title="Difficulty Level",
+                        legend_title="Venue",
+                        xaxis=dict(categoryorder='array', categoryarray=df_fixtures_2023_player_next5['Opponent']),  # ✅ Ensure correct sorting
+
                         yaxis=dict(range=[0, 5])  # Ensure difficulty is between 0 and 5
                     )
 
@@ -314,8 +234,7 @@ def perform_point_fixture():
     st.markdown('##### ***Fixture difficulty for all teams and gameweeks***')
      
 
-    st.markdown('<div style="text-align: center;">Gameweeks</div>', unsafe_allow_html=True)
-    st.markdown("")
+    
     # Ensure no duplicate entries exist for pivoting
     df_fixtures_2023 = df_fixtures_2023.drop_duplicates(subset=['Team', 'Gameweek'])
     df_fixtures_2023 = df_fixtures_2023[df_fixtures_2023['Gameweek'] >= 16]
@@ -352,7 +271,38 @@ def perform_point_fixture():
 
     # Apply styles to the Opponent matrix
     styled_fixture_matrix = fixture_matrix.style.apply(lambda row: style_matrix(row, difficulty_matrix), axis=1)
+    # ✅ Create the legend using HTML and CSS
 
+# ✅ HTML for a side-by-side color legend
+    legend_html = """
+    <div style="display: flex; flex-direction: row; align-items: center; gap: 15px;">
+        <div style="display: flex; align-items: center;">
+            <div style="width: 20px; height: 20px; background-color: #5dff61; margin-right: 5px;"></div>
+            <span>2</span>
+        </div>
+        <div style="display: flex; align-items: center;">
+            <div style="width: 20px; height: 20px; background-color: #84b8ff; margin-right: 5px;"></div>
+            <span>3</span>
+        </div>
+        <div style="display: flex; align-items: center;">
+            <div style="width: 20px; height: 20px; background-color: yellow; margin-right: 5px;"></div>
+            <span>4</span>
+        </div>
+        <div style="display: flex; align-items: center;">
+            <div style="width: 20px; height: 20px; background-color: #df0000; margin-right: 5px;"></div>
+            <span>5</span>
+        </div>
+    </div>
+    """
+
+    # ✅ Display the legend in Streamlit
+    
+    st.markdown('##### FDR')
+    st.markdown(legend_html, unsafe_allow_html=True)
+
+
+    st.markdown('<div style="text-align: center;">Gameweeks</div>', unsafe_allow_html=True)
+    st.markdown("")
     # Display the styled matrix in Streamlit
     st.dataframe(styled_fixture_matrix, height=600, use_container_width=True)
         
