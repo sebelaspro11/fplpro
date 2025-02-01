@@ -6,7 +6,7 @@ from pymongo import MongoClient
 import altair as alt
 import plotly.express as px
 import plotly.io as pio
-#from st_aggrid import AgGrid, GridOptionsBuilder
+from st_aggrid import AgGrid, GridOptionsBuilder
 import numpy as np
 
 
@@ -43,9 +43,8 @@ def perform_analysis():
   
 
 
-    st.markdown('## Player Performance Across 2024/2025 Season')
-    st.markdown('##### ***Identify Low Price Player With High Points Return***')
-    st.markdown('##### ***Search and Filter Teams and Positions***')
+    st.markdown('## 24/25 Season')
+    st.markdown('##### ***Filter Teams, Positions and Price***')
 
 
     # Calculate additional columns
@@ -54,6 +53,9 @@ def perform_analysis():
     for each in calc_elements:
         df_player[f'{each} P90'] = df_player[each] / df_player['90s']
     df_player = df_player.drop('90s', axis=1)
+    
+    # Convert to numeric, coercing errors to NaN
+
 
 
     # Display the main title or description
@@ -176,8 +178,9 @@ def perform_analysis():
         min_assists_p90 = int(df_filtered_player["Total Assists P90"].min())
         max_assists_p90 = int(df_filtered_player["Total Assists P90"].max())
 
-        min_points_p90 = int(df_filtered_player["Total Points P90"].min())
-        max_points_p90 = int(df_filtered_player["Total Points P90"].max())
+
+        min_points_p90 = float(df_filtered_player["Total Points P90"].min())
+        max_points_p90 = float(df_filtered_player["Total Points P90"].max())
         
         
         st.data_editor(
@@ -429,11 +432,151 @@ def perform_analysis():
     
     if not df_filtered_player.empty:
         
+        def display_set_piece_table(df, order_column):
+            # Filter players ranked 1 in the given order column
+            filtered_df = df[df[order_column] == 1.0][
+                ['Player Name', 'Team', 'Total Goals', 'Total Assists', 'Position','Penalties Order', 'Corners/Indirect Freekick Order', 'Direct Freekick Order']
+            ]
+
+            # Convert the order column to integer for cleaner display
+            filtered_df[order_column] = filtered_df[order_column].astype(int)
+
+            # # Streamlit rendering for the table with auto-adjusted column widths
+            # st.markdown(f'### {title}')
+            columns_to_convert = ["Penalties Order", 'Corners/Indirect Freekick Order', 'Direct Freekick Order']
+
+            # ✅ Replace NaN with 0 and infinity with finite values, then convert to integer
+            filtered_df[columns_to_convert] = (
+                filtered_df[columns_to_convert]
+                .apply(pd.to_numeric, errors="coerce")  # Convert all to numeric (handles strings)
+                .fillna(0)  # Replace NaN with 0
+                .replace([float("inf"), float("-inf")], 0)  # Replace infinities with 0
+                .astype(int)  # Convert to integer
+            )
+            filtered_df = filtered_df.reset_index(drop=True)
+            filtered_df.index += 1  # Start index at 1
+            filtered_df.index.name = "Rank"  # Rename index to "Rank"
+            
+
+            #Display the table in col2
+            # col2.write(top_10_f)
+            st.dataframe(
+                filtered_df.style.set_table_styles(
+                    [
+                        {'selector': 'th', 'props': [('text-align', 'center')]},
+                        {'selector': 'td', 'props': [('text-align', 'center')]},
+                    ]
+                )
+            )
+
+        
+
+
+        
+        def create_xg_xa_chart(df):
+            # Define custom markers for each position
+        #     position_markers = {
+        #     'Goalkeeper': 'circle',
+        #     'Defender': 'square',
+        #     'Midfielder': 'diamond',
+        #     'Forward': 'star',
+        # }
+            
+            # Filter data for players with non-zero values in xG and xA
+            df = df_filtered_player[(df_filtered_player['Total xG'] > 0) & (df_filtered_player['Total Goals'] > 0) & (df_filtered_player['Total xA'] > 0) & (df_filtered_player['Total Assists'] > 0)].sort_values(by=['Total Goals', 'Total Assists'], ascending=False).head(10)
+
+            
+            # Create subplots for xG vs Goals and xA vs Assists
+            fig_xg = px.scatter(
+                df,
+                x="Total Goals",
+                y="Total xG",
+                size="Minutes Played",
+                color="Position",
+                #symbol="Position",
+                text=df["Player Name"].apply(lambda x: f"<b>{x}</b>"),
+                color_discrete_map=position_colors,
+                hover_name="Player Name",
+                title="Goals vs Expected Goals (xG)",
+                #labels={"Total xG": "Expected Goals (xG)", "Total Goals": "Actual Goals"}
+            )
+            
+            custom_font_family = "Arial"
+            
+            # Set the custom font for the text
+            fig_xg.update_layout(
+                font_family=custom_font_family,
+                font_color="white"  # Optionally, set the font color
+            )
+            fig_xg.update_traces(marker=dict(size=20), textfont=dict(size=14))
+            # Update traces to set textposition and dodge
+        
+            def improve_text_position(x):
+
+                positions = ['top center', 'bottom center', 'middle center']  # you can add more: left center ...
+                return [positions[i % len(positions)] for i in range(len(x))]
+        
+            fig_xg.update_traces(
+            
+            textposition=improve_text_position(df) # Adjust text angle if needed
+            )
+        
+            # Update the y-axis to display decimal values
+            fig_xg.update_yaxes(
+                tickformat=".2f",  # Format ticks as two decimal places
+                # title_text=f"{category}"  # Optional: Update the y-axis title
+            )
+
+            fig_xa = px.scatter(
+                df,
+                x="Total Assists",
+                y="Total xA",
+                size="Minutes Played",
+                color="Position",
+                color_discrete_map=position_colors,
+                text=df["Player Name"].apply(lambda x: f"<b>{x}</b>"),
+                hover_name="Player Name",
+                title="Expected Assists (xA) vs Assists",
+            )
+            custom_font_family = "Arial"
+                        
+            # Set the custom font for the text
+            fig_xa.update_layout(
+                font_family=custom_font_family,
+                font_color="white"  # Optionally, set the font color
+            )
+            fig_xa.update_traces(marker=dict(size=20), textfont=dict(size=14))
+            # Update traces to set textposition and dodge
+        
+            def improve_text_position(x):
+
+                positions = ['top center', 'bottom center', 'middle center']  # you can add more: left center ...
+                return [positions[i % len(positions)] for i in range(len(x))]
+        
+            fig_xa.update_traces(
+            
+            textposition=improve_text_position(df) # Adjust text angle if needed
+            )
+        
+            # Update the y-axis to display decimal values
+            fig_xa.update_yaxes(
+                tickformat=".2f",  # Format ticks as two decimal places
+                # title_text=f"{category}"  # Optional: Update the y-axis title
+            )
+            
+            
+            # Customize layouts
+            custom_font_family = "Arial"
+            fig_xg.update_layout(font_family=custom_font_family)
+            fig_xa.update_layout(font_family=custom_font_family)
+
+            return fig_xg, fig_xa
+        
+
         
         
         
-        
-        st.markdown('### Overall Chart')
+        st.markdown('### 🪄Overall Chart')
         #st.markdown('##### ***Player Total Goals per 90 Minutes***')    
         def all_chart(df_filtered_player, category, tooltip):
             # Filter the data to include only the top 10 players and remove rows with null values
@@ -491,7 +634,7 @@ def perform_analysis():
         "Total RC": {"Player Name": True, "Team": True, "Total RC": True},
 
         }
-        tab_points, tab_bonus, tab_dreamteam, tab_yc, tab_rc = st.tabs(["Points", "Bonus", "Dreamteam", "Yellow Cards", "Red Cards"])
+        tab_points, tab_xg, tab_xa, tab_sp, tab_bonus, tab_dreamteam, tab_yc, tab_rc = st.tabs(["Points", "xG vs Goals", "xA vs Assists", "Set Piece", "Bonus", "Dreamteam", "Yellow Cards", "Red Cards"])
 
         with tab_points:
             fig_points = all_chart(df_filtered_player, "Total Points", tooltip)
@@ -500,24 +643,78 @@ def perform_analysis():
 
             top_10 = df_filtered_player.sort_values('Total Points', ascending=False).head(10)
 
-            # Reset index and start from 1
-            top_10.reset_index(drop=True, inplace=True)
-            top_10.index += 1  # Start index from 1
-            top_10['Rank'] = top_10.index  # Add the index as a new column called 'Rank'
-            top_10_f = top_10[["Rank", "Player Name", "Team", "Total Points", "Total Goals", "Total Assists", "Price", 'Total Bonus', 'Total xG', 'Total xA', 'Minutes Played', 'Total Influence', 'Total Creativity', 'Total ICT Index', 'Position']]
-
-
-            # Use table_data with the top_10 DataFrame
-            with col2:(
-                 
-                table_data(
-                    data=top_10_f,  # Pass top_10 as the data
-                    key="o1",# Unique key
-                    sort='Total Points'
-                )
-             )
-        
             
+            top_10_f = top_10[["Player Name", "Team", "Total Points", "Total Goals", "Total Assists", "Price", 'Total Bonus', 'Total xG', 'Total xA', 'Minutes Played', 'Total Influence', 'Total Creativity', 'Total ICT Index', 'Position']]
+            
+            
+            top_10_f = top_10_f.reset_index(drop=True)
+            top_10_f.index += 1  # Start index at 1
+            top_10_f.index.name = "Rank"  # Rename index to "Rank"
+
+            #Display the table in col2
+            col2.write(top_10_f)
+
+
+
+        
+        with tab_xg:
+            #red_card_players = df_filtered_player[df_filtered_player["Total RC"] > 0]['Player Name'].tolist()
+            fig_xg = all_chart(df_filtered_player, "Total xG", tooltip) #red_card_players)
+            col1, col2 = st.columns(2)
+            col1.plotly_chart(fig_xg)
+
+            
+            top_10_f = top_10[["Player Name", "Team", "Total Points", 'Total Goals', 'Total xG', 'Minutes Played',  'Position']]
+            top_10_f = top_10_f.reset_index(drop=True)
+            top_10_f.index += 1  # Start index at 1
+            top_10_f.index.name = "Rank"  # Rename index to "Rank"
+
+            #Display the table in col2
+            col2.write(top_10_f)
+
+
+           
+        with tab_xa:
+            #red_card_players = df_filtered_player[df_filtered_player["Total RC"] > 0]['Player Name'].tolist()
+            fig_xa = all_chart(df_filtered_player, "Total xA", tooltip) #red_card_players)
+            col1, col2 = st.columns(2)
+            col1.plotly_chart(fig_xa)
+
+            # Reset index and start from 1
+            
+            top_10_f = top_10[["Player Name", "Team", "Total Points", 'Total Assists', 'Total xA', 'Minutes Played',  'Position']]
+            top_10_f = top_10_f.reset_index(drop=True)
+            top_10_f.index += 1  # Start index at 1
+            top_10_f.index.name = "Rank"  # Rename index to "Rank"
+
+            #Display the table in col2
+            col2.write(top_10_f)
+
+
+
+            
+        with tab_sp:
+            #red_card_players = df_filtered_player[df_filtered_player["Total RC"] > 0]['Player Name'].tolist()
+            # fig_xg = all_chart(df_filtered_player, "Total RC", tooltip) #red_card_players)
+            # Create Streamlit columns for side-by-side display
+            col1, col2, col3 = st.columns(3)
+
+            with col1:
+                st.markdown(f'### Penalties')
+                display_set_piece_table(df_filtered_player, 'Penalties Order')
+
+            
+
+
+            with col2:
+                st.markdown(f'### Corner/Indirect FK')
+                display_set_piece_table(df_filtered_player, 'Corners/Indirect Freekick Order')
+
+            with col3:
+                st.markdown(f'### Freekick')
+                display_set_piece_table(df_filtered_player, 'Direct Freekick Order')
+
+             
         with tab_bonus:
             fig_bonus = all_chart(df_filtered_player, "Total Bonus", tooltip)
             col1, col2 = st.columns(2)
@@ -525,22 +722,15 @@ def perform_analysis():
             top_10 = df_filtered_player.sort_values('Total Bonus', ascending=False).head(10)
 
             # Reset index and start from 1
-            top_10.reset_index(drop=True, inplace=True)
-            top_10.index += 1  # Start index from 1
-            top_10['Rank'] = top_10.index  # Add the index as a new column called 'Rank'
-            top_10_f = top_10[["Rank", "Player Name", "Team", "Total Points", "Total Goals", "Total Assists", "Price", 'Total Bonus', 'Total xG', 'Total xA', 'Minutes Played', 'Total Influence', 'Total Creativity', 'Total ICT Index', 'Position']]
+            
+            top_10_f = top_10[["Player Name", "Team", "Total Points", "Total Goals", "Total Assists", "Price", 'Total Bonus', 'Total xG', 'Total xA', 'Minutes Played', 'Total Influence', 'Total Creativity', 'Total ICT Index', 'Position']]
+            top_10_f = top_10_f.reset_index(drop=True)
+            top_10_f.index += 1  # Start index at 1
+            top_10_f.index.name = "Rank"  # Rename index to "Rank"
 
-
-
-            # Use table_data with the top_10 DataFrame
-            with col2:(
-                 
-                table_data(
-                    data=top_10_f,  # Pass top_10 as the data
-                    key="o2",# Unique key
-                    sort='Total Bonus'
-                )
-             )
+            #Display the table in col2
+            col2.write(top_10_f)
+           
             
         with tab_dreamteam:
             fig_dreamteam = all_chart(df_filtered_player, "Dreamteam", tooltip)
@@ -549,22 +739,18 @@ def perform_analysis():
             top_10 = df_filtered_player.sort_values('Dreamteam', ascending=False).head(10)
 
             # Reset index and start from 1
-            top_10.reset_index(drop=True, inplace=True)
-            top_10.index += 1  # Start index from 1
-            top_10['Rank'] = top_10.index  # Add the index as a new column called 'Rank'
-            top_10_f = top_10[["Rank", "Player Name", "Team", "Total Points", "Dreamteam", "Total Goals", "Total Assists", "Price", 'Total Bonus', 'Total xG', 'Total xA', 'Minutes Played', 'Total Influence', 'Total Creativity', 'Total ICT Index', 'Position']]
+        
+            top_10_f = top_10[["Player Name", "Team", "Total Points", "Dreamteam", "Total Goals", "Total Assists", "Price", 'Total Bonus', 'Total xG', 'Total xA', 'Minutes Played', 'Total Influence', 'Total Creativity', 'Total ICT Index', 'Position']]
 
 
+            top_10_f = top_10_f.reset_index(drop=True)
+            top_10_f.index += 1  # Start index at 1
+            top_10_f.index.name = "Rank"  # Rename index to "Rank"
 
-            # Use table_data with the top_10 DataFrame
-            with col2:(
-                 
-                table_data(
-                    data=top_10_f,  # Pass top_10 as the data
-                    key="o3",# Unique key
-                    sort='Dreamteam'
-                )
-             )
+            #Display the table in col2
+            col2.write(top_10_f)
+            
+            
         with tab_yc:
             fig_yc = all_chart(df_filtered_player, "Total YC", tooltip)
             col1, col2 = st.columns(2)
@@ -572,22 +758,16 @@ def perform_analysis():
             top_10 = df_filtered_player.sort_values('Total YC', ascending=False).head(10)
 
             # Reset index and start from 1
-            top_10.reset_index(drop=True, inplace=True)
-            top_10.index += 1  # Start index from 1
-            top_10['Rank'] = top_10.index  # Add the index as a new column called 'Rank'
-            top_10_f = top_10[["Rank", "Player Name", "Team", "Total Points", 'Total YC', 'Total RC', 'Minutes Played',  'Position']]
+            
+            top_10_f = top_10[["Player Name", "Team", "Total Points", 'Total YC', 'Total RC', 'Minutes Played',  'Position']]
+            top_10_f = top_10_f.reset_index(drop=True)
+            top_10_f.index += 1  # Start index at 1
+            top_10_f.index.name = "Rank"  # Rename index to "Rank"
+
+            #Display the table in col2
+            col2.write(top_10_f)
 
 
-
-            # Use table_data with the top_10 DataFrame
-            with col2:(
-                 
-                table_data(
-                    data=top_10_f,  # Pass top_10 as the data
-                    key="o4",# Unique key
-                    sort='Total YC'
-                )
-             )
         with tab_rc:
             #red_card_players = df_filtered_player[df_filtered_player["Total RC"] > 0]['Player Name'].tolist()
             fig_rc = all_chart(df_filtered_player, "Total RC", tooltip) #red_card_players)
@@ -596,25 +776,19 @@ def perform_analysis():
             top_10 = df_filtered_player.sort_values('Total YC', ascending=False).head(10)
 
             # Reset index and start from 1
-            top_10.reset_index(drop=True, inplace=True)
-            top_10.index += 1  # Start index from 1
-            top_10['Rank'] = top_10.index  # Add the index as a new column called 'Rank'
-            top_10_f = top_10[["Rank", "Player Name", "Team", "Total Points", 'Total YC', 'Total RC', 'Minutes Played',  'Position']]
+            top_10_f = top_10[["Player Name", "Team", "Total Points", 'Total YC', 'Total RC', 'Minutes Played',  'Position']]
+
+            top_10_f = top_10_f.reset_index(drop=True)
+            top_10_f.index += 1  # Start index at 1
+            top_10_f.index.name = "Rank"  # Rename index to "Rank"
+
+            #Display the table in col2
+            col2.write(top_10_f)
 
 
-
-            # Use table_data with the top_10 DataFrame
-            with col2:(
-                 
-                table_data(
-                    data=top_10_f,  # Pass top_10 as the data
-                    key="o5",# Unique key
-                    sort='Total RC'
-                )
-             )
             
             
-        st.markdown('### Offensive Chart')  
+        st.markdown('### 🎯Offensive Chart')  
         def off_chart(df_filtered_player, category, tooltip):
             # Filter the data to include only the top 10 players and remove rows with null values
             df = df_filtered_player.dropna(subset=[category]).sort_values(category, ascending=False).head(10)
@@ -682,18 +856,14 @@ def perform_analysis():
             top_10 = df_filtered_player.sort_values('Total Goals', ascending=False).head(10)
 
             # Reset index and start from 1
-            top_10.reset_index(drop=True, inplace=True)
-            top_10.index += 1  # Start index from 1
-            top_10['Rank'] = top_10.index  # Add the index as a new column called 'Rank'
-            top_10_f = top_10[["Rank", "Player Name", "Team", "Total Points", "Total Goals", "Total Assists", "Price", 'Total Bonus', 'Total xG', 'Total xA', 'Minutes Played', 'Total Influence', 'Total Creativity', 'Total ICT Index', 'Position']]
-            # Use table_data with the top_10 DataFrame
-            with col2:(
-                table_data(
-                    data=top_10_f,  # Pass top_10 as the data
-                    key="off1",  # Unique key
-                    sort='Total Goals'
-                )
-            )
+    
+            top_10_f = top_10[["Player Name", "Team", "Total Points", "Total Goals", "Total Assists", "Price", 'Total Bonus', 'Total xG', 'Total xA', 'Minutes Played', 'Total Influence', 'Total Creativity', 'Total ICT Index', 'Position']]
+            top_10_f = top_10_f.reset_index(drop=True)
+            top_10_f.index += 1  # Start index at 1
+            top_10_f.index.name = "Rank"  # Rename index to "Rank"
+
+            #Display the table in col2
+            col2.write(top_10_f)
 
         
         with tab_assists:
@@ -703,19 +873,15 @@ def perform_analysis():
 
             top_10 = df_filtered_player.sort_values('Total Assists', ascending=False).head(10)
             # Reset index and start from 1
-            top_10.reset_index(drop=True, inplace=True)
-            top_10.index += 1  # Start index from 1
-            top_10['Rank'] = top_10.index  # Add the index as a new column called 'Rank'
-            top_10_f = top_10[["Rank", "Player Name", "Team", "Total Points", "Total Goals", "Total Assists", "Price", 'Total Bonus', 'Total xG', 'Total xA', 'Minutes Played', 'Total Influence', 'Total Creativity', 'Total ICT Index', 'Position']]
 
-            # Use table_data with the top_10 DataFrame
-            with col2:(
-                table_data(
-                    data=top_10_f,  # Pass top_10 as the data
-                    key="off2",  # Unique key
-                    sort='Total Assists'
-                )
-            )
+            top_10_f = top_10[["Player Name", "Team", "Total Points", "Total Goals", "Total Assists", "Price", 'Total Bonus', 'Total xG', 'Total xA', 'Minutes Played', 'Total Influence', 'Total Creativity', 'Total ICT Index', 'Position']]
+            top_10_f = top_10_f.reset_index(drop=True)
+            top_10_f.index += 1  # Start index at 1
+            top_10_f.index.name = "Rank"  # Rename index to "Rank"
+
+            #Display the table in col2
+            col2.write(top_10_f)
+
 
         with tab_xg:
             fig_xg = off_chart(df_filtered_player, "Total xG", tooltip_att)
@@ -725,18 +891,15 @@ def perform_analysis():
             top_10 = df_filtered_player.sort_values('Total xG', ascending=False).head(10)
 
             # Reset index and start from 1
-            top_10.reset_index(drop=True, inplace=True)
-            top_10.index += 1  # Start index from 1
-            top_10['Rank'] = top_10.index  # Add the index as a new column called 'Rank'
-            top_10_f = top_10[["Rank", "Player Name", "Team", "Total Points", "Total Goals", "Total Assists", "Price", 'Total Bonus', 'Total xG', 'Total xA', 'Minutes Played', 'Total Influence', 'Total Creativity', 'Total ICT Index', 'Position']]
+
+            top_10_f = top_10[["Player Name", "Team", "Total Points", "Total Goals", "Total Assists", "Price", 'Total Bonus', 'Total xG', 'Total xA', 'Minutes Played', 'Total Influence', 'Total Creativity', 'Total ICT Index', 'Position']]
             # Use table_data with the top_10 DataFrame
-            with col2:(
-                table_data(
-                    data=top_10_f,  # Pass top_10 as the data
-                    key="off3",  # Unique key
-                    sort='Total xG'
-                )
-            )
+            top_10_f = top_10_f.reset_index(drop=True)
+            top_10_f.index += 1  # Start index at 1
+            top_10_f.index.name = "Rank"  # Rename index to "Rank"
+
+            #Display the table in col2
+            col2.write(top_10_f)
             
         with tab_creative:
             fig_creative = off_chart(df_filtered_player, "Total Creativity", tooltip_att)
@@ -746,19 +909,15 @@ def perform_analysis():
             top_10 = df_filtered_player.sort_values('Total Creativity', ascending=False).head(10)
 
             # Reset index and start from 1
-            top_10.reset_index(drop=True, inplace=True)
-            top_10.index += 1  # Start index from 1
-            top_10['Rank'] = top_10.index  # Add the index as a new column called 'Rank'
-            top_10_f = top_10[["Rank", "Player Name", "Team", "Total Points", "Total Goals", "Total Assists", "Price", 'Total Bonus', 'Total xG', 'Total xA', 'Minutes Played', 'Total Influence', 'Total Creativity', 'Total ICT Index', 'Position']]
 
-            # Use table_data with the top_10 DataFrame
-            with col2:(
-                table_data(
-                    data=top_10_f,  # Pass top_10 as the data
-                    key="off4",  # Unique key
-                    sort='Total Creativity'
-                )
-            )
+            top_10_f = top_10[["Player Name", "Team", "Total Points", "Total Goals", "Total Assists", "Price", 'Total Bonus', 'Total xG', 'Total xA', 'Minutes Played', 'Total Influence', 'Total Creativity', 'Total ICT Index', 'Position']]
+
+            top_10_f = top_10_f.reset_index(drop=True)
+            top_10_f.index += 1  # Start index at 1
+            top_10_f.index.name = "Rank"  # Rename index to "Rank"
+
+            #Display the table in col2
+            col2.write(top_10_f)
 
         with tab_influence:
             fig_influence = off_chart(df_filtered_player, "Total Influence", tooltip_att)
@@ -768,20 +927,16 @@ def perform_analysis():
             top_10 = df_filtered_player.sort_values('Total Influence', ascending=False).head(10)
 
             # Reset index and start from 1
-            # Reset index and start from 1
-            top_10.reset_index(drop=True, inplace=True)
-            top_10.index += 1  # Start index from 1
-            top_10['Rank'] = top_10.index  # Add the index as a new column called 'Rank'
-            top_10_f = top_10[["Rank", "Player Name", "Team", "Total Points", "Total Goals", "Total Assists", "Price", 'Total Bonus', 'Total xG', 'Total xA', 'Minutes Played', 'Total Influence', 'Total Creativity', 'Total ICT Index', 'Position']]
+       
+            top_10_f = top_10[["Player Name", "Team", "Total Points", "Total Goals", "Total Assists", "Price", 'Total Bonus', 'Total xG', 'Total xA', 'Minutes Played', 'Total Influence', 'Total Creativity', 'Total ICT Index', 'Position']]
+            top_10_f = top_10_f.reset_index(drop=True)
+            top_10_f.index += 1  # Start index at 1
+            top_10_f.index.name = "Rank"  # Rename index to "Rank"
 
+            #Display the table in col2
+            col2.write(top_10_f)
             # Use table_data with the top_10 DataFrame
-            with col2:(
-                table_data(
-                    data=top_10_f,  # Pass top_10 as the data
-                    key="off5",  # Unique key
-                sort='Total Influence'
-                )
-            )
+
 
         with tab_ict:
             fig_ict = off_chart(df_filtered_player, "Total ICT Index", tooltip_att)
@@ -791,20 +946,17 @@ def perform_analysis():
             top_10 = df_filtered_player.sort_values('Total ICT Index', ascending=False).head(10)
 
             # Reset index and start from 1
-            top_10.reset_index(drop=True, inplace=True)
-            top_10.index += 1  # Start index from 1
-            top_10['Rank'] = top_10.index  # Add the index as a new column called 'Rank'
-            top_10_f = top_10[["Rank", "Player Name", "Team", "Total Points", "Total Goals", "Total Assists", "Price", 'Total Bonus', 'Total xG', 'Total xA', 'Minutes Played', 'Total Influence', 'Total Creativity', 'Total ICT Index', 'Position']]
+            top_10_f = top_10[["Player Name", "Team", "Total Points", "Total Goals", "Total Assists", "Price", 'Total Bonus', 'Total xG', 'Total xA', 'Minutes Played', 'Total Influence', 'Total Creativity', 'Total ICT Index', 'Position']]
 
-# Use table_data with the top_10 DataFrame
-            with col2:(
-                table_data(
-                    data=top_10_f,  # Pass top_10 as the data
-                    key="off6",
-                    sort='Total ICT Index'# Unique key
-                )
-            )            
-        st.markdown('### Defensive Chart')
+            top_10_f = top_10_f.reset_index(drop=True)
+            top_10_f.index += 1  # Start index at 1
+            top_10_f.index.name = "Rank"  # Rename index to "Rank"
+
+            #Display the table in col2
+            col2.write(top_10_f)
+            
+                     
+        st.markdown('### 🚫Defensive Chart')
         def def_chart(df_filtered_player, category, tooltip):
             # Filter the data to include only defenders and remove rows with null values in the specified category
             #df = df_filtered_player[df_filtered_player["Position"].isin(["Defender", "Goalkeeper"])].dropna(subset=[category])
@@ -864,20 +1016,14 @@ def perform_analysis():
 
             top_10 = df_filtered_player.sort_values('Total CS', ascending=False).head(10)
 
-            # Reset index and start from 1
-            top_10.reset_index(drop=True, inplace=True)
-            top_10.index += 1  # Start index from 1
-            top_10['Rank'] = top_10.index  # Add the index as a new column called 'Rank'
-            top_10_f = top_10[["Rank", "Player Name", "Team", "Total Points", "Total CS", "Total Saves", "Price", 'Total Bonus', 'Position']]
+            top_10_f = top_10[["Player Name", "Team", "Total Points", "Total CS", "Total Saves", "Price", 'Total Bonus', 'Position']]
+            top_10_f = top_10_f.reset_index(drop=True)
+            top_10_f.index += 1  # Start index at 1
+            top_10_f.index.name = "Rank"  # Rename index to "Rank"
 
-# Use table_data with the top_10 DataFrame
-            with col2:(
-                table_data(
-                    data=top_10_f,  # Pass top_10 as the data
-                    key="def1",
-                    sort='Total CS'# Unique key
-                )
-            )            
+            #Display the table in col2
+            col2.write(top_10_f)
+       
 
         with tab_saves:
             fig_saves = def_chart(df_filtered_player, "Total Saves", tooltip)
@@ -887,19 +1033,17 @@ def perform_analysis():
             top_10 = df_filtered_player.sort_values('Total Saves', ascending=False).head(10)
 
             # Reset index and start from 1
-            top_10.reset_index(drop=True, inplace=True)
-            top_10.index += 1  # Start index from 1
-            top_10['Rank'] = top_10.index  # Add the index as a new column called 'Rank'
-            top_10_f = top_10[["Rank", "Player Name", "Team", "Total Points", "Total CS", "Total Saves", "Price", 'Total Bonus', 'Position']]
+  
+  
+            top_10_f = top_10[["Player Name", "Team", "Total Points", "Total CS", "Total Saves", "Price", 'Total Bonus', 'Position']]
 
-# Use table_data with the top_10 DataFrame
-            with col2:(
-                table_data(
-                    data=top_10_f,  # Pass top_10 as the data
-                    key="def2",
-                    sort='Total Saves'# Unique key
-                )
-            )                       
+
+            top_10_f = top_10_f.reset_index(drop=True)
+            top_10_f.index += 1  # Start index at 1
+            top_10_f.index.name = "Rank"  # Rename index to "Rank"
+
+            #Display the table in col2
+            col2.write(top_10_f)                   
         
 
         # Define custom markers for each position
@@ -911,7 +1055,7 @@ def perform_analysis():
         }
         
     
-        st.markdown('### Per 90 Stats')
+        st.markdown('### 🔎Per 90 Stats')
         
         tab_p90, tab_g90= st.tabs(["Points/90", "Goals/90"])
 
@@ -990,8 +1134,12 @@ def perform_analysis():
             st.plotly_chart(fig_goals_price, theme="streamlit", use_container_width=True)
 
     
-    st.markdown('### Overall Table')
-
-        
-    table_data(df_filtered_player, key='z', sort='Total Points')
+    st.markdown('### ℹ️Overall Table')
+    df_filtered_player = df_filtered_player.sort_values('Total Points', ascending=False)
+    df_filtered_player = df_filtered_player.reset_index(drop=True)
+    df_filtered_player.index += 1  # Start index at 1
+    df_filtered_player.index.name = "Rank"  # Rename index to "Rank"
+    
+    st.dataframe(df_filtered_player)
+    # table_data(df_filtered_player, key='z', sort='Total Points')
  
