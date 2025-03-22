@@ -6,14 +6,13 @@ from pymongo import MongoClient
 import altair as alt
 import plotly.express as px
 import plotly.io as pio
-
 import numpy as np
 
 
 # Define the function for the "Analysis" process
 def perform_analysis():
     # Fetch the data using cache
-    @st.cache_resource(show_spinner=False) 
+    @st.cache_resource(show_spinner=True,ttl=10800)
     def init_connection():
         # Read the secrets file
         secrets = st.secrets["mongo"]
@@ -473,105 +472,68 @@ def perform_analysis():
 
 
         
-        def create_xg_xa_chart(df):
-            # Define custom markers for each position
-        #     position_markers = {
-        #     'Goalkeeper': 'circle',
-        #     'Defender': 'square',
-        #     'Midfielder': 'diamond',
-        #     'Forward': 'star',
-        # }
-            
-            # Filter data for players with non-zero values in xG and xA
-            df = df_filtered_player[(df_filtered_player['Total xG'] > 0) & (df_filtered_player['Total Goals'] > 0) & (df_filtered_player['Total xA'] > 0) & (df_filtered_player['Total Assists'] > 0)].sort_values(by=['Total Goals', 'Total Assists'], ascending=False).head(10)
+        def create_xg_xa_chart(df_filtered_player, category):
+            # Filter data: drop NaNs in selected category, sort by category, take top 10
+            df = df_filtered_player.dropna(subset=[category]).sort_values(category, ascending=False).head(10)
+            df = df[df[category] != 0]
 
-            
-            # Create subplots for xG vs Goals and xA vs Assists
+            # ✅ Handle case where dataframe is empty after filtering
+            if df.empty:
+                st.warning(f"No data available for category: {category}")
+                return None, None
+
+            # Function to improve text position distribution
+            def improve_text_position(x):
+                positions = ['top center', 'bottom center', 'middle center']
+                return [positions[i % len(positions)] for i in range(len(x))]
+
+            # ==== xG Chart ====
             fig_xg = px.scatter(
                 df,
                 x="Total Goals",
                 y="Total xG",
                 size="Minutes Played",
                 color="Position",
-                #symbol="Position",
                 text=df["Player Name"].apply(lambda x: f"<b>{x}</b>"),
                 color_discrete_map=position_colors,
                 hover_name="Player Name",
-                title="Goals vs Expected Goals (xG)",
-                #labels={"Total xG": "Expected Goals (xG)", "Total Goals": "Actual Goals"}
+                title="Goals vs Expected Goals (xG)"
             )
-            
-            custom_font_family = "Arial"
-            
-            # Set the custom font for the text
             fig_xg.update_layout(
-                font_family=custom_font_family,
-                font_color="white"  # Optionally, set the font color
+                font_family="Arial",
+                font_color="white"
             )
-            fig_xg.update_traces(marker=dict(size=20), textfont=dict(size=14))
-            # Update traces to set textposition and dodge
-        
-            def improve_text_position(x):
-
-                positions = ['top center', 'bottom center', 'middle center']  # you can add more: left center ...
-                return [positions[i % len(positions)] for i in range(len(x))]
-        
             fig_xg.update_traces(
-            
-            textposition=improve_text_position(df) # Adjust text angle if needed
+                marker=dict(size=20),
+                textfont=dict(size=14),
+                textposition=improve_text_position(df)
             )
-        
-            # Update the y-axis to display decimal values
-            fig_xg.update_yaxes(
-                tickformat=".2f",  # Format ticks as two decimal places
-                # title_text=f"{category}"  # Optional: Update the y-axis title
-            )
+            fig_xg.update_yaxes(tickformat=".2f")
 
+            # ==== xA Chart ====
             fig_xa = px.scatter(
                 df,
                 x="Total Assists",
                 y="Total xA",
                 size="Minutes Played",
                 color="Position",
-                color_discrete_map=position_colors,
                 text=df["Player Name"].apply(lambda x: f"<b>{x}</b>"),
+                color_discrete_map=position_colors,
                 hover_name="Player Name",
-                title="Expected Assists (xA) vs Assists",
+                title="Expected Assists (xA) vs Assists"
             )
-            custom_font_family = "Arial"
-                        
-            # Set the custom font for the text
             fig_xa.update_layout(
-                font_family=custom_font_family,
-                font_color="white"  # Optionally, set the font color
+                font_family="Arial",
+                font_color="white"
             )
-            fig_xa.update_traces(marker=dict(size=20), textfont=dict(size=14))
-            # Update traces to set textposition and dodge
-        
-            def improve_text_position(x):
-
-                positions = ['top center', 'bottom center', 'middle center']  # you can add more: left center ...
-                return [positions[i % len(positions)] for i in range(len(x))]
-        
             fig_xa.update_traces(
-            
-            textposition=improve_text_position(df) # Adjust text angle if needed
+                marker=dict(size=20),
+                textfont=dict(size=14),
+                textposition=improve_text_position(df)
             )
-        
-            # Update the y-axis to display decimal values
-            fig_xa.update_yaxes(
-                tickformat=".2f",  # Format ticks as two decimal places
-                # title_text=f"{category}"  # Optional: Update the y-axis title
-            )
-            
-            
-            # Customize layouts
-            custom_font_family = "Arial"
-            fig_xg.update_layout(font_family=custom_font_family)
-            fig_xa.update_layout(font_family=custom_font_family)
+            fig_xa.update_yaxes(tickformat=".2f")
 
             return fig_xg, fig_xa
-        
 
         
         
@@ -658,45 +620,44 @@ def perform_analysis():
 
         
         with tab_xg:
-            #red_card_players = df_filtered_player[df_filtered_player["Total RC"] > 0]['Player Name'].tolist()
-            fig_xg = all_chart(df_filtered_player, "Total xG", tooltip) #red_card_players)
+            fig_xg, _ = create_xg_xa_chart(df_filtered_player, "Total xG")  # Only need fig_xg
             col1, col2 = st.columns(2)
-            col1.plotly_chart(fig_xg)
 
-            
+            if fig_xg:
+                col1.plotly_chart(fig_xg)
+            else:
+                col1.info("No xG chart to display.")
+
             top_10_f = top_10[["Player Name", "Team", "Total Points", 'Total Goals', 'Total xG', 'Minutes Played',  'Position']]
             top_10_f = top_10_f.reset_index(drop=True)
-            top_10_f.index += 1  # Start index at 1
-            top_10_f.index.name = "Rank"  # Rename index to "Rank"
+            top_10_f.index += 1
+            top_10_f.index.name = "Rank"
 
-            #Display the table in col2
             col2.write(top_10_f)
 
 
-           
         with tab_xa:
-            #red_card_players = df_filtered_player[df_filtered_player["Total RC"] > 0]['Player Name'].tolist()
-            fig_xa = all_chart(df_filtered_player, "Total xA", tooltip) #red_card_players)
+            _, fig_xa = create_xg_xa_chart(df_filtered_player, "Total xA")  # Only need fig_xa
             col1, col2 = st.columns(2)
-            col1.plotly_chart(fig_xa)
 
-            # Reset index and start from 1
-            
+            if fig_xa:
+                col1.plotly_chart(fig_xa)
+            else:
+                col1.info("No xA chart to display.")
+
             top_10_f = top_10[["Player Name", "Team", "Total Points", 'Total Assists', 'Total xA', 'Minutes Played',  'Position']]
             top_10_f = top_10_f.reset_index(drop=True)
-            top_10_f.index += 1  # Start index at 1
-            top_10_f.index.name = "Rank"  # Rename index to "Rank"
+            top_10_f.index += 1
+            top_10_f.index.name = "Rank"
 
-            #Display the table in col2
             col2.write(top_10_f)
+
 
 
 
             
         with tab_sp:
-            #red_card_players = df_filtered_player[df_filtered_player["Total RC"] > 0]['Player Name'].tolist()
-            # fig_xg = all_chart(df_filtered_player, "Total RC", tooltip) #red_card_players)
-            # Create Streamlit columns for side-by-side display
+        
             col1, col2, col3 = st.columns(3)
 
             with col1:
@@ -1141,5 +1102,4 @@ def perform_analysis():
     df_filtered_player.index.name = "Rank"  # Rename index to "Rank"
     
     st.dataframe(df_filtered_player)
-    # table_data(df_filtered_player, key='z', sort='Total Points')
  
